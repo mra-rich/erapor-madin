@@ -4,6 +4,18 @@
     {
       "src": "public/index.php",
       "use": "vercel-php@0.9.0"
+    },
+    {
+      "src": "public/css/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/assets/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/uploads/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
