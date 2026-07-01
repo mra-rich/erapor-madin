@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'ademx/erapor',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '63fa8e990012c66b84f33abb391247c122da705d',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        'ademx/erapor' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '63fa8e990012c66b84f33abb391247c122da705d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'shuchkin/simplexlsx' => array(
+            'pretty_version' => '1.1.16',
+            'version' => '1.1.16.0',
+            'reference' => '892d449f29d8071e74d9fba00dff832d2627662c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../shuchkin/simplexlsx',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'shuchkin/simplexlsxgen' => array(
+            'pretty_version' => '1.5.17',
+            'version' => '1.5.17.0',
+            'reference' => '162a4a9b929611d69dbd6f1a7f42af483a87b537',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../shuchkin/simplexlsxgen',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

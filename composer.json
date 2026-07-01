@@ -1,0 +1,13 @@
+{
+    "name": "ademx/erapor",
+    "authors": [
+        {
+            "name": "mra-rich",
+            "email": "chat3524gpt@gmail.com"
+        }
+    ],
+    "require": {
+        "shuchkin/simplexlsx": "^1.1",
+        "shuchkin/simplexlsxgen": "^1.5"
+    }
+}
