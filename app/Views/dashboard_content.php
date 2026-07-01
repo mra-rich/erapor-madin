@@ -36,7 +36,7 @@ $wali_kelas = $waliKelas ?? $wali_kelas ?? 0;
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
       
       <!-- Card Siswa -->
-      <a href="data_santri.php" class="block bg-blue-500 rounded-2xl p-6 shadow-lg shadow-blue-500/30 premium-card relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300">
+      <a href="data_santri" class="block bg-blue-500 rounded-2xl p-6 shadow-lg shadow-blue-500/30 premium-card relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300">
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
         <div class="flex justify-between items-start relative z-10">
           <div>
@@ -50,7 +50,7 @@ $wali_kelas = $waliKelas ?? $wali_kelas ?? 0;
       </a>
 
       <!-- Card Kelas -->
-      <a href="data_kelas.php" class="block bg-emerald-500 rounded-2xl p-6 shadow-lg shadow-emerald-500/30 premium-card relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300">
+      <a href="data_kelas" class="block bg-emerald-500 rounded-2xl p-6 shadow-lg shadow-emerald-500/30 premium-card relative overflow-hidden group cursor-pointer hover:-translate-y-1 transition-all duration-300">
         <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
         <div class="flex justify-between items-start relative z-10">
           <div>
@@ -111,7 +111,7 @@ $wali_kelas = $waliKelas ?? $wali_kelas ?? 0;
     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 premium-card">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold text-slate-800 brand-font">Aktivitas Terbaru</h2>
-            <a href="log_aktivitas.php" class="text-sm font-medium text-emerald-600 hover:text-emerald-700">Lihat Semua &rarr;</a>
+            <a href="log_aktivitas" class="text-sm font-medium text-emerald-600 hover:text-emerald-700">Lihat Semua &rarr;</a>
         </div>
         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div class="overflow-x-auto">

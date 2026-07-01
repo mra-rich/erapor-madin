@@ -15,7 +15,7 @@
 
     <!-- Step 1: Upload Form -->
     <div class="p-6 flex-1 overflow-y-auto flex flex-col items-center" id="import-mapel-step-1">
-        <a href="download_template_mapel.php" target="_blank" hx-disable hx-boost="false" class="w-full inline-flex items-center justify-center px-4 py-3 mb-6 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 font-medium rounded-xl transition-colors duration-200 shadow-sm" download>
+        <a href="download_template_mapel" target="_blank" hx-disable hx-boost="false" class="w-full inline-flex items-center justify-center px-4 py-3 mb-6 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 font-medium rounded-xl transition-colors duration-200 shadow-sm" download>
             <i class="ri-download-cloud-2-line mr-2 text-xl"></i>
             Download Template (Terisi Data Saat Ini)
         </a>

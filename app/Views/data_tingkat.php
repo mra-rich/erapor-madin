@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tambah_tingkat'])) {
     if (mysqli_query($koneksi, $query_insert)) {
         require_once 'logger.php';
         catat_log($koneksi, $_SESSION['id_pengguna'], 'Tambah Tingkat', "Menambahkan tingkat baru: $nama_tingkat");
-        echo "<script>window.location.href='data_tingkat.php?status=success&message=Data berhasil ditambahkan';</script>";
+        echo "<script>window.location.href='data_tingkat?status=success&message=Data berhasil ditambahkan';</script>";
     } else {
-        echo "<script>window.location.href='data_tingkat.php?status=error&message=Data gagal ditambahkan';</script>";
+        echo "<script>window.location.href='data_tingkat?status=error&message=Data gagal ditambahkan';</script>";
     }
 }
 
@@ -30,9 +30,9 @@ if (isset($_GET['hapus'])) {
     if (mysqli_query($koneksi, $query_hapus)) {
         require_once 'logger.php';
         catat_log($koneksi, $_SESSION['id_pengguna'], 'Hapus Tingkat', "Menghapus tingkat ID: $id_hapus");
-        echo "<script>window.location.href='data_tingkat.php?status=success&message=Data berhasil dihapus';</script>";
+        echo "<script>window.location.href='data_tingkat?status=success&message=Data berhasil dihapus';</script>";
     } else {
-        echo "<script>window.location.href='data_tingkat.php?status=error&message=Data gagal dihapus';</script>";
+        echo "<script>window.location.href='data_tingkat?status=error&message=Data gagal dihapus';</script>";
     }
 }
 ?>
@@ -71,7 +71,7 @@ if (isset($_GET['hapus'])) {
                                 <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-3 py-1.5 rounded-full shadow-sm border border-blue-200"><?php echo htmlspecialchars($row['nama_tingkat']); ?></span>
                             </td>
                             <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                                <a href="data_tingkat.php?hapus=<?php echo $row['id_tingkat']; ?>" onclick="return sweetConfirm(event, this, 'Yakin ingin menghapus? Tingkat ini mungkin digunakan di tabel Kelas dan Mapel!');" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl inline-flex items-center transition-colors shadow-sm cursor-pointer" title="Hapus">
+                                <a href="data_tingkat?hapus=<?php echo $row['id_tingkat']; ?>" onclick="return sweetConfirm(event, this, 'Yakin ingin menghapus? Tingkat ini mungkin digunakan di tabel Kelas dan Mapel!');" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl inline-flex items-center transition-colors shadow-sm cursor-pointer" title="Hapus">
                                     <i class="ri-delete-bin-line text-lg"></i>
                                 </a>
                             </td>

@@ -309,7 +309,7 @@ include 'include/sidebar.php';
                 </div>
 
                 <div class="flex justify-end">
-                    <a href="data_nilai.php" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg mr-2">Batal</a>
+                    <a href="data_nilai" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-lg mr-2">Batal</a>
                     <button type="submit" name="update" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">Simpan Perubahan</button>
                 </div>
             </form>

@@ -62,7 +62,7 @@ include 'include/sidebar.php';
                         <h3 class="text-lg font-bold text-slate-800 brand-font"><i class="ri-lock-password-line mr-2 text-emerald-500"></i>Ganti Password</h3>
                     </div>
                     <div class="p-6">
-                        <form action="proses_ganti_password.php" method="POST" class="space-y-5">
+                        <form action="proses_ganti_password" method="POST" class="space-y-5">
                             <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                             
                             <div>

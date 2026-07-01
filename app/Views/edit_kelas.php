@@ -39,7 +39,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     <h2 class="text-xl font-bold text-gray-800">Edit Kelas / Rombel</h2>
                     <p class="text-sm text-gray-500 mt-1">Perbarui informasi rombongan belajar</p>
                 </div>
-                <a href="data_kelas.php" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
+                <a href="data_kelas" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
                     <i class="ri-arrow-left-line mr-1"></i> Kembali
                 </a>
             </div>
@@ -55,7 +55,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     </div>
                 <?php endif; ?>
 
-                <form action="proses_edit_kelas.php" method="POST" class="space-y-5">
+                <form action="proses_edit_kelas" method="POST" class="space-y-5">
                     <input type="hidden" name="id_kelas" value="<?php echo $kelas['id_kelas']; ?>">
 
                     <div>

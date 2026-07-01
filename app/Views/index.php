@@ -99,7 +99,7 @@
                     <p class="text-gray-500 font-medium">Silakan masuk ke akun Anda untuk mengakses dashboard.</p>
                 </div>
 
-                <form action="proses_login.php" method="POST" class="space-y-6">
+                <form action="proses_login" method="POST" class="space-y-6">
                     <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                     
                     <div class="group">

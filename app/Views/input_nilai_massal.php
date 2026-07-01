@@ -86,7 +86,7 @@ include 'include/sidebar.php';
         <!-- Header -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row justify-between md:items-center">
             <div class="flex items-center mb-4 md:mb-0">
-                <a href="penilaian_mapel.php" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center mr-4 transition-colors">
+                <a href="penilaian_mapel" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center mr-4 transition-colors">
                     <i class="ri-arrow-left-line text-lg"></i>
                 </a>
                 <div>
@@ -110,7 +110,7 @@ include 'include/sidebar.php';
         <?php endif; ?>
 
         <!-- Form Input Massal -->
-        <form action="proses_nilai_massal.php" method="POST" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <form action="proses_nilai_massal" method="POST" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
             <input type="hidden" name="id_mapel" value="<?= $id_mapel ?>">
             <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">

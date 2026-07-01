@@ -19,7 +19,7 @@ include 'include/sidebar.php';
             </div>
             <!-- Tombol Aksi Kanan Atas -->
             <div class="flex flex-wrap items-center gap-2">
-                <a href="data_nilai.php" class="inline-flex justify-center items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors shadow-sm text-sm">
+                <a href="data_nilai" class="inline-flex justify-center items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors shadow-sm text-sm">
                     <i class="fas fa-arrow-left mr-1.5 text-base"></i> Kembali ke Data Nilai
                 </a>
             </div>
@@ -50,7 +50,7 @@ include 'include/sidebar.php';
                 <p class="text-sm text-gray-600 mb-4">
                     Unduh template Excel yang berisi format kolom yang sesuai untuk mengimpor nilai santri.
                 </p>
-                <form action="template_import_excel.php" method="GET">
+                <form action="template_import_excel" method="GET">
                     <?php 
                     $no_autosubmit = true;
                     $id_kelas_selected = isset($id_kelas) ? $id_kelas : (isset($kelas_aktif) ? $kelas_aktif : 0); 
@@ -68,7 +68,7 @@ include 'include/sidebar.php';
                 <p class="text-sm text-gray-600 mb-4">
                     Isi template yang telah diunduh, simpan, lalu unggah file Excel (.xlsx) di bawah ini.
                 </p>
-                <form action="proses_import_nilai.php" method="POST" enctype="multipart/form-data">
+                <form action="proses_import_nilai" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
@@ -90,7 +90,7 @@ include 'include/sidebar.php';
         </div>
         
         <div class="mt-6">
-            <a href="data_nilai.php" class="text-blue-600 hover:underline"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Data Nilai</a>
+            <a href="data_nilai" class="text-blue-600 hover:underline"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Data Nilai</a>
         </div>
     </div>
 </div>

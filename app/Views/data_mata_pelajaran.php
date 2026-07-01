@@ -182,7 +182,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
 
     <!-- Body -->
     <div class="p-6 overflow-y-auto flex-1 bg-white">
-        <form id="formMapel" action="proses_tambah_mapel.php" method="POST" class="space-y-6">
+        <form id="formMapel" action="proses_tambah_mapel" method="POST" class="space-y-6">
             <input type="hidden" name="id_mapel" id="id_mapel">
             <input type="hidden" name="id_kelas_redirect" value="<?= $id_kelas; ?>">
             <input type="hidden" name="status" value="Aktif">

@@ -111,7 +111,7 @@ $result_mapel = mysqli_query($koneksi, $query_mapel);
                                     <?= $status_badge ?>
                                 </td>
                                 <td class="py-2 px-6 text-center border border-slate-300">
-                                    <a href="input_nilai_massal.php?id_mapel=<?= $row['id_mapel'] ?>&id_kelas=<?= $row['id_kelas'] ?>" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-xs px-4 py-2 shadow-md shadow-blue-500/30 transition-all inline-flex items-center">
+                                    <a href="input_nilai_massal?id_mapel=<?= $row['id_mapel'] ?>&id_kelas=<?= $row['id_kelas'] ?>" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-xs px-4 py-2 shadow-md shadow-blue-500/30 transition-all inline-flex items-center">
                                         <i class="ri-pencil-fill mr-1"></i> Input
                                     </a>
                                 </td>

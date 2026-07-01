@@ -40,7 +40,7 @@ $siswa = mysqli_fetch_assoc($result);
             </div>
         <?php endif; ?>
 
-        <form action="proses_edit_siswa.php" method="POST">
+        <form action="proses_edit_siswa" method="POST">
             <input type="hidden" name="id_siswa" value="<?php echo $siswa['id_siswa']; ?>">
 
             <label class="block mb-2 font-medium">NISN:</label>
@@ -88,7 +88,7 @@ $siswa = mysqli_fetch_assoc($result);
 
             <div class="flex space-x-4">
                 <button type="submit" class="px-4 py-2 bg-blue-600 text-white font-medium rounded">Simpan Perubahan</button>
-                <a href="data_santri.php" class="px-4 py-2 bg-gray-500 text-white font-medium rounded">Batal</a>
+                <a href="data_santri" class="px-4 py-2 bg-gray-500 text-white font-medium rounded">Batal</a>
             </div>
         </form>
     </div>

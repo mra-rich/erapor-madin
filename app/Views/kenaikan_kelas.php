@@ -65,7 +65,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                     Kenaikan kelas hanya dapat diproses pada <strong>Semester 2 (Genap)</strong>, yaitu di akhir tahun ajaran.<br><br>
                     Saat ini semester aktif adalah <strong>Semester 1 (Ganjil)</strong>. Silakan ganti semester terlebih dahulu melalui menu <strong>Identitas Madrasah</strong> jika ingin memproses kenaikan kelas.
                 </p>
-                <a href="identitas_madrasah.php" class="mt-6 inline-flex items-center px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors">
+                <a href="identitas_madrasah" class="mt-6 inline-flex items-center px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition-colors">
                     <i class="ri-settings-4-line mr-2"></i> Buka Pengaturan
                 </a>
             </div>
@@ -140,7 +140,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                 ?>
                 <?php if($id_kelas_asal > 0): ?>
                     <div class="flex-none w-full xl:w-auto">
-                        <a href="kenaikan_kelas.php" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-bold shadow-sm">
+                        <a href="kenaikan_kelas" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-bold shadow-sm">
                             <i class="ri-refresh-line mr-2"></i> Reset
                         </a>
                     </div>
@@ -160,7 +160,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
 
             <div>
                 <div class="mt-4">
-                    <form action="proses_kenaikan.php" method="POST" id="formKenaikan">
+                    <form action="proses_kenaikan" method="POST" id="formKenaikan">
                         <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                         <input type="hidden" name="kelas_asal" value="<?= $id_kelas_asal; ?>">
                         

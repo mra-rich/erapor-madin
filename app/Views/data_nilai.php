@@ -47,7 +47,7 @@ $selectedSemester = isset($_GET['semester']) && $_GET['semester'] !== "" ? $_GET
 // Proses hapus data
 if (isset($_GET['hapus'])) {
     if (!isset($_GET['csrf_token']) || !verify_csrf_token($_GET['csrf_token'])) {
-        die("<script>alert('CSRF token validation failed'); window.location.href='data_nilai.php';</script>");
+        die("<script>alert('CSRF token validation failed'); window.location.href='data_nilai';</script>");
     }
     $id_transaksi = mysqli_real_escape_string($koneksi, $_GET['hapus']);
 
@@ -66,7 +66,7 @@ if (isset($_GET['hapus'])) {
 
     echo "<script>
         alert('Data berhasil dihapus!');
-        window.location.href='data_nilai.php';
+        window.location.href='data_nilai';
     </script>";
 }
 
@@ -96,14 +96,14 @@ if (isset($_GET['status'])) {
             
             <div class="flex flex-wrap items-center gap-2">
                 <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-                <a href="tambah_nilai.php" class="inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm">
+                <a href="tambah_nilai" class="inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm">
                     <i class="fas fa-plus mr-1.5 text-base"></i> Tambah Nilai
                 </a>
-                <a href="import_nilai.php" class="inline-flex justify-center items-center px-4 py-2 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+                <a href="import_nilai" class="inline-flex justify-center items-center px-4 py-2 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
                     <i class="fas fa-file-excel mr-1.5 text-base"></i> Import Excel
                 </a>
                 <?php endif; ?>
-                <a href="export_nilai.php?kelas=<?= urlencode($selectedKelas ?? ''); ?>&semester=<?= urlencode($selectedSemester ?? ''); ?>" class="inline-flex justify-center items-center px-4 py-2 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+                <a href="export_nilai?kelas=<?= urlencode($selectedKelas ?? ''); ?>&semester=<?= urlencode($selectedSemester ?? ''); ?>" class="inline-flex justify-center items-center px-4 py-2 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
                     <i class="fas fa-file-excel mr-1.5 text-base"></i> Export Excel
                 </a>
             </div>
@@ -134,7 +134,7 @@ if (isset($_GET['status'])) {
                         <i class="ri-search-line mr-2"></i> Tampilkan
                     </button>
                     <?php if($selectedKelas || $selectedSemester): ?>
-                        <a href="data_nilai.php" class="w-full xl:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors flex items-center justify-center shadow-sm">
+                        <a href="data_nilai" class="w-full xl:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors flex items-center justify-center shadow-sm">
                             <i class="ri-refresh-line mr-2"></i> Reset
                         </a>
                     <?php endif; ?>
@@ -302,14 +302,14 @@ if (isset($_GET['status'])) {
                                         <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
                                             <div class="flex justify-center space-x-1">
                                                 <?php if ($idTransaksi): ?>
-                                                    <a href="edit_nilai.php?id=<?= $idTransaksi; ?>" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200" title="Edit">
+                                                    <a href="edit_nilai?id=<?= $idTransaksi; ?>" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200" title="Edit">
                                                         <i class="ri-edit-line text-lg"></i>
                                                     </a>
-                                                    <a href="data_nilai.php?hapus=<?= $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200" onclick="return sweetConfirm(event, this, 'Apakah Anda yakin ingin menghapus data ini?');" title="Hapus">
+                                                    <a href="data_nilai?hapus=<?= $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200" onclick="return sweetConfirm(event, this, 'Apakah Anda yakin ingin menghapus data ini?');" title="Hapus">
                                                         <i class="ri-delete-bin-line text-lg"></i>
                                                     </a>
                                                 <?php else: ?>
-                                                    <a href="tambah_nilai.php?id_siswa=<?= $idSiswa; ?>" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all duration-200" title="Tambah">
+                                                    <a href="tambah_nilai?id_siswa=<?= $idSiswa; ?>" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all duration-200" title="Tambah">
                                                         <i class="ri-add-line text-lg"></i>
                                                     </a>
                                                 <?php endif; ?>

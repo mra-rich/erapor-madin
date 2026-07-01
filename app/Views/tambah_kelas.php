@@ -20,7 +20,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     <h2 class="text-xl font-bold text-gray-800">Tambah Kelas Baru</h2>
                     <p class="text-sm text-gray-500 mt-1">Lengkapi form di bawah untuk menambah Rombel</p>
                 </div>
-                <a href="data_kelas.php" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
+                <a href="data_kelas" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
                     <i class="ri-arrow-left-line mr-1"></i> Kembali
                 </a>
             </div>
@@ -36,7 +36,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     </div>
                 <?php endif; ?>
 
-                <form action="proses_tambah_kelas.php" method="POST" class="space-y-5">
+                <form action="proses_tambah_kelas" method="POST" class="space-y-5">
                     
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900">Tingkat Kelas <span class="text-red-500">*</span></label>

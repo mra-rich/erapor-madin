@@ -56,7 +56,7 @@ if ($id_kelas > 0) {
 
         <?php if ($id_kelas > 0): ?>
         <!-- Form Atur Mapel -->
-        <form action="proses_atur_mapel_kelas.php" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+        <form action="proses_atur_mapel_kelas" method="POST" class="bg-white p-6 rounded-lg shadow-md">
             <input type="hidden" name="id_kelas" value="<?php echo $id_kelas; ?>">
             <h3 class="text-lg font-semibold border-b pb-2 mb-4">Daftar Mata Pelajaran</h3>
             <p class="text-sm text-gray-600 mb-4">Centang mata pelajaran yang diajarkan di kelas ini.</p>

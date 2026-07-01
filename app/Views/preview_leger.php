@@ -150,7 +150,7 @@ usort($siswaData, function($a, $b) {
         <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
             <i class="ri-printer-line mr-2"></i> Cetak ke Printer / PDF
         </button>
-        <button onclick="window.location.href='export_leger.php?kelas=<?= $selectedKelas ?>&semester=<?= $selectedSemester ?>'" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+        <button onclick="window.location.href='export_leger?kelas=<?= $selectedKelas ?>&semester=<?= $selectedSemester ?>'" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
             <i class="ri-file-excel-2-line mr-2"></i> Download Excel
         </button>
     </div>

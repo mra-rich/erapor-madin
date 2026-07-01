@@ -83,7 +83,7 @@ include 'include/sidebar.php';
             </div>
         </div>
 
-        <form action="proses_evaluasi_wali.php" method="POST" id="formEvaluasi">
+        <form action="proses_evaluasi_wali" method="POST" id="formEvaluasi">
             <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
                 <div class="overflow-x-auto">

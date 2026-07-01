@@ -10,7 +10,7 @@
           <span class="sr-only">Toggle sidebar</span>
           <i class="ri-menu-fold-line text-2xl" id="sidebar-toggle-icon"></i>
         </button>
-        <a href="index.php" class="flex ms-2 md:me-24 items-center group">
+        <a href="index" class="flex ms-2 md:me-24 items-center group">
           <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center mr-3 border border-emerald-100 group-hover:bg-emerald-500 transition-colors duration-300">
              <img src="<?= $assetBase ?? '' ?>assets/img/logo.png" class="h-6 object-contain group-hover:brightness-0 group-hover:invert transition-all" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'" />
           </div>
@@ -87,7 +87,7 @@
                             $kurang = $alert['total_siswa'] - $alert['total_dinilai'];
                             $pesan = ($alert['total_dinilai'] == 0) ? "0 nilai diinput" : "Kurang $kurang siswa";
                         ?>
-                        <a href="dashboard.php" class="flex px-4 py-3 hover:bg-slate-50 transition-colors">
+                        <a href="dashboard" class="flex px-4 py-3 hover:bg-slate-50 transition-colors">
                             <div class="flex-shrink-0 mt-0.5">
                                 <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center">
                                     <i class="ri-error-warning-fill text-lg"></i>
@@ -136,18 +136,18 @@
             </div>
             <ul class="py-2 px-2" role="none">
               <li>
-                <a href="dashboard.php" class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all duration-200" role="menuitem">
+                <a href="dashboard" class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all duration-200" role="menuitem">
                   <i class="ri-dashboard-3-line text-lg mr-3 text-slate-400"></i>
                   Dashboard
                 </a>
               <li>
-                <a href="profil.php" class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all duration-200 mt-1" role="menuitem">
+                <a href="profil" class="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl transition-all duration-200 mt-1" role="menuitem">
                   <i class="ri-user-settings-line text-lg mr-3 text-slate-400"></i>
                   Profil Saya
                 </a>
               </li>
               <li>
-                <a href="logout.php" class="flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 mt-1" role="menuitem">
+                <a href="logout" class="flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 mt-1" role="menuitem">
                   <i class="ri-logout-circle-r-line text-lg mr-3"></i>
                   Keluar
                 </a>

@@ -44,7 +44,7 @@ $pengaturan = mysqli_fetch_assoc($q_peng);
         <?php endif; ?>
 
         <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <form action="proses_identitas.php" method="POST" enctype="multipart/form-data">
+            <form action="proses_identitas" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= generate_csrf_token() ?>">
                 
                 <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">Data Lembaga</h3>

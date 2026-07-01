@@ -59,13 +59,13 @@ $result = mysqli_query($koneksi, $query);
                                hx-push-url="true">
                     </div>
                     <?php if (!empty($_GET['search'])): ?>
-                    <a href="data_guru.php" hx-get="data_guru.php" hx-target="body" hx-push-url="true" class="inline-flex justify-center items-center p-2 bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-colors shadow-sm" title="Reset Pencarian">
+                    <a href="data_guru" hx-get="data_guru.php" hx-target="body" hx-push-url="true" class="inline-flex justify-center items-center p-2 bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-colors shadow-sm" title="Reset Pencarian">
                         <i class="ri-close-line text-lg leading-none"></i>
                     </a>
                     <?php endif; ?>
                 </form>
 
-                <a href="export_guru.php<?php echo !empty($search) ? '?search=' . urlencode($search) : ''; ?>" hx-disable="true" hx-boost="false" class="inline-flex justify-center items-center px-4 py-2.5 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+                <a href="export_guru<?php echo !empty($search) ? '?search=' . urlencode($search) : ''; ?>" hx-disable="true" hx-boost="false" class="inline-flex justify-center items-center px-4 py-2.5 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
                     <i class="ri-file-download-line mr-2 text-lg"></i>
                     Export
                 </a>
@@ -196,7 +196,7 @@ $result = mysqli_query($koneksi, $query);
 
     <!-- Body -->
     <div class="p-6 overflow-y-auto flex-1 bg-white">
-        <form id="formGuru" action="proses_input_guru.php" method="POST" class="space-y-5">
+        <form id="formGuru" action="proses_input_guru" method="POST" class="space-y-5">
             <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
             <input type="hidden" name="id_pengguna" id="id_pengguna">
             <input type="hidden" name="id_guru" id="id_guru">

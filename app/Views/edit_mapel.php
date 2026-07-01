@@ -42,7 +42,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     <h2 class="text-xl font-bold text-gray-800">Edit Mata Pelajaran</h2>
                     <p class="text-sm text-gray-500 mt-1">Perbarui data mata pelajaran</p>
                 </div>
-                <a href="data_mata_pelajaran.php" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
+                <a href="data_mata_pelajaran" class="text-gray-500 hover:text-gray-700 bg-white border border-gray-200 hover:bg-gray-100 rounded-lg text-sm px-4 py-2 transition-colors">
                     <i class="ri-arrow-left-line mr-1"></i> Kembali
                 </a>
             </div>
@@ -57,7 +57,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                     </div>
                 <?php endif; ?>
 
-                <form action="proses_edit_mapel.php" method="POST" class="space-y-6">
+                <form action="proses_edit_mapel" method="POST" class="space-y-6">
                     <input type="hidden" name="id_mapel" value="<?= $mapel['id_mapel']; ?>">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

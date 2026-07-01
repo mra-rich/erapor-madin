@@ -51,7 +51,7 @@ include 'include/sidebar.php';
           ?>
           <?php if($id_kelas_selected > 0): ?>
               <div class="flex-none w-full xl:w-auto">
-                  <a href="data_santri.php" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-bold shadow-sm">
+                  <a href="data_santri" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-bold shadow-sm">
                       <i class="ri-refresh-line mr-2"></i> Reset
                   </a>
               </div>
@@ -179,7 +179,7 @@ include 'include/sidebar.php';
               </td>
               <td class="py-2 px-6 border border-slate-300 text-center whitespace-nowrap">
                 <div class="flex justify-center space-x-1">
-                    <a href="cetak_buku_induk.php?id_siswa=<?= $row['id_siswa']; ?>" target="_blank" onclick="event.stopPropagation();" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all duration-200" title="Cetak Buku Induk">
+                    <a href="cetak_buku_induk?id_siswa=<?= $row['id_siswa']; ?>" target="_blank" onclick="event.stopPropagation();" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all duration-200" title="Cetak Buku Induk">
                         <i class="ri-book-read-line text-lg"></i>
                     </a>
                     <button type="button" onclick="event.stopPropagation(); openDetailSantri(<?= $row['id_siswa']; ?>)" class="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all duration-200" title="Detail">
@@ -221,7 +221,7 @@ include 'include/sidebar.php';
     </div>
 
     <div class="p-6 flex-1 overflow-y-auto">
-        <form action="proses_input_siswa.php" method="POST" id="formTambahSantri" class="space-y-6">
+        <form action="proses_input_siswa" method="POST" id="formTambahSantri" class="space-y-6">
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
             
             <!-- SECTION 1: Identitas Santri -->
@@ -408,7 +408,7 @@ include 'include/sidebar.php';
         </button>
     </div>
 
-    <form action="proses_edit_siswa.php" method="POST" class="p-6">
+    <form action="proses_edit_siswa" method="POST" class="p-6">
         <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
         <input type="hidden" name="id_siswa" id="edit_id_siswa">
 

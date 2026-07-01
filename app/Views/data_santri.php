@@ -100,7 +100,7 @@ include 'include/sidebar.php';
                 hx-target="body"
                 hx-push-url="true">
             <?php if($search !== ''): ?>
-            <a href="data_santri.php<?= $filter_kelas > 0 ? '?kelas='.$filter_kelas : '' ?>" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-gray-400 hover:text-red-500">
+            <a href="data_santri<?= $filter_kelas > 0 ? '?kelas='.$filter_kelas : '' ?>" class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-gray-400 hover:text-red-500">
                 <i class="ri-close-circle-fill"></i>
             </a>
             <?php endif; ?>
@@ -120,7 +120,7 @@ include 'include/sidebar.php';
             unset($hide_labels);
             ?>
             <?php if($filter_kelas > 0): ?>
-            <a href="data_santri.php<?= $search !== '' ? '?search='.urlencode($search) : '' ?>" class="bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center text-sm font-medium whitespace-nowrap">
+            <a href="data_santri<?= $search !== '' ? '?search='.urlencode($search) : '' ?>" class="bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center text-sm font-medium whitespace-nowrap">
                 <i class="ri-refresh-line mr-1"></i> Reset
             </a>
             <?php endif; ?>
@@ -270,7 +270,7 @@ include 'include/sidebar.php';
     </div>
 
     <div class="p-6 flex-1 overflow-y-auto">
-        <form action="proses_input_siswa.php" method="POST" id="formTambahSantri" class="space-y-6">
+        <form action="proses_input_siswa" method="POST" id="formTambahSantri" class="space-y-6">
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
             
             <!-- SECTION 1: Identitas Santri -->
@@ -457,7 +457,7 @@ include 'include/sidebar.php';
         </button>
     </div>
 
-    <form action="proses_edit_siswa.php" method="POST" class="p-6">
+    <form action="proses_edit_siswa" method="POST" class="p-6">
         <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
         <input type="hidden" name="id_siswa" id="edit_id_siswa">
 

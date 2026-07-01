@@ -130,7 +130,7 @@ while ($t = mysqli_fetch_assoc($result_tingkat)) {
     </div>
 
     <div class="p-6 flex-1 overflow-y-auto">
-        <form action="proses_tambah_kelas.php" method="POST" id="formTambahKelas" class="space-y-5">
+        <form action="proses_tambah_kelas" method="POST" id="formTambahKelas" class="space-y-5">
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
             
             <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 mb-6">
@@ -209,7 +209,7 @@ while ($t = mysqli_fetch_assoc($result_tingkat)) {
     </div>
 
     <div class="p-6 flex-1 overflow-y-auto">
-        <form action="proses_edit_kelas.php" method="POST" id="formEditKelas" class="space-y-5">
+        <form action="proses_edit_kelas" method="POST" id="formEditKelas" class="space-y-5">
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
             <input type="hidden" name="id_kelas" id="id_kelas_edit" value="">
             
