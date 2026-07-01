@@ -44,8 +44,28 @@
     html.sidebar-collapsed-early .p-4.sm\:ml-64 {
       margin-left: 5rem !important;
     }
+
+    /* Animasi Loading Global (HTMX) */
+    body.htmx-request #page-loader {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
   </style>
   <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 
 <body hx-boost="true" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+<!-- Overlay Loading Layar Penuh -->
+<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="flex flex-col items-center bg-white p-6 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-emerald-100">
+        <div class="relative w-16 h-16 flex items-center justify-center">
+            <!-- Lingkaran Luar Berputar -->
+            <div class="absolute inset-0 border-4 border-emerald-100 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-emerald-600 rounded-full border-t-transparent animate-spin"></div>
+            <!-- Ikon Tengah -->
+            <i class="ri-loader-4-line text-2xl text-emerald-600 animate-pulse"></i>
+        </div>
+        <p class="mt-4 text-emerald-800 font-bold font-outfit tracking-wider animate-pulse">Memuat...</p>
+    </div>
+</div>
