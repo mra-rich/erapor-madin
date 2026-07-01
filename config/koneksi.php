@@ -1,7 +1,4 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
 
 $host = getenv('DB_HOST') ?: 'localhost';
 $user = getenv('DB_USER') ?: 'root';
@@ -21,8 +18,59 @@ if ($ssl) {
 $koneksi->real_connect($host, $user, $password, $database, $port, NULL, $ssl);
 
 if ($koneksi->connect_error) {
-    // Tampilkan pesan ramah jika server mati
-    die("<div style='font-family:sans-serif; text-align:center; padding:50px;'><h1>Sistem Sedang Sibuk</h1><p>Mohon maaf, layanan kami sedang dalam pemeliharaan rutin. Silakan kembali dalam beberapa menit.</p></div>");
+    die("Koneksi gagal: " . $koneksi->connect_error);
+}
+
+class SysSession implements SessionHandlerInterface {
+    private $link;
+    public function __construct($link) { $this->link = $link; }
+    #[\ReturnTypeWillChange]
+    public function open($path, $name) { return true; }
+    #[\ReturnTypeWillChange]
+    public function close() { return true; }
+    #[\ReturnTypeWillChange]
+    public function read($id) {
+        $stmt = $this->link->prepare("SELECT data FROM sessions WHERE id = ? AND expires > ?");
+        if (!$stmt) return "";
+        $now = time();
+        $stmt->bind_param("si", $id, $now);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            return $row['data'];
+        }
+        return "";
+    }
+    #[\ReturnTypeWillChange]
+    public function write($id, $data) {
+        $expires = time() + (int)ini_get('session.gc_maxlifetime');
+        $stmt = $this->link->prepare("REPLACE INTO sessions (id, data, expires) VALUES (?, ?, ?)");
+        if (!$stmt) return false;
+        $stmt->bind_param("ssi", $id, $data, $expires);
+        return $stmt->execute();
+    }
+    #[\ReturnTypeWillChange]
+    public function destroy($id) {
+        $stmt = $this->link->prepare("DELETE FROM sessions WHERE id = ?");
+        if (!$stmt) return false;
+        $stmt->bind_param("s", $id);
+        return $stmt->execute();
+    }
+    #[\ReturnTypeWillChange]
+    public function gc($max_lifetime) {
+        $stmt = $this->link->prepare("DELETE FROM sessions WHERE expires < ?");
+        if (!$stmt) return false;
+        $now = time();
+        $stmt->bind_param("i", $now);
+        $stmt->execute();
+        return true;
+    }
+}
+$handler = new SysSession($koneksi);
+session_set_save_handler($handler, true);
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
 // Inisialisasi Lightweight ORM / Query Builder (legacy)
