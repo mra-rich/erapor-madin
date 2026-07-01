@@ -59,10 +59,15 @@ $routes = [
 
 // ─── Resolve Route ──────────────────────────────────────────
 $route = $_GET['route'] ?? 'index.php';
-if (empty($route)) $route = 'index.php';
+if (empty($route) || $route === '/') $route = 'index.php';
 
 // Sanitasi: hanya izinkan karakter alfanumerik, underscore, dash, dot, dan slash
 $route = preg_replace('/[^a-zA-Z0-9_\-\.\/]/', '', $route);
+
+// Dukungan Clean URLs: jika rute tidak memiliki ekstensi, tambahkan .php
+if (!str_contains(basename($route), '.')) {
+    $route .= '.php';
+}
 
 // Cegah directory traversal
 if (str_contains($route, '..')) {
