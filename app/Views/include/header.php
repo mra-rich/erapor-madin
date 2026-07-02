@@ -57,15 +57,15 @@
 <body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
 <!-- Overlay Loading Layar Penuh -->
-<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="flex flex-col items-center bg-white p-6 rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-emerald-100">
-        <div class="relative w-16 h-16 flex items-center justify-center">
-            <!-- Lingkaran Luar Berputar -->
-            <div class="absolute inset-0 border-4 border-emerald-100 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-emerald-600 rounded-full border-t-transparent animate-spin"></div>
-            <!-- Ikon Tengah -->
-            <i class="ri-loader-4-line text-2xl text-emerald-600 animate-pulse"></i>
+<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="flex flex-col items-center bg-white/90 backdrop-blur-md px-8 py-6 rounded-2xl shadow-2xl border border-white/50">
+        <div class="relative w-12 h-12 flex items-center justify-center mb-4">
+            <!-- Ring 1 (Luar) -->
+            <div class="absolute inset-0 border-[3px] border-emerald-100 rounded-full"></div>
+            <div class="absolute inset-0 border-[3px] border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
+            <!-- Ring 2 (Dalam) -->
+            <div class="absolute inset-2 border-[3px] border-emerald-200 rounded-full border-b-transparent animate-[spin_1.5s_linear_infinite_reverse]"></div>
         </div>
-        <p class="mt-4 text-emerald-800 font-bold font-outfit tracking-wider animate-pulse">Memuat...</p>
+        <p class="text-emerald-800 font-semibold font-outfit tracking-wide animate-pulse">Memuat data...</p>
     </div>
 </div>
