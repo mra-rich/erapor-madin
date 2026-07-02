@@ -57,15 +57,27 @@
 <body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
 <!-- Overlay Loading Layar Penuh -->
-<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="flex flex-col items-center bg-white/90 backdrop-blur-md px-8 py-6 rounded-2xl shadow-2xl border border-white/50">
-        <div class="relative w-12 h-12 flex items-center justify-center mb-4">
-            <!-- Ring 1 (Luar) -->
-            <div class="absolute inset-0 border-[3px] border-emerald-100 rounded-full"></div>
-            <div class="absolute inset-0 border-[3px] border-emerald-500 rounded-full border-t-transparent animate-spin"></div>
-            <!-- Ring 2 (Dalam) -->
-            <div class="absolute inset-2 border-[3px] border-emerald-200 rounded-full border-b-transparent animate-[spin_1.5s_linear_infinite_reverse]"></div>
+<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="flex flex-col items-center bg-white px-8 py-6 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-emerald-100" style="border-radius: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+        <div style="margin-bottom: 1rem;">
+            <!-- Self-contained SVG Spinner (Guaranteed to spin) -->
+            <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" stroke="#059669">
+                <g fill="none" fill-rule="evenodd">
+                    <g transform="translate(1 1)" stroke-width="4">
+                        <circle stroke-opacity=".2" cx="24" cy="24" r="24"/>
+                        <path d="M48 24c0-13.255-10.745-24-24-24">
+                            <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="0.6s" repeatCount="indefinite"/>
+                        </path>
+                    </g>
+                </g>
+            </svg>
         </div>
-        <p class="text-emerald-800 font-semibold font-outfit tracking-wide animate-pulse">Memuat data...</p>
+        <p class="text-emerald-800 font-semibold font-outfit tracking-wide" style="animation: htmx-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Memuat data...</p>
+        <style>
+            @keyframes htmx-pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: .5; }
+            }
+        </style>
     </div>
 </div>
