@@ -854,7 +854,7 @@ function openDetailSantri(id) {
   }
 
   // Import Validation Logic
-  let validDataCache = [];
+  var validDataCache = [];
 
   function previewImportSantri() {
       const fileInput = document.getElementById('file_excel');

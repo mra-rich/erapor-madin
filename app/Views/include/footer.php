@@ -37,7 +37,7 @@
 <?php endif; ?>
 
 <!-- Instant.page for just-in-time preloading on hover -->
-<script src="//instant.page/5.2.0" type="module" integrity="sha384-jnZcgoEq3ZZVF-r23n0eA638xR1+N+e1tXnO+GqV/75h4T1yK6N9KOLnU5D5wX6+" crossorigin="anonymous"></script>
+<script src="//instant.page/5.2.0" type="module" crossorigin="anonymous"></script>
 
 </body>
 </html>
