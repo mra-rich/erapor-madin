@@ -21,7 +21,7 @@ if (isset($id_kelas_selected) && $id_kelas_selected > 0) {
 }
 ?>
 <!-- Dropdown Tingkat -->
-<div class="flex-1 w-full min-w-[150px]">
+<div class="flex-1 min-w-[150px]">
     <?php if (!isset($hide_labels)): ?><label class="block mb-2 text-sm font-bold text-gray-700">Tingkat</label><?php endif; ?>
     <select <?= isset($form_id) ? 'form="'.$form_id.'"' : '' ?> id="<?= $pfx ?>_tingkat" name="<?= $pfx ?>_id_tingkat" hx-get="api_get_kelas.php?action=get_kelas&pfx=<?= $pfx ?>" hx-target="#<?= $pfx ?>_kelas" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full min-w-[160px] py-3 pl-3 pr-10 shadow-sm transition-colors cursor-pointer" required>
         <option value="">-- Pilih Tingkat --</option>
@@ -36,7 +36,7 @@ if (isset($id_kelas_selected) && $id_kelas_selected > 0) {
 </div>
 
 <!-- Dropdown Kelas -->
-<div class="flex-1 w-full min-w-[150px]">
+<div class="flex-1 min-w-[150px]">
     <?php if (!isset($hide_labels)): ?><label class="block mb-2 text-sm font-bold text-gray-700">Kelas</label><?php endif; ?>
     <select <?= isset($form_id) ? 'form="'.$form_id.'"' : '' ?> id="<?= $pfx ?>_kelas" name="<?= $pfx ?>_nama_kelas" hx-get="api_get_kelas.php?action=get_rombel&pfx=<?= $pfx ?>" hx-target="#<?= $pfx ?>_rombel" hx-include="#<?= $pfx ?>_tingkat" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full min-w-[160px] py-3 pl-3 pr-10 shadow-sm transition-colors cursor-pointer" required>
         <option value="">-- Pilih Tingkat Dulu --</option>
@@ -53,7 +53,7 @@ if (isset($id_kelas_selected) && $id_kelas_selected > 0) {
 </div>
 
 <!-- Dropdown Rombel -->
-<div class="flex-1 w-full min-w-[150px]">
+<div class="flex-1 min-w-[150px]">
     <?php if (!isset($hide_labels)): ?><label class="block mb-2 text-sm font-bold text-gray-700">Rombel</label><?php endif; ?>
     <select <?= isset($form_id) ? 'form="'.$form_id.'"' : '' ?> id="<?= $pfx ?>_rombel" name="<?= $fname ?>" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full min-w-[160px] py-3 pl-3 pr-10 shadow-sm transition-colors cursor-pointer" required>
         <option value="">-- Pilih Kelas Dulu --</option>

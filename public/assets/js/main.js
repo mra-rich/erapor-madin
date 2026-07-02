@@ -131,8 +131,16 @@ document.addEventListener("fullscreenchange", function() {
     }
 });
 
-// Re-initialize Flowbite components (dropdowns, modals) after HTMX swaps
-document.body.addEventListener('htmx:load', function() {
+// Clean up Flowbite modal/offcanvas classes and re-initialize after HTMX swaps
+document.body.addEventListener('htmx:afterSwap', function() {
+    // Hapus class overflow-hidden yang mungkin ditinggalkan oleh offcanvas/modal Flowbite saat navigasi
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.paddingRight = '';
+    
+    // Hapus elemen backdrop flowbite jika masih tersisa
+    const backdrops = document.querySelectorAll('[modal-backdrop], [drawer-backdrop]');
+    backdrops.forEach(el => el.remove());
+
     if (typeof initFlowbite === 'function') {
         initFlowbite();
     }
