@@ -82,10 +82,10 @@ include 'include/sidebar.php';
 
 
     <!-- Toolbar: Search kiri + Filter Kelas kanan -->
-    <div class="mb-4 flex flex-wrap gap-2 items-center bg-white px-4 py-3 rounded-lg border border-gray-200 shadow-sm">
+    <div class="mb-4 flex flex-wrap gap-3 items-center bg-white px-4 py-3 rounded-lg border border-gray-200 shadow-sm">
 
         <!-- Search Box (Auto-submit) — di KIRI -->
-        <div class="relative w-64">
+        <div class="relative w-full md:w-64">
             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i class="ri-search-line text-gray-400 text-base" id="searchIcon"></i>
             </div>
@@ -112,7 +112,7 @@ include 'include/sidebar.php';
         <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
         <!-- Filter Kelas — di KANAN, tanpa label -->
         <?php $hide_labels = true; $no_autosubmit = false; ?>
-        <form method="GET" id="formFilter" class="flex gap-2 items-center">
+        <form method="GET" id="formFilter" class="flex flex-wrap md:flex-nowrap gap-2 items-center w-full lg:w-auto">
             <input type="hidden" name="search" id="hiddenSearch" value="<?= htmlspecialchars($search) ?>">
             <?php 
             $id_kelas_selected = $filter_kelas;
