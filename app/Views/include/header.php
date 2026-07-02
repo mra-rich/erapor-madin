@@ -46,7 +46,7 @@
     }
 
     /* Animasi Loading Global (HTMX) */
-    body.htmx-request #page-loader {
+    #page-loader.htmx-request {
       opacity: 1 !important;
       pointer-events: auto !important;
     }
@@ -54,7 +54,7 @@
   <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 
-<body hx-boost="true" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+<body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
 <!-- Overlay Loading Layar Penuh -->
 <div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
