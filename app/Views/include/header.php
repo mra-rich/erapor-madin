@@ -44,19 +44,13 @@
     html.sidebar-collapsed-early .p-4.sm\:ml-64 {
       margin-left: 5rem !important;
     }
-
-    /* Animasi Loading Global (HTMX) */
-    #page-loader.htmx-request {
-      opacity: 1 !important;
-      pointer-events: auto !important;
-    }
   </style>
   <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 
-<body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+<body hx-boost="true" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
-<!-- Custom 4-Dots Loader requested by User -->
+<!-- Custom 4-Dots Loader untuk perpindahan halaman -->
 <div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#f8f9fa] opacity-0 pointer-events-none transition-opacity duration-300">
     <div style="position: relative; width: 36px; height: 36px; animation: spin-4-dots 1.2s linear infinite;">
         <div style="position: absolute; top: 0; left: 0; width: 14px; height: 14px; background-color: #6ee7b7; border-radius: 50%;"></div>

@@ -1,4 +1,4 @@
-<aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-slate-100 sm:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]" aria-label="Sidebar">
+<aside id="logo-sidebar" hx-indicator="#page-loader" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-slate-100 sm:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.02)]" aria-label="Sidebar">
   <div class="h-full px-4 pb-4 overflow-y-auto bg-white">
     <div class="mb-4 px-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mt-4">Menu Utama</div>
     <ul class="space-y-1.5 font-medium">
