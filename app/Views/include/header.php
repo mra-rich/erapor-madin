@@ -56,27 +56,23 @@
 
 <body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
-<!-- Overlay Loading Layar Penuh -->
-<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-white/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="flex flex-col items-center bg-white px-8 py-6 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-emerald-100" style="border-radius: 1rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
-        <div style="margin-bottom: 1rem;">
-            <!-- Self-contained SVG Spinner (Guaranteed to spin) -->
-            <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" stroke="#059669">
-                <g fill="none" fill-rule="evenodd">
-                    <g transform="translate(1 1)" stroke-width="4">
-                        <circle stroke-opacity=".2" cx="24" cy="24" r="24"/>
-                        <path d="M48 24c0-13.255-10.745-24-24-24">
-                            <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="0.6s" repeatCount="indefinite"/>
-                        </path>
-                    </g>
-                </g>
+<!-- Premium Linear-style Loader -->
+<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-50/30 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="flex items-center gap-3 bg-white/90 backdrop-blur-xl px-5 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 transform scale-95 transition-transform duration-300" id="loader-pill">
+        <!-- SVG Spinner Ultra-Fast -->
+        <div style="width: 1.25rem; height: 1.25rem; position: relative;">
+            <svg style="animation: premium-spin 0.4s linear infinite; width: 100%; height: 100%;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="#f1f5f9" stroke-width="3"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10" stroke="#10b981" stroke-width="3" stroke-linecap="round"></path>
             </svg>
         </div>
-        <p class="text-emerald-800 font-semibold font-outfit tracking-wide" style="animation: htmx-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Memuat data...</p>
+        <span class="text-slate-600 font-medium font-outfit text-sm tracking-wide">Memuat...</span>
         <style>
-            @keyframes htmx-pulse {
-                0%, 100% { opacity: 1; }
-                50% { opacity: .5; }
+            @keyframes premium-spin {
+                to { transform: rotate(360deg); }
+            }
+            #page-loader.htmx-request #loader-pill {
+                transform: scale(1) !important;
             }
         </style>
     </div>
