@@ -130,7 +130,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
         <!-- Form Pencarian Kelas (hanya tampil untuk Admin/Kepala Madrasah) -->
         <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
         <div class="mb-6">
-            <form method="GET" class="flex flex-col xl:flex-row gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+            <form method="GET" class="flex flex-wrap gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
                 <?php 
                 $id_kelas_selected = $id_kelas_asal;
                 $filter_prefix = 'f1';

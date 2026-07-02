@@ -28,14 +28,14 @@ include 'include/sidebar.php';
     <div class="p-4 border-2 border-transparent mt-14">
         
         <!-- Header Halaman -->
-        <div class="mb-6 flex justify-between items-start gap-4">
+        <div class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Cetak Dokumen & Rapor</h1>
                 <p class="text-sm text-gray-500 mt-1">Kelola dan cetak sampul, biodata, rapor, serta leger nilai santri.</p>
             </div>
             
             <!-- Filter Kanan -->
-            <form id="formPencarian" class="flex items-center gap-3">
+            <form id="formPencarian" class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
                 <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
                     <?php 
                     $no_autosubmit = true;

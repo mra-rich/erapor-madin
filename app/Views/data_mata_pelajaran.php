@@ -41,7 +41,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
 
     <!-- Form Filter Kelas -->
     <div class="mb-6">
-      <form id="formPencarian" class="flex flex-col xl:flex-row gap-4 items-end bg-white p-5 rounded-lg border shadow-sm">
+      <form id="formPencarian" class="flex flex-wrap gap-4 items-end bg-white p-5 rounded-lg border shadow-sm">
           <?php
           $no_autosubmit = true;
           $id_kelas_selected = $id_kelas > 0 ? $id_kelas : 0;

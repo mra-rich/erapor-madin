@@ -111,7 +111,7 @@ if (isset($_GET['status'])) {
 
         <!-- Form Pencarian -->
         <div class="mb-6">
-            <form method="GET" class="flex flex-col xl:flex-row gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+            <form method="GET" class="flex flex-wrap gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
                 <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
                 <?php 
                 $no_autosubmit = true;
