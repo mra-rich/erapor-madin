@@ -41,35 +41,36 @@ include 'include/sidebar.php';
     <!-- Notifikasi Status -->
 
 
-    <!-- Form Pencarian Kelas -->
-    <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
-    <div class="mb-6">
-      <form method="GET" class="flex flex-col xl:flex-row gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-          <?php 
-          $id_kelas_selected = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
-          include 'include/filter_kelas.php'; 
-          ?>
-          <?php if($id_kelas_selected > 0): ?>
-              <div class="flex-none w-full xl:w-auto">
-                  <a href="data_santri" class="w-full bg-gray-100 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center font-bold shadow-sm">
-                      <i class="ri-refresh-line mr-2"></i> Reset
-                  </a>
-              </div>
-          <?php endif; ?>
-      </form>
-    </div>
-    <?php endif; ?>
+    <!-- Toolbar: Search kiri + Filter Kelas kanan -->
+    <div class="mb-4 flex flex-wrap gap-3 items-center bg-white px-4 py-3 rounded-lg border border-gray-200 shadow-sm">
 
-    <!-- Toolbar Tabel -->
-    <div class="mb-4 flex flex-wrap gap-2 justify-end items-center bg-gray-50 p-3 rounded-lg border">
-      <div class="mr-auto my-auto flex flex-wrap items-center gap-4">
-        <div class="relative w-full sm:w-64">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="ri-search-line text-gray-400"></i>
-          </div>
-          <input type="text" id="customSearchInput" class="bg-white border border-gray-200 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 py-1.5 shadow-sm transition-colors" placeholder="Cari santri...">
+        <!-- Search Box (Client-side) — di KIRI -->
+        <div class="relative w-full md:w-64">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="ri-search-line text-gray-400 text-base"></i>
+            </div>
+            <input type="text" id="customSearchInput" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full py-3 pl-11 pr-4 transition-all" placeholder="Cari santri...">
         </div>
-      </div>
+
+        <!-- Spacer -->
+        <div class="flex-1"></div>
+
+        <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
+        <!-- Filter Kelas — di KANAN, tanpa label -->
+        <?php $hide_labels = true; $no_autosubmit = false; ?>
+        <form method="GET" id="formFilter" class="flex flex-wrap md:flex-nowrap gap-2 items-center w-full lg:w-auto">
+            <?php 
+            $id_kelas_selected = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
+            include 'include/filter_kelas.php'; 
+            unset($hide_labels);
+            ?>
+            <?php if($id_kelas_selected > 0): ?>
+            <a href="data_arsip_santri" class="bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition-colors flex items-center text-sm font-medium whitespace-nowrap">
+                <i class="ri-refresh-line mr-1"></i> Reset
+            </a>
+            <?php endif; ?>
+        </form>
+        <?php endif; ?>
     </div>
     
     <style>
