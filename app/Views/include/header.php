@@ -56,24 +56,21 @@
 
 <body hx-boost="true" hx-indicator="#page-loader" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
-<!-- Premium Linear-style Loader -->
-<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-50/30 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300">
-    <div class="flex items-center gap-3 bg-white/90 backdrop-blur-xl px-5 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-slate-100 transform scale-95 transition-transform duration-300" id="loader-pill">
-        <!-- SVG Spinner Ultra-Fast -->
-        <div style="width: 1.25rem; height: 1.25rem; position: relative;">
-            <svg style="animation: premium-spin 0.4s linear infinite; width: 100%; height: 100%;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="#f1f5f9" stroke-width="3"></circle>
-                <path d="M12 2a10 10 0 0 1 10 10" stroke="#10b981" stroke-width="3" stroke-linecap="round"></path>
-            </svg>
-        </div>
-        <span class="text-slate-600 font-medium font-outfit text-sm tracking-wide">Memuat...</span>
-        <style>
-            @keyframes premium-spin {
-                to { transform: rotate(360deg); }
-            }
-            #page-loader.htmx-request #loader-pill {
-                transform: scale(1) !important;
-            }
-        </style>
+<!-- Custom 4-Dots Loader requested by User -->
+<div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#f8f9fa] opacity-0 pointer-events-none transition-opacity duration-300">
+    <div style="position: relative; width: 36px; height: 36px; animation: spin-4-dots 1.2s linear infinite;">
+        <div style="position: absolute; top: 0; left: 0; width: 14px; height: 14px; background-color: #6ee7b7; border-radius: 50%;"></div>
+        <div style="position: absolute; top: 0; right: 0; width: 14px; height: 14px; background-color: #a7f3d0; border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: 0; right: 0; width: 14px; height: 14px; background-color: #d1fae5; border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: 0; left: 0; width: 14px; height: 14px; background-color: #22c55e; border-radius: 50%;"></div>
     </div>
+    <style>
+        @keyframes spin-4-dots {
+            100% { transform: rotate(360deg); }
+        }
+        #page-loader.htmx-request {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    </style>
 </div>
