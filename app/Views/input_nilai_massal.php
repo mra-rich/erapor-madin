@@ -81,139 +81,180 @@ include 'include/navbar.php';
 include 'include/sidebar.php';
 ?>
 
-<div class="p-4 sm:ml-64 bg-slate-50 min-h-screen">
-    <div class="p-4 rounded-lg mt-14 max-w-7xl mx-auto">
-        <!-- Header -->
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row justify-between md:items-center">
-            <div class="flex items-center mb-4 md:mb-0">
-                <a href="penilaian_mapel" class="w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center mr-4 transition-colors">
-                    <i class="ri-arrow-left-line text-lg"></i>
-                </a>
-                <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Input Nilai: <?= htmlspecialchars($nama_mapel) ?></h2>
-                    <p class="text-sm text-slate-500 mt-1">Kelas <?= htmlspecialchars($nama_kelas_lengkap) ?> &bull; Semester <?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> (<?= htmlspecialchars($tahun_aktif) ?>)</p>
-                </div>
-            </div>
-            
-            <div class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl border border-emerald-100 text-sm font-semibold flex items-center">
-                <i class="ri-information-line mr-2"></i> Tersimpan otomatis ke Semester Aktif
-            </div>
+<div class="page-shell">
+  <div class="page-inner">
+
+    <!-- Page Header -->
+    <div class="mb-6 flex items-start gap-3">
+      <a href="penilaian_mapel" class="btn btn-ghost btn-sm mt-0.5 shrink-0 rounded-xl h-9 w-9 p-0">
+        <i class="ri-arrow-left-line text-base"></i>
+      </a>
+      <div class="flex-1 min-w-0">
+        <h1 class="page-title truncate">Input Nilai: <?= htmlspecialchars($nama_mapel) ?></h1>
+        <p class="page-subtitle">Kelas <?= htmlspecialchars($nama_kelas_lengkap) ?> &bull; Sem. <?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> &bull; <?= htmlspecialchars($tahun_aktif) ?></p>
+      </div>
+      <div class="hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-2 rounded-xl border border-emerald-100 text-xs font-semibold shrink-0">
+        <i class="ri-shield-check-line"></i> Tersimpan ke Semester Aktif
+      </div>
+    </div>
+
+    <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+    <div class="flex items-center gap-3 p-4 mb-5 text-sm text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200" role="alert">
+      <i class="ri-checkbox-circle-fill text-xl shrink-0"></i>
+      <div><span class="font-bold">Berhasil!</span> Semua nilai santri berhasil disimpan.</div>
+    </div>
+    <?php endif; ?>
+
+    <?php if (count($siswa_list) > 0):
+      $sudah_isi = count(array_filter($siswa_list, fn($s) => $s['nilai_angka'] !== null && $s['nilai_angka'] !== ''));
+      $belum_isi = count($siswa_list) - $sudah_isi;
+    ?>
+    <div class="grid grid-cols-3 gap-3 mb-5">
+      <div class="ui-card ui-card-body py-3 text-center">
+        <p class="text-2xl font-extrabold text-slate-800"><?= count($siswa_list) ?></p>
+        <p class="text-xs text-slate-500 mt-0.5">Total Santri</p>
+      </div>
+      <div class="ui-card ui-card-body py-3 text-center">
+        <p class="text-2xl font-extrabold text-emerald-600"><?= $sudah_isi ?></p>
+        <p class="text-xs text-slate-500 mt-0.5">Sudah Dinilai</p>
+      </div>
+      <div class="ui-card ui-card-body py-3 text-center">
+        <p class="text-2xl font-extrabold text-amber-500"><?= $belum_isi ?></p>
+        <p class="text-xs text-slate-500 mt-0.5">Belum Dinilai</p>
+      </div>
+    </div>
+    <?php endif; ?>
+
+    <form action="proses_nilai_massal" method="POST" id="formNilai">
+      <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+      <input type="hidden" name="id_mapel" value="<?= $id_mapel ?>">
+      <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
+
+      <?php if (count($siswa_list) > 0): ?>
+
+        <!-- DESKTOP TABLE (sm+) -->
+        <div class="hidden sm:block table-scroll-wrap mb-4">
+          <table class="ui-table">
+            <thead>
+              <tr>
+                <th class="w-12 text-center">No</th>
+                <th>Nama Santri</th>
+                <th class="w-28 text-center">Nilai (0-100)</th>
+                <th class="w-36 text-center">Predikat</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php $no = 1; foreach ($siswa_list as $siswa): ?>
+              <tr>
+                <td class="text-center text-slate-400 text-xs"><?= $no++ ?></td>
+                <td>
+                  <p class="font-semibold text-slate-800"><?= htmlspecialchars($siswa['nama']) ?></p>
+                  <?php if (!empty($siswa['nisn'])): ?><p class="text-xs text-slate-400"><?= htmlspecialchars($siswa['nisn']) ?></p><?php endif; ?>
+                </td>
+                <td class="text-center">
+                  <input type="number" name="nilai[<?= $siswa['id_siswa'] ?>]"
+                         value="<?= htmlspecialchars($siswa['nilai_angka'] ?? '') ?>"
+                         class="w-20 rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-center font-bold text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors input-nilai"
+                         min="0" max="100" oninput="convertNilai(this,'huruf_<?= $siswa['id_siswa'] ?>')" placeholder="-">
+                </td>
+                <td class="text-center">
+                  <input type="text" id="huruf_<?= $siswa['id_siswa'] ?>"
+                         class="w-28 rounded-lg bg-slate-100 px-2 py-2 text-xs text-center font-semibold text-slate-500 border-none pointer-events-none" readonly>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
         </div>
 
-        <?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-            <div class="p-4 mb-6 text-sm text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center" role="alert">
-                <i class="ri-checkbox-circle-fill text-xl mr-2"></i>
-                <div>
-                    <span class="font-bold">Berhasil!</span> Semua nilai santri untuk mata pelajaran ini berhasil disimpan.
-                </div>
+        <!-- MOBILE CARD LIST -->
+        <div class="sm:hidden space-y-2 mb-24">
+          <?php $no = 1; foreach ($siswa_list as $siswa): ?>
+          <div class="ui-card flex items-center gap-3 px-4 py-3">
+            <div class="shrink-0 w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-slate-800 text-sm truncate"><?= htmlspecialchars($siswa['nama']) ?></p>
+              <p id="m-huruf-<?= $siswa['id_siswa'] ?>" class="text-xs text-slate-400 mt-0.5 h-4"><?php
+                $v = $siswa['nilai_angka'] ?? '';
+                if ($v !== '' && $v !== null) {
+                  $vi = (int)$v;
+                  if ($vi >= 90) echo 'Amat Baik';
+                  elseif ($vi >= 80) echo 'Baik';
+                  elseif ($vi >= 70) echo 'Cukup';
+                  elseif ($vi >= 60) echo 'Kurang';
+                  else echo 'Sangat Kurang';
+                }
+              ?></p>
             </div>
-        <?php endif; ?>
+	            <div class="shrink-0 flex items-center">
+	              <input type="number" id="m-nilai-<?= $siswa['id_siswa'] ?>" name="nilai[<?= $siswa['id_siswa'] ?>]"
+	                     value="<?= htmlspecialchars($siswa['nilai_angka'] ?? '') ?>"
+	                     class="w-20 h-10 rounded-xl border border-slate-300 bg-white text-base text-center font-bold text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors input-nilai-mobile shadow-sm"
+	                     min="0" max="100" oninput="convertNilaiMobile(this,'m-huruf-<?= $siswa['id_siswa'] ?>')" placeholder="-">
+	            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
 
-        <!-- Form Input Massal -->
-        <form action="proses_nilai_massal" method="POST" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
-            <input type="hidden" name="id_mapel" value="<?= $id_mapel ?>">
-            <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                    <thead class="text-xs text-slate-700 uppercase bg-slate-50">
-                        <tr>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300">NISN</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300">Nama Santri</th>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-40">Nilai Angka</th>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-48">Nilai Huruf (Auto)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <?php if (count($siswa_list) > 0): ?>
-                            <?php $no = 1; foreach ($siswa_list as $siswa): ?>
-                            <tr class="hover:bg-slate-50 transition-colors group">
-                                <td class="py-2 px-6 text-center font-medium text-slate-900 border border-slate-300"><?= $no++ ?></td>
-                                <td class="py-2 px-6 border border-slate-300"><?= htmlspecialchars($siswa['nisn']) ?></td>
-                                <td class="py-2 px-6 font-bold text-slate-800 text-base border border-slate-300"><?= htmlspecialchars($siswa['nama']) ?></td>
-                                <td class="py-2 px-6 border border-slate-300">
-                                    <input type="number" 
-                                           name="nilai[<?= $siswa['id_siswa'] ?>]" 
-                                           value="<?= htmlspecialchars($siswa['nilai_angka'] ?? '') ?>" 
-                                           class="bg-white border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 text-center font-bold shadow-sm transition-colors input-nilai" 
-                                           min="0" max="100" 
-                                           oninput="convertNilai(this, 'huruf_<?= $siswa['id_siswa'] ?>')" 
-                                           placeholder="-">
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300">
-                                    <input type="text" 
-                                           id="huruf_<?= $siswa['id_siswa'] ?>" 
-                                           class="bg-slate-100 border-none text-slate-500 text-sm rounded-lg block w-full p-2.5 text-center font-semibold pointer-events-none" 
-                                           readonly>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="py-2 px-6 text-center text-slate-500 border border-slate-300">
-                                    <i class="ri-team-line text-4xl mb-2 text-slate-300"></i>
-                                    <p>Belum ada santri yang terdaftar di kelas ini.</p>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+        <!-- Sticky Save Bar -->
+        <div class="fixed sm:relative bottom-0 left-0 right-0 sm:bottom-auto z-20 bg-white/95 sm:bg-white backdrop-blur-sm border-t border-slate-200 px-4 py-3 sm:rounded-xl sm:mt-4 sm:shadow-sm">
+          <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto">
+            <p class="text-xs text-slate-400 hidden sm:block">Skala 0-100. Predikat dihitung otomatis.</p>
+            <div class="flex gap-2 w-full sm:w-auto">
+              <button type="button" id="btn-fill-all" class="btn btn-secondary btn-sm flex-1 sm:flex-none">
+                <i class="ri-magic-line"></i> Isi Semua
+              </button>
+              <button type="submit" class="btn btn-primary btn-sm flex-1 sm:flex-none">
+                <i class="ri-save-3-fill"></i> Simpan Nilai
+              </button>
             </div>
+          </div>
+        </div>
 
-            <?php if (count($siswa_list) > 0): ?>
-            <div class="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center sticky bottom-0 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                <p class="text-sm text-slate-500">Pastikan semua nilai terisi dengan benar (Skala 0-100).</p>
-                <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-xl text-sm px-6 py-2.5 shadow-lg shadow-blue-500/30 transition-all duration-200 inline-flex items-center">
-                    <i class="ri-save-3-fill mr-2"></i> Simpan Semua Nilai
-                </button>
-            </div>
-            <?php endif; ?>
-        </form>
-    </div>
+      <?php else: ?>
+        <div class="ui-empty-state">
+          <div class="ui-empty-icon"><i class="ri-team-line text-2xl"></i></div>
+          <h3 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Santri</h3>
+          <p class="text-sm text-slate-400">Belum ada santri terdaftar di kelas ini untuk tahun ajaran aktif.</p>
+          <a href="penilaian_mapel" class="btn btn-secondary mt-4 btn-sm"><i class="ri-arrow-left-line"></i> Kembali</a>
+        </div>
+      <?php endif; ?>
+    </form>
+  </div>
 </div>
 
 <script>
-// Fungsi untuk konversi angka ke huruf (sesuaikan dengan logic madrasah)
-function convertNilai(inputObj, idTarget) {
-    let nilai = parseInt(inputObj.value);
-    let target = document.getElementById(idTarget);
-    
-    if (isNaN(nilai) || inputObj.value === '') {
-        target.value = '';
-        return;
-    }
-    
-    if (nilai < 0) nilai = 0;
-    if (nilai > 100) nilai = 100;
-    inputObj.value = nilai; // Auto-correct
-    
-    let huruf = '';
-    // Gunakan standar yang ada di aplikasi (contoh umum)
-    if (nilai >= 90) {
-        huruf = 'Amat Baik';
-    } else if (nilai >= 80) {
-        huruf = 'Baik';
-    } else if (nilai >= 70) {
-        huruf = 'Cukup';
-    } else if (nilai >= 60) {
-        huruf = 'Kurang';
-    } else {
-        huruf = 'Sangat Kurang';
-    }
-    target.value = huruf;
+function getNilaiLabel(v) {
+  if (v === '' || isNaN(v)) return '';
+  v = Math.min(100, Math.max(0, parseInt(v)));
+  if (v >= 90) return 'Amat Baik';
+  if (v >= 80) return 'Baik';
+  if (v >= 70) return 'Cukup';
+  if (v >= 60) return 'Kurang';
+  return 'Sangat Kurang';
 }
-
-// Trigger konversi saat halaman dimuat untuk data yang sudah ada
-document.addEventListener("DOMContentLoaded", function() {
-    let inputs = document.querySelectorAll('.input-nilai');
-    inputs.forEach(function(input) {
-        if(input.value !== '') {
-            // Trigger input event
-            input.dispatchEvent(new Event('input'));
-        }
-    });
+function convertNilai(inp, id) {
+  if (inp.value !== '') inp.value = Math.min(100, Math.max(0, parseInt(inp.value)));
+  const el = document.getElementById(id);
+  if (el) el.value = getNilaiLabel(inp.value);
+}
+function convertNilaiMobile(inp, id) {
+  if (inp.value !== '') inp.value = Math.min(100, Math.max(0, parseInt(inp.value)));
+  const el = document.getElementById(id);
+  if (el) el.textContent = getNilaiLabel(inp.value);
+}
+document.getElementById('btn-fill-all')?.addEventListener('click', function() {
+  const val = prompt('Isi semua nilai kosong dengan angka (0-100):', '80');
+  if (val === null || val === '') return;
+  const n = Math.min(100, Math.max(0, parseInt(val)));
+  if (isNaN(n)) return;
+  document.querySelectorAll('.input-nilai, .input-nilai-mobile').forEach(function(inp) {
+    if (inp.value === '') { inp.value = n; inp.dispatchEvent(new Event('input')); }
+  });
+});
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.input-nilai').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
+  document.querySelectorAll('.input-nilai-mobile').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
 });
 </script>
 

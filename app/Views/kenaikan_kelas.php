@@ -24,7 +24,7 @@ while ($kelas = mysqli_fetch_assoc($resultKelasTujuan)) {
 // Ambil kelas asal (Wali Kelas hanya melihat kelasnya sendiri, Admin/Kepsek lihat semua)
 $queryKelasAsal = "";
 if ($_SESSION['peran'] === 'Wali Kelas') {
-    $id_pengguna = $_SESSION['id_pengguna'];
+    $id_pengguna = (int)$_SESSION['id_pengguna'];
     // id_wali_kelas di tabel kelas menyimpan id_pengguna langsung
     $queryKelasAsal = "SELECT id_kelas, nama_kelas FROM kelas WHERE id_wali_kelas = '$id_pengguna' ORDER BY nama_kelas";
 } else {
@@ -85,7 +85,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                             if ($asal = mysqli_fetch_assoc($q_asal)) {
                                 $asal_tingkat = intval($asal['id_tingkat']);
                                 $asal_nama_kelas = intval($asal['nama_kelas']);
-                                $asal_rombel = $asal['nama_rombel'];
+                                $asal_rombel = mysqli_real_escape_string($koneksi, $asal['nama_rombel']);
                                 
                                 // Skenario 1: Naik 1 angka di tingkat yang sama
                                 $tujuan_tingkat = $asal_tingkat;

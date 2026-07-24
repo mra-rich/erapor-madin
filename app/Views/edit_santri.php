@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_STUDENTS);
 include 'include/header.php';
 include 'include/navbar.php';
@@ -41,6 +42,7 @@ $siswa = mysqli_fetch_assoc($result);
         <?php endif; ?>
 
         <form action="proses_edit_siswa" method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
             <input type="hidden" name="id_siswa" value="<?php echo $siswa['id_siswa']; ?>">
 
             <label class="block mb-2 font-medium">NISN:</label>

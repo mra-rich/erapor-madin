@@ -1,11 +1,12 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_VIEW_REPORTS);
-require 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         $_SESSION['import_status'] = 'gagal';
         $_SESSION['import_msg'] = 'Token CSRF tidak valid.';
         header("Location: import_nilai.php");

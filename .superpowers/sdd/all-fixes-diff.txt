@@ -1,0 +1,158 @@
+diff --git a/app/Controllers/GuruController.php b/app/Controllers/GuruController.php
+index f11540d..db0c37e 100644
+--- a/app/Controllers/GuruController.php
++++ b/app/Controllers/GuruController.php
+@@ -233,7 +233,12 @@ class GuruController extends BaseController
+         echo '      </div>';
+         echo '      <p class="text-sm text-red-600 font-semibold mb-4">Tindakan ini akan membatasi akses login untuk pengguna bersangkutan.</p>';
+         echo '      <div class="flex space-x-4">';
+-        echo '        <a href="hapus_guru.php?id=' . $id . '&konfirmasi=ya&csrf_token=' . CsrfService::generate() . '" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700">Ya, Hapus Data</a>';
++        echo '        <form method="POST" action="hapus_guru.php" style="display:inline;">';
++        echo '          <input type="hidden" name="id" value="' . $id . '">';
++        echo '          <input type="hidden" name="konfirmasi" value="ya">';
++        echo '          <input type="hidden" name="csrf_token" value="' . CsrfService::generate() . '">';
++        echo '          <button type="submit" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700">Ya, Hapus Data</button>';
++        echo '        </form>';
+         echo '        <a href="data_guru.php" class="px-4 py-2 bg-gray-500 text-white font-medium rounded hover:bg-gray-600">Batal</a>';
+         echo '      </div>';
+         echo '    </div>';
+diff --git a/app/Views/data_guru.php b/app/Views/data_guru.php
+index c82352d..085e566 100644
+--- a/app/Views/data_guru.php
++++ b/app/Views/data_guru.php
+@@ -8,32 +8,48 @@ include 'include/navbar.php';
+ include 'include/sidebar.php';
+ 
+ // Pagination & Search
+-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
++$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
++$like = '%' . $search . '%';
+ $limit = 10; // Jumlah data per halaman
+ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+ if ($page < 1) $page = 1;
+ $offset = ($page - 1) * $limit;
+ 
+-$where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+-if (!empty($search)) {
+-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
+-}
++$base_where = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
++$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
+ 
+ // Hitung total data
+-$count_query = "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $where_clause";
+-$count_result = mysqli_query($koneksi, $count_query);
++if (!empty($search)) {
++    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where$search_condition");
++    mysqli_stmt_bind_param($count_stmt, 'sss', $like, $like, $like);
++} else {
++    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where");
++}
++mysqli_stmt_execute($count_stmt);
++$count_result = mysqli_stmt_get_result($count_stmt);
+ $total_data = mysqli_fetch_assoc($count_result)['total'];
++mysqli_stmt_close($count_stmt);
+ $total_pages = ceil($total_data / $limit);
+ 
+ // Ambil data pengguna dan guru dengan limit
+-$query = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
++$main_sql = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
+                  g.id_guru, g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
+           FROM pengguna p 
+           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
+-          $where_clause
+-          ORDER BY p.nama ASC
+-          LIMIT $limit OFFSET $offset";
+-$result = mysqli_query($koneksi, $query);
++          $base_where";
++if (!empty($search)) {
++    $main_sql .= $search_condition;
++}
++$main_sql .= " ORDER BY p.nama ASC LIMIT ? OFFSET ?";
++$stmt = mysqli_prepare($koneksi, $main_sql);
++if (!empty($search)) {
++    mysqli_stmt_bind_param($stmt, 'sssii', $like, $like, $like, $limit, $offset);
++} else {
++    mysqli_stmt_bind_param($stmt, 'ii', $limit, $offset);
++}
++mysqli_stmt_execute($stmt);
++$result = mysqli_stmt_get_result($stmt);
++mysqli_stmt_close($stmt);
+ ?>
+ 
+ <div class="p-4 sm:ml-64">
+@@ -396,7 +412,14 @@ $result = mysqli_query($koneksi, $query);
+             cancelButtonText: 'Batal'
+         }).then((result) => {
+             if (result.isConfirmed) {
+-                window.location.href = 'hapus_guru.php?konfirmasi=ya&csrf_token=<?php echo generate_csrf_token(); ?>&id=' + id;
++                var form = document.createElement('form');
++                form.method = 'POST';
++                form.action = 'hapus_guru.php';
++                var fId = document.createElement('input'); fId.type='hidden'; fId.name='id'; fId.value=id; form.appendChild(fId);
++                var fKon = document.createElement('input'); fKon.type='hidden'; fKon.name='konfirmasi'; fKon.value='ya'; form.appendChild(fKon);
++                var fCsrf = document.createElement('input'); fCsrf.type='hidden'; fCsrf.name='csrf_token'; fCsrf.value='<?php echo generate_csrf_token(); ?>'; form.appendChild(fCsrf);
++                document.body.appendChild(form);
++                form.submit();
+             }
+         });
+     }
+diff --git a/app/Views/export_guru.php b/app/Views/export_guru.php
+index ceb14e2..9bd55b9 100644
+--- a/app/Views/export_guru.php
++++ b/app/Views/export_guru.php
+@@ -30,22 +30,28 @@ $data = [
+     ]
+ ];
+ 
+-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
+-$where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+-
+-if (!empty($search)) {
+-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
+-}
++$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
++$like = '%' . $search . '%';
++$base_where = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
++$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
+ 
+ // Ambil data guru dan pengguna
+-$query = "SELECT p.username, p.peran, p.status, 
++$export_sql = "SELECT p.username, p.peran, p.status, 
+                  g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
+           FROM pengguna p 
+           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
+-          $where_clause
+-          ORDER BY p.nama ASC";
+-
+-$result = mysqli_query($koneksi, $query);
++          $base_where";
++if (!empty($search)) {
++    $export_sql .= $search_condition;
++}
++$export_sql .= " ORDER BY p.nama ASC";
++$stmt = mysqli_prepare($koneksi, $export_sql);
++if (!empty($search)) {
++    mysqli_stmt_bind_param($stmt, 'sss', $like, $like, $like);
++}
++mysqli_stmt_execute($stmt);
++$result = mysqli_stmt_get_result($stmt);
++mysqli_stmt_close($stmt);
+ 
+ $no = 1;
+ if ($result && mysqli_num_rows($result) > 0) {
+diff --git a/config/koneksi.php b/config/koneksi.php
+index e73c27d..f2e41ef 100644
+--- a/config/koneksi.php
++++ b/config/koneksi.php
+@@ -18,7 +18,9 @@ if ($ssl) {
+ $koneksi->real_connect($host, $user, $password, $database, $port, NULL, $ssl);
+ 
+ if ($koneksi->connect_error) {
+-    die("Koneksi gagal: " . $koneksi->connect_error);
++    error_log("DB connect failed: " . $koneksi->connect_error);
++    http_response_code(503);
++    die("Layanan tidak tersedia. Silakan coba lagi nanti.");
+ }
+ 
+ if (!class_exists('SysSession')) {

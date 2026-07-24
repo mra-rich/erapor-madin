@@ -38,7 +38,6 @@ class GuruController extends BaseController
 
         // Sediakan variabel global untuk backward-compat view legacy
         $koneksi = $this->db;
-        $db = new \QueryBuilder($koneksi);
 
         // Delegate ke view legacy (sudah include header/navbar/sidebar sendiri)
         require dirname(__DIR__) . '/Views/data_guru.php';

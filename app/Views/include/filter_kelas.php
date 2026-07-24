@@ -11,11 +11,12 @@ $rombel_selected = 0;
 $pfx = isset($filter_prefix) ? $filter_prefix : 'f1';
 $fname = isset($filter_name) ? $filter_name : 'kelas';
 
-if (isset($id_kelas_selected) && $id_kelas_selected > 0) {
+if (isset($id_kelas_selected) && (int)$id_kelas_selected > 0) {
+    $id_kelas_selected = (int)$id_kelas_selected;
     $rombel_selected = $id_kelas_selected;
     $q_info = mysqli_query($koneksi, "SELECT id_tingkat, nama_kelas FROM kelas WHERE id_kelas = $id_kelas_selected");
     if ($info = mysqli_fetch_assoc($q_info)) {
-        $id_tingkat_selected = $info['id_tingkat'];
+        $id_tingkat_selected = (int)$info['id_tingkat'];
         $nama_kelas_selected = $info['nama_kelas'];
     }
 }
@@ -59,10 +60,12 @@ if (isset($id_kelas_selected) && $id_kelas_selected > 0) {
         <option value="">-- Pilih Kelas Dulu --</option>
         <?php
         if ($id_tingkat_selected > 0 && $nama_kelas_selected !== '') {
-            $q_r = mysqli_query($koneksi, "SELECT id_kelas, nama_rombel FROM kelas WHERE id_tingkat = $id_tingkat_selected AND nama_kelas = '$nama_kelas_selected' AND status = 'Aktif' ORDER BY nama_rombel ASC");
+            $nama_kelas_esc = mysqli_real_escape_string($koneksi, $nama_kelas_selected);
+            $q_r = mysqli_query($koneksi, "SELECT id_kelas, nama_rombel FROM kelas WHERE id_tingkat = $id_tingkat_selected AND nama_kelas = '$nama_kelas_esc' AND status = 'Aktif' ORDER BY nama_rombel ASC");
             while ($r = mysqli_fetch_assoc($q_r)) {
                 $sel = ($r['id_kelas'] == $rombel_selected) ? 'selected' : '';
-                echo "<option value=\"{$r['id_kelas']}\" $sel>".htmlspecialchars($r['nama_rombel'])."</option>";
+                $r_id = (int)$r['id_kelas'];
+                echo "<option value=\"{$r_id}\" $sel>".htmlspecialchars($r['nama_rombel'])."</option>";
             }
         }
         ?>

@@ -24,107 +24,115 @@ include 'include/navbar.php';
 include 'include/sidebar.php';
 ?>
 
-<div class="p-4 sm:ml-64">
-    <div class="p-4 border-2 border-transparent mt-14">
+<div class="page-shell">
+  <div class="page-inner">
+
+    <!-- Page Header -->
+    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <h1 class="page-title">Cetak Dokumen & Rapor</h1>
+        <p class="page-subtitle">Kelola dan cetak sampul, biodata, rapor, serta leger nilai santri.</p>
+      </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="ui-card ui-card-body mb-6">
+      <form id="formPencarian" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+        <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
+          <div class="sm:col-span-2">
+            <?php 
+            $no_autosubmit = true;
+            $id_kelas_selected = isset($id_kelas) ? $id_kelas : (isset($kelas_aktif) ? $kelas_aktif : 0); 
+            include 'include/filter_kelas.php'; 
+            ?>
+          </div>
+        <?php else: ?>
+          <input type="hidden" name="kelas" id="kelas" value="<?= $wali_kelas_id ?>">
+          <div class="sm:col-span-2">
+            <label class="ui-label">Wali Kelas</label>
+            <input type="text" class="ui-input bg-slate-50 cursor-not-allowed font-medium text-slate-600" value="Kelas Anda" readonly>
+          </div>
+        <?php endif; ?>
         
-        <!-- Header Halaman -->
-        <div class="mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Cetak Dokumen & Rapor</h1>
-                <p class="text-sm text-gray-500 mt-1">Kelola dan cetak sampul, biodata, rapor, serta leger nilai santri.</p>
-            </div>
-            
-            <!-- Filter Kanan -->
-            <form id="formPencarian" class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
-                    <?php 
-                    $no_autosubmit = true;
-                    $id_kelas_selected = isset($id_kelas) ? $id_kelas : (isset($kelas_aktif) ? $kelas_aktif : 0); 
-                    include 'include/filter_kelas.php'; 
-                    ?>
-                <?php else: ?>
-                <input type="hidden" name="kelas" id="kelas" value="<?= $wali_kelas_id ?>">
-                <?php endif; ?>
-                
-                <div class="flex-1 w-full min-w-[150px]">
-                    <label class="block mb-2 text-sm font-bold text-gray-700">Semester</label>
-                    <select name="semester" id="semester"
-                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-3 shadow-sm font-semibold cursor-pointer">
-                        <option value="1">Ganjil</option>
-                        <option value="2">Genap</option>
-                    </select>
-                </div>
-            </form>
+        <div>
+          <label class="ui-label">Semester</label>
+          <select name="semester" id="semester" class="ui-select cursor-pointer font-semibold">
+            <option value="1">Ganjil</option>
+            <option value="2">Genap</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="ui-empty-state">
+      <div class="ui-empty-icon"><i class="ri-search-eye-line text-2xl"></i></div>
+      <h3 class="text-lg font-bold text-slate-700 mb-1">Pilih Kelas &amp; Semester</h3>
+      <p class="text-sm text-slate-400 max-w-sm">Silakan pilih kelas dan semester di atas untuk memuat daftar santri.</p>
+    </div>
+
+    <!-- Tabel & Card Container -->
+    <div id="tabel-container" class="hidden space-y-4">
+      
+      <!-- Toolbar / Action Bar -->
+      <div class="ui-card ui-card-body py-4 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <!-- Search -->
+        <div class="relative w-full md:w-72">
+          <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="searchInput" class="ui-input pl-9 py-2" placeholder="Cari santri...">
         </div>
 
-        <!-- State Kosong / Petunjuk Awal -->
-        <div id="empty-state" class="border border-blue-200 bg-blue-50/50 rounded-xl p-12 flex flex-col items-center justify-center text-center">
-            <div class="text-blue-500 mb-4">
-                <i class="ri-search-eye-line text-6xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-blue-800 mb-3">Pilih Kelas dan Semester</h3>
-            <p class="text-blue-600 max-w-lg text-sm leading-relaxed">
-                Silakan pilih <b>Kelas</b> dan <b>Semester</b> dari menu dropdown di atas, lalu klik tombol <b class="font-semibold text-blue-700">Tampilkan Daftar Santri</b> untuk mulai memuat daftar santri dan mencetak dokumen rapor.
-            </p>
+        <!-- Print All Actions -->
+        <div class="flex flex-wrap items-center gap-1.5 w-full md:w-auto justify-end">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wide mr-1 select-none w-full md:w-auto mb-1 md:mb-0"><i class="ri-printer-line"></i> Cetak Kelas:</span>
+          
+          <button onclick="bukaCetakKelas('cetak_sampul_kelas.php')" class="btn btn-secondary btn-sm" title="Cetak Semua Sampul">
+            <i class="ri-book-line"></i> Sampul
+          </button>
+          <button onclick="bukaCetakKelas('cetak_biodata_kelas.php')" class="btn btn-secondary btn-sm text-amber-600 border-amber-100 bg-amber-50 hover:bg-amber-100" title="Cetak Semua Identitas">
+            <i class="ri-user-line"></i> Identitas
+          </button>
+          <button onclick="bukaCetakKelas('preview_rapot_kelas.php')" class="btn btn-secondary btn-sm text-emerald-600 border-emerald-100 bg-emerald-50 hover:bg-emerald-100" title="Cetak Semua Rapor">
+            <i class="ri-file-text-line"></i> Rapor
+          </button>
+          <button onclick="bukaCetakKelas('preview_leger.php')" class="btn btn-secondary btn-sm" title="Preview Leger Nilai">
+            <i class="ri-table-2"></i> Leger
+          </button>
+          <button onclick="bukaCetakKelas('cetak_semua_kelas.php')" class="btn btn-primary btn-sm" title="Cetak Seluruh Laporan Sekaligus">
+            <i class="ri-printer-line"></i> Semua
+          </button>
         </div>
+      </div>
 
-        <!-- Tabel Daftar Siswa -->
-        <div id="tabel-container" class="hidden">
-            
-            <!-- Toolbar Cetak Kelas & Pencarian -->
-            <div class="mb-4 flex flex-wrap gap-2 justify-end items-center bg-gray-50 p-3 rounded-lg border">
-                
-                <div class="mr-auto my-auto flex flex-wrap items-center gap-4">
-                    <div class="relative w-96">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <i class="ri-search-line text-gray-400"></i>
-                        </div>
-                        <input type="text" id="searchInput" class="bg-white border border-gray-200 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 py-1.5 shadow-sm transition-colors" placeholder="Cari santri...">
-                    </div>
-                </div>
+      <!-- DESKTOP VIEW (sm+) -->
+      <div class="hidden sm:block table-scroll-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th class="w-12 text-center">No</th>
+              <th>NIS / NISN</th>
+              <th>Nama Santri</th>
+              <th>Tempat, Tgl Lahir</th>
+              <?php if ($semester_aktif_rapot == 2): ?>
+              <th class="w-36 text-center">Kenaikan</th>
+              <?php endif; ?>
+              <th class="text-center w-80">Aksi Dokumen</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-siswa">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
 
-                <div class="w-px h-8 bg-gray-200 mx-2"></div>
-                <span class="font-semibold text-gray-700 ml-2 mr-2"><i class="ri-printer-fill text-blue-600 mr-1"></i> Cetak Semua:</span>
-
-                <button onclick="bukaCetakKelas('cetak_sampul_kelas.php')" class="text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center transition-colors shadow-sm" title="Cetak Semua Sampul">
-                    <i class="ri-book-line mr-1.5"></i> Sampul
-                </button>
-                <button onclick="bukaCetakKelas('cetak_biodata_kelas.php')" class="text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 focus:ring-2 focus:ring-amber-300 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center transition-colors shadow-sm" title="Cetak Semua Identitas">
-                    <i class="ri-user-line mr-1.5"></i> Identitas
-                </button>
-                <button onclick="bukaCetakKelas('preview_rapot_kelas.php')" class="text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center transition-colors shadow-sm" title="Cetak Semua Rapor">
-                    <i class="ri-file-text-line mr-1.5"></i> Rapor
-                </button>
-                <button onclick="bukaCetakKelas('preview_leger.php')" class="text-gray-700 bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 focus:ring-2 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center inline-flex items-center transition-colors shadow-sm" title="Preview Leger Nilai">
-                    <i class="ri-table-2 mr-1.5"></i> Leger
-                </button>
-                <button onclick="bukaCetakKelas('cetak_semua_kelas.php')" class="text-white bg-blue-600 border border-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2 text-center inline-flex items-center shadow-md transition-all" title="Cetak Seluruh Laporan Sekaligus">
-                    <i class="ri-printer-line mr-1.5"></i> Semua
-                </button>
-            </div>
-
-            <div class="overflow-x-auto relative shadow-md sm:rounded-lg border border-gray-200">
-                <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 border-b">
-                        <tr>
-                            <th scope="col" class="py-3 px-6 text-center w-16">No</th>
-                            <th scope="col" class="py-3 px-6 w-48">NIS / NISN</th>
-                            <th scope="col" class="py-3 px-6">Nama Santri</th>
-                            <th scope="col" class="py-3 px-6">Tempat, Tgl Lahir</th>
-                            <?php if ($semester_aktif_rapot == 2): ?>
-                            <th scope="col" class="py-3 px-6">Status Kenaikan</th>
-                            <?php endif; ?>
-                            <th scope="col" class="py-3 px-6 text-center">Aksi Dokumen</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-siswa">
-                        <!-- Data siswa akan di-render di sini -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+      <!-- MOBILE VIEW (below sm) -->
+      <div class="sm:hidden space-y-2" id="mobile-card-list">
+        <!-- Rendered by JS -->
+      </div>
 
     </div>
+
+  </div>
 </div>
 
 <script>
@@ -140,88 +148,122 @@ include 'include/sidebar.php';
         }
 
         const tbody = document.getElementById('tbody-siswa');
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-8"><i class="ri-loader-4-line animate-spin text-4xl text-blue-500"></i><p class="mt-2 text-gray-500">Memuat data santri...</p></td></tr>';
+        const mobList = document.getElementById('mobile-card-list');
         
-        // Sembunyikan empty state, tampilkan tabel
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-slate-400"><i class="ri-loader-4-line animate-spin text-3xl block mb-2 text-emerald-500"></i>Memuat data santri...</td></tr>';
+        mobList.innerHTML = '<div class="text-center py-12 text-slate-400"><i class="ri-loader-4-line animate-spin text-3xl block mb-2 text-emerald-500"></i>Memuat data santri...</div>';
+
         document.getElementById('empty-state').classList.add('hidden');
         document.getElementById('tabel-container').classList.remove('hidden');
 
         try {
             const response = await fetch('get_siswa_rapot.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: 'kelas=' + encodeURIComponent(kelas)
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
+            if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
             
             if (data.status === 'success') {
                 tbody.innerHTML = '';
+                mobList.innerHTML = '';
                 
                 if (data.data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-500">Tidak ada data siswa di kelas ini.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-slate-400"><i class="ri-team-line text-2xl block mb-1"></i>Tidak ada santri di kelas ini.</td></tr>';
+                    mobList.innerHTML = '<div class="ui-empty-state"><i class="ri-team-line text-2xl mb-1 text-slate-300"></i><p class="text-slate-400 text-sm">Tidak ada santri di kelas ini.</p></div>';
                     return;
                 }
 
                 data.data.forEach((siswa, index) => {
+                    // 1. Render Desktop Table Row
                     const tr = document.createElement('tr');
-                    tr.className = 'bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-blue-50 transition duration-150';
+                    const hasKenaikanHeader = <?= $semester_aktif_rapot == 2 ? 'true' : 'false' ?>;
                     
+                    let kenaikanCol = '';
+                    if (hasKenaikanHeader) {
+                        const kStatus = siswa.status_kenaikan || 'Belum Diatur';
+                        let badge = 'badge-neutral';
+                        if (kStatus === 'Naik') badge = 'badge-success';
+                        if (kStatus === 'Tidak') badge = 'badge-danger';
+                        kenaikanCol = `<td class="text-center"><span class="badge ${badge}">${kStatus === 'Tidak' ? 'Tidak Naik' : kStatus}</span></td>`;
+                    }
+
                     tr.innerHTML = `
-                        <td class="py-3 px-6 text-center font-medium text-gray-900">${index + 1}</td>
-                        <td class="py-3 px-6 text-gray-700 whitespace-nowrap">
-                            ${siswa.nis} <span class="text-gray-400">/</span> ${siswa.nisn}
-                        </td>
-                        <td class="py-3 px-6 font-bold text-gray-900 uppercase">${siswa.nama}</td>
-                        <td class="py-3 px-6 text-gray-700">${siswa.tempat_lahir}, ${siswa.tanggal_lahir}</td>
-                        <?php if ($semester_aktif_rapot == 2): ?>
-                        <td class="py-3 px-6">
-                            <span class="${siswa.status_kenaikan === 'Naik' ? 'bg-emerald-100 text-emerald-800' : (siswa.status_kenaikan === 'Tidak' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')} text-xs font-medium px-2.5 py-0.5 rounded-full border border-gray-200">
-                                ${siswa.status_kenaikan === 'Tidak' ? 'Tidak Naik' : siswa.status_kenaikan}
-                            </span>
-                        </td>
-                        <?php endif; ?>
-                        <td class="py-3 px-6">
-                            <div class="flex justify-center gap-2">
-                                <button onclick="bukaCetak('cetak_sampul.php', ${siswa.id_siswa})" class="text-blue-700 bg-blue-50 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 focus:ring-2 focus:ring-blue-300 font-medium rounded-md text-xs px-2.5 py-1.5 text-center inline-flex items-center transition-colors" title="Cetak Sampul">
-                                    <i class="ri-book-line mr-1"></i> Sampul
+                        <td class="text-center text-slate-400 text-xs">${index + 1}</td>
+                        <td class="font-mono text-xs text-slate-500">${siswa.nis} <span class="text-slate-300">/</span> ${siswa.nisn}</td>
+                        <td><p class="font-semibold text-slate-800 uppercase">${siswa.nama}</p></td>
+                        <td class="text-slate-500 text-xs">${siswa.tempat_lahir}, ${siswa.tanggal_lahir}</td>
+                        ${kenaikanCol}
+                        <td>
+                            <div class="flex justify-center gap-1.5">
+                                <button onclick="bukaCetak('cetak_sampul.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs">
+                                    <i class="ri-book-line"></i> Sampul
                                 </button>
-                                <button onclick="bukaCetak('cetak_biodata.php', ${siswa.id_siswa})" class="text-amber-700 bg-amber-50 border border-amber-200 hover:bg-amber-100 hover:border-amber-300 focus:ring-2 focus:ring-amber-300 font-medium rounded-md text-xs px-2.5 py-1.5 text-center inline-flex items-center transition-colors" title="Cetak Identitas">
-                                    <i class="ri-user-line mr-1"></i> Identitas
+                                <button onclick="bukaCetak('cetak_biodata.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100">
+                                    <i class="ri-user-line"></i> Identitas
                                 </button>
-                                <button onclick="bukaCetak('preview_rapot.php', ${siswa.id_siswa})" class="text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 focus:ring-2 focus:ring-emerald-300 font-medium rounded-md text-xs px-2.5 py-1.5 text-center inline-flex items-center transition-colors" title="Preview Rapor">
-                                    <i class="ri-file-text-line mr-1"></i> Rapor
+                                <button onclick="bukaCetak('preview_rapot.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+                                    <i class="ri-file-text-line"></i> Rapor
                                 </button>
-                                <button onclick="bukaCetak('cetak_semua.php', ${siswa.id_siswa})" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 font-medium rounded-md text-xs px-3 py-1.5 text-center inline-flex items-center shadow-sm transition-colors" title="Cetak Semua Sekaligus">
-                                    <i class="ri-printer-line mr-1"></i> Semua
+                                <button onclick="bukaCetak('cetak_semua.php', ${siswa.id_siswa})" class="btn btn-primary btn-sm px-3 py-1.5 text-xs">
+                                    <i class="ri-printer-line"></i> Semua
                                 </button>
                             </div>
                         </td>
                     `;
                     tbody.appendChild(tr);
+
+                    // 2. Render Mobile Card
+                    const card = document.createElement('div');
+                    card.className = 'ui-card px-4 py-3 space-y-3';
+                    
+                    const inisial = siswa.nama.charAt(0).toUpperCase();
+                    const colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
+                    const color = colors[inisial.charCodeAt(0) % 5];
+                    
+                    let kBadgeMobile = '';
+                    if (hasKenaikanHeader && siswa.status_kenaikan) {
+                        let badge = 'badge-neutral';
+                        if (siswa.status_kenaikan === 'Naik') badge = 'badge-success';
+                        if (siswa.status_kenaikan === 'Tidak') badge = 'badge-danger';
+                        kBadgeMobile = `<span class="badge ${badge} text-[10px]">${siswa.status_kenaikan === 'Tidak' ? 'Tidak Naik' : siswa.status_kenaikan}</span>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="shrink-0 w-9 h-9 rounded-full ${color} flex items-center justify-center text-xs font-bold">${inisial}</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-slate-800 text-sm truncate uppercase">${siswa.nama}</p>
+                                <p class="text-[10px] text-slate-400 font-mono mt-0.5">${siswa.nis} / ${siswa.nisn}</p>
+                            </div>
+                            ${kBadgeMobile}
+                        </div>
+                        <div class="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2">
+                            <button onclick="bukaCetak('cetak_sampul.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs flex justify-center"><i class="ri-book-line"></i> Sampul</button>
+                            <button onclick="bukaCetak('cetak_biodata.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100 flex justify-center"><i class="ri-user-line"></i> Identitas</button>
+                            <button onclick="bukaCetak('preview_rapot.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 flex justify-center"><i class="ri-file-text-line"></i> Rapor</button>
+                            <button onclick="bukaCetak('cetak_semua.php', ${siswa.id_siswa})" class="btn btn-primary btn-sm py-2 text-xs flex justify-center"><i class="ri-printer-line"></i> Semua</button>
+                        </div>
+                    `;
+                    mobList.appendChild(card);
                 });
             } else {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500"><i class="ri-error-warning-line mr-2"></i> Error: ${data.error || 'Gagal memuat data'}</td></tr>`;
+                mobList.innerHTML = `<div class="ui-card p-6 text-center text-red-500"><i class="ri-error-warning-line mr-2"></i> Error: ${data.error || 'Gagal memuat data'}</div>`;
             }
-
         } catch (error) {
             console.error('Error:', error);
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-red-500"><i class="ri-error-warning-line mr-2"></i> Terjadi kesalahan jaringan saat mengambil data santri.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-red-500"><i class="ri-error-warning-line mr-2"></i> Terjadi kesalahan jaringan.</td></tr>';
+            mobList.innerHTML = '<div class="ui-card p-6 text-center text-red-500"><i class="ri-error-warning-line mr-2"></i> Terjadi kesalahan jaringan.</div>';
         }
     }
 
     function bukaCetak(url, idSiswa) {
         const semester = document.getElementById('semester').value;
         let fullUrl = url + '?id=' + idSiswa;
-        if (semester) {
-            fullUrl += '&smt=' + semester;
-        }
+        if (semester) fullUrl += '&smt=' + semester;
         window.open(fullUrl, '_blank', 'width=900,height=600');
     }
 
@@ -236,72 +278,45 @@ include 'include/sidebar.php';
             return;
         }
         
-        // Membuka file cetak asli tapi menggunakan parameter kelas=... 
         let fileAsli = url.replace('_kelas', '');
         let fullUrl = fileAsli + '?kelas=' + kelas;
-        if (semester) {
-            fullUrl += '&smt=' + semester;
-        }
+        if (semester) fullUrl += '&smt=' + semester;
         window.open(fullUrl, '_blank', 'width=900,height=600');
     }
 
-    // Fitur Live Search Santri
+    // Live Search
     document.getElementById('searchInput').addEventListener('keyup', function() {
         const searchValue = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#tbody-siswa tr');
-        let hasVisibleRow = false;
         
+        // Filter Desktop Table Rows
+        const rows = document.querySelectorAll('#tbody-siswa tr');
         rows.forEach(row => {
-            // Abaikan row "Tidak ada data siswa" atau "Loading" jika ada
             if(row.querySelector('td').colSpan > 1) return;
-
             const nama = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
             const nis = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
-            
-            if (nama.includes(searchValue) || nis.includes(searchValue)) {
-                row.style.display = '';
-                hasVisibleRow = true;
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = (nama.includes(searchValue) || nis.includes(searchValue)) ? '' : 'none';
         });
 
-        // Menampilkan pesan jika tidak ada data yang cocok
-        const existingNoDataRow = document.getElementById('no-search-result-row');
-        if (!hasVisibleRow && rows.length > 0 && !(rows.length === 1 && rows[0].querySelector('td').colSpan > 1)) {
-            if (!existingNoDataRow) {
-                const noDataRow = document.createElement('tr');
-                noDataRow.id = 'no-search-result-row';
-                noDataRow.innerHTML = '<td colspan="5" class="text-center py-6 text-gray-500"><i class="ri-file-search-line text-xl mr-2 align-middle"></i> Tidak ada santri yang cocok dengan pencarian Anda.</td>';
-                document.getElementById('tbody-siswa').appendChild(noDataRow);
-            } else {
-                existingNoDataRow.style.display = '';
-            }
-        } else if (existingNoDataRow) {
-            existingNoDataRow.style.display = 'none';
-        }
+        // Filter Mobile Cards
+        const cards = document.querySelectorAll('#mobile-card-list > div');
+        cards.forEach(card => {
+            const nama = card.querySelector('p.font-semibold')?.textContent.toLowerCase() || '';
+            const nis = card.querySelector('p.text-slate-400')?.textContent.toLowerCase() || '';
+            card.style.display = (nama.includes(searchValue) || nis.includes(searchValue)) ? '' : 'none';
+        });
     });
 
-    // Auto-load data jika kelas sudah terpilih (khususnya untuk Wali Kelas)
+    // Auto-load & Event Listeners
     (function() {
         const selectKelas = document.querySelector('select[name="kelas"]');
         const hiddenKelas = document.getElementById('kelas');
         const selectSemester = document.getElementById('semester');
-        
         const kelasVal = selectKelas ? selectKelas.value : (hiddenKelas ? hiddenKelas.value : '');
         
-        if (kelasVal) {
-            // beri sedikit delay agar elemen DOM benar-benar siap
-            setTimeout(tampilkanSiswa, 100);
-        }
+        if (kelasVal) setTimeout(tampilkanSiswa, 100);
 
-        // Trigger pencarian otomatis saat dropdown berubah
-        if (selectKelas) {
-            selectKelas.addEventListener('change', tampilkanSiswa);
-        }
-        if (selectSemester) {
-            selectSemester.addEventListener('change', tampilkanSiswa);
-        }
+        if (selectKelas) selectKelas.addEventListener('change', tampilkanSiswa);
+        if (selectSemester) selectSemester.addEventListener('change', tampilkanSiswa);
     })();
 </script>
 

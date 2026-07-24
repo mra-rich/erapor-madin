@@ -1,11 +1,19 @@
 <?php
-// echo "<pre>";
-// var_dump($_POST);
-// echo "</pre>";
-// exit;
 require_once 'koneksi.php';
+require_once 'cek_sesi.php';
+require_once 'csrf.php';
+restrict_roles(RBAC_MANAGE_GRADES);
 
-// Aktifkan mode error untuk debugging
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header("Location: data_nilai.php");
+    exit;
+}
+
+if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+    die("CSRF token validation failed.");
+}
+
+// Lempar exception saat query gagal agar transaksi ter-rollback (ditangani di catch)
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 try {

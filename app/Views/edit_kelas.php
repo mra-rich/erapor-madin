@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_SUPER_ADMIN);
 
 // Cek apakah ada ID kelas
@@ -12,8 +13,10 @@ if (!isset($_GET['id'])) {
 $id_kelas = (int)$_GET['id'];
 
 // Ambil data kelas
-$query = "SELECT * FROM kelas WHERE id_kelas = $id_kelas";
-$result = mysqli_query($koneksi, $query);
+$stmt = mysqli_prepare($koneksi, "SELECT * FROM kelas WHERE id_kelas = ?");
+mysqli_stmt_bind_param($stmt, "i", $id_kelas);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 $kelas = mysqli_fetch_assoc($result);
 
 if (!$kelas) {
@@ -56,6 +59,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                 <?php endif; ?>
 
                 <form action="proses_edit_kelas" method="POST" class="space-y-5">
+                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                     <input type="hidden" name="id_kelas" value="<?php echo $kelas['id_kelas']; ?>">
 
                     <div>
@@ -89,7 +93,9 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                             $wali_result = mysqli_query($koneksi, $wali_query);
                             while ($wali = mysqli_fetch_assoc($wali_result)) {
                                 $selected = ($wali['id_pengguna'] == $kelas['id_wali_kelas']) ? 'selected' : '';
-                                echo "<option value='{$wali['id_pengguna']}' {$selected}>{$wali['nama']}</option>";
+                                $wali_id = (int)$wali['id_pengguna'];
+                                $wali_nama = htmlspecialchars($wali['nama'], ENT_QUOTES, 'UTF-8');
+                                echo "<option value='{$wali_id}' {$selected}>{$wali_nama}</option>";
                             }
                             ?>
                         </select>

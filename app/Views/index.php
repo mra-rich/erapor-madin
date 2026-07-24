@@ -7,23 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>E-Rapor | MRA Digital Solution</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        outfit: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        emerald: { 50: '#ecfdf5', 400: '#34d399', 500: '#10b981', 600: '#059669', 900: '#064e3b' }
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link href="css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -54,6 +38,16 @@
             border-color: #10b981;
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
+
+        /* Fallback layout saat CSS build gagal dimuat. */
+        .login-shell { width: min(100% - 2rem, 64rem); margin: 2rem auto; display: flex; overflow: hidden; border-radius: 2rem; }
+        .login-visual { width: 41.666667%; padding: 3rem; }
+        .login-panel { width: 58.333333%; padding: 5rem; }
+        @media (max-width: 1023px) {
+            .login-shell { width: calc(100% - 2rem); }
+            .login-visual { display: none; }
+            .login-panel { width: 100%; padding: 2rem; }
+        }
     </style>
 </head>
 
@@ -63,10 +57,10 @@
     <div class="absolute inset-0 bg-emerald-900/40 mix-blend-multiply"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-gray-900/60 to-black/30"></div>
 
-    <div class="w-full max-w-5xl flex flex-col lg:flex-row rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10 m-4 sm:m-8 border border-white/20">
+    <div class="login-shell w-full max-w-5xl flex flex-col lg:flex-row rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10 m-4 sm:m-8 border border-white/20">
         
         <!-- Bagian Kiri: Visual Eksklusif (Dark Glass) -->
-        <div class="hidden lg:flex lg:w-5/12 dark-glass relative flex-col items-center justify-center p-12 text-center overflow-hidden">
+        <div class="login-visual hidden lg:flex lg:w-5/12 dark-glass relative flex-col items-center justify-center p-12 text-center overflow-hidden">
             <div class="relative z-10 text-white">
                 <div class="inline-flex items-center justify-center w-28 h-28 bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 mb-8 shadow-2xl relative group">
                     <img src="assets/img/logo.png" alt="Logo" class="w-16 h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] relative z-10 transform group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'" />
@@ -86,7 +80,7 @@
         </div>
 
         <!-- Bagian Kanan: Form Login (White Glass - TERANG & JELAS) -->
-        <div class="w-full lg:w-7/12 p-8 sm:p-12 lg:p-20 relative flex items-center justify-center white-glass">
+        <div class="login-panel w-full lg:w-7/12 p-8 sm:p-12 lg:p-20 relative flex items-center justify-center white-glass">
             <div class="w-full max-w-md relative z-10">
                 
                 <div class="lg:hidden text-center mb-10">

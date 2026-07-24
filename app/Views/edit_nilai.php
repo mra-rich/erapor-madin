@@ -10,7 +10,7 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$id_transaksi = $_GET['id'];
+$id_transaksi = (int)$_GET['id'];
 
 // Ambil data transaksi
 $query = "SELECT 
@@ -57,7 +57,7 @@ $resultCatatan = mysqli_query($koneksi, $queryCatatan);
 $catatan = mysqli_fetch_assoc($resultCatatan);
 
 // Ambil mata pelajaran untuk kelas ini
-$id_kelas = $data['id_kelas'];
+$id_kelas = (int)$data['id_kelas'];
 $queryMapel = "SELECT id_mapel, nama_mapel, kategori FROM mata_pelajaran WHERE id_kelas = '$id_kelas' ORDER BY kategori";
 $resultMapel = mysqli_query($koneksi, $queryMapel);
 $mapelByKategori = [];

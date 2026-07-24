@@ -1,5 +1,7 @@
 <?php
 require 'koneksi.php';
+require 'cek_sesi.php';
+restrict_roles(RBAC_MANAGE_GRADES);
 
 header('Content-Type: application/json');
 

@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
 
 $guru_header_raw = ['NO', 'NIP / NIK', 'NAMA_LENGKAP', 'JENIS_KELAMIN (L/P)', 'TEMPAT_LAHIR', 'TANGGAL_LAHIR (YYYY-MM-DD)', 'ALAMAT', 'NO_HP', 'PERAN (Guru/Wali Kelas/Admin)', 'USERNAME (Opsional)'];
 
@@ -24,6 +24,7 @@ foreach ([$sample_data1, $sample_data2] as $row) {
 }
 
 $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($guru_data);
+if (ob_get_length()) ob_end_clean();
 $xlsx->downloadAs('template_guru.xlsx');
 exit;
 ?>

@@ -3,9 +3,9 @@ require 'koneksi.php';
 require 'cek_sesi.php';
 restrict_roles(RBAC_VIEW_REPORTS);
 
-$selectedKelas = isset($_GET['kelas']) ? $_GET['kelas'] : null;
-$selectedSemester = isset($_GET['smt']) ? $_GET['smt'] : (isset($_GET['semester']) ? $_GET['semester'] : $_SESSION['semester']);
-$tahun_ajaran = $_SESSION['tahun_ajaran'];
+$selectedKelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
+$selectedSemester = isset($_GET['smt']) ? (int)$_GET['smt'] : (isset($_GET['semester']) ? (int)$_GET['semester'] : (int)$_SESSION['semester']);
+$tahun_ajaran = mysqli_real_escape_string($koneksi, $_SESSION['tahun_ajaran']);
 
 if (!$selectedKelas) {
     die("Kelas tidak dipilih.");
@@ -84,7 +84,13 @@ usort($siswaData, function($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preview Leger Nilai - <?= htmlspecialchars($nama_kelas) ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?php
+      $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+      $assetBase = rtrim($scriptDir, '/');
+      if (str_contains($assetBase, '/public')) { $assetBase = dirname($assetBase); }
+      $assetBase = rtrim($assetBase, '/') . '/';
+    ?>
+    <link href="<?= $assetBase ?>css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         body { background-color: #f3f4f6; }

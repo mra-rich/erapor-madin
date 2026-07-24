@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_MASTER_DATA);
 
 if (!$koneksi) {
@@ -8,6 +9,9 @@ if (!$koneksi) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        die("CSRF token validation failed.");
+    }
     $tingkatan = trim($_POST['tingkatan'] ?? '');
     $angka_kelas = trim($_POST['angka_kelas'] ?? '');
     $nama_rombel = trim($_POST['rombel'] ?? '');

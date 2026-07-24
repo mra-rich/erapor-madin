@@ -1,12 +1,13 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 require_once 'logger.php';
 restrict_roles(RBAC_MANAGE_MASTER_DATA);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validasi CSRF Token
-    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
         die("Validasi token gagal.");
     }
 

@@ -49,7 +49,13 @@ $pengaturan = mysqli_fetch_assoc($q_set);
 <head>
     <meta charset="UTF-8">
     <title>Buku Induk - <?= htmlspecialchars($siswa['nama']); ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?php
+      $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+      $assetBase = rtrim($scriptDir, '/');
+      if (str_contains($assetBase, '/public')) { $assetBase = dirname($assetBase); }
+      $assetBase = rtrim($assetBase, '/') . '/';
+    ?>
+    <link href="<?= $assetBase ?>css/style.css" rel="stylesheet">
     <style>
         @media print {
             @page { size: A4; margin: 20mm; }

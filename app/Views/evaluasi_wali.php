@@ -1,12 +1,12 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_GRADES);
 
 $id_pengguna = $_SESSION['id_pengguna'] ?? 0;
 $peran = $_SESSION['peran'] ?? '';
 
-// Halaman ini khusus Wali Kelas (atau Admin yang mewakili)
 if (!in_array($peran, ['Wali Kelas', 'Admin'])) {
     die("Akses ditolak. Halaman ini khusus Wali Kelas atau Admin.");
 }
@@ -17,10 +17,10 @@ $data_pengaturan = mysqli_fetch_assoc($q_pengaturan);
 $tahun_aktif = $data_pengaturan['tahun_ajaran'] ?? '2024/2025';
 $semester_aktif = $data_pengaturan['semester'] ?? 1;
 
-// Cari kelas binaan untuk wali kelas ini
+// Cari kelas binaan
 $query_kelas = "SELECT k.*, t.nama_tingkat FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat WHERE id_wali_kelas = $id_pengguna LIMIT 1";
 if ($peran == 'Admin') {
-    $query_kelas = "SELECT k.*, t.nama_tingkat FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat LIMIT 1"; // Fallback Admin
+    $query_kelas = "SELECT k.*, t.nama_tingkat FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat LIMIT 1";
 }
 $result_kelas = mysqli_query($koneksi, $query_kelas);
 $kelas_binaan = mysqli_fetch_assoc($result_kelas);
@@ -29,7 +29,7 @@ if (!$kelas_binaan) {
     include 'include/header.php';
     include 'include/navbar.php';
     include 'include/sidebar.php';
-    echo '<div class="p-4 sm:ml-64 bg-slate-50 min-h-screen"><div class="p-4 rounded-lg mt-14 max-w-7xl mx-auto"><div class="bg-red-50 text-red-700 p-4 rounded-xl border border-red-100">Anda belum ditetapkan sebagai Wali Kelas.</div></div></div>';
+    echo '<div class="page-shell"><div class="page-inner"><div class="ui-empty-state"><div class="ui-empty-icon"><i class="ri-error-warning-line text-2xl text-red-500"></i></div><h3 class="text-lg font-bold text-slate-700">Akses Dibatasi</h3><p class="text-sm text-slate-400">Anda belum ditetapkan sebagai Wali Kelas di kelas binaan mana pun.</p></div></div></div>';
     include 'include/footer.php';
     exit;
 }
@@ -42,7 +42,7 @@ $singkatan_map = ['Ibtida\'iyah' => 'MIF', 'Tsanawiyah' => 'MTsF', 'Aliyah' => '
 $singkatan = $singkatan_map[$tingkatan_kategori] ?? $tingkatan_kategori;
 $nama_kelas_lengkap = trim($tingkatan_angka . ' ' . $rombel_display . $singkatan);
 
-// Ambil daftar siswa beserta datanya
+// Ambil daftar santri
 $query_siswa = "
     SELECT 
         s.id_siswa, s.nama, s.nisn, 
@@ -62,187 +62,332 @@ $query_siswa = "
     ORDER BY s.nama ASC
 ";
 $result_siswa = mysqli_query($koneksi, $query_siswa);
+$siswa_list = [];
+while ($row = mysqli_fetch_assoc($result_siswa)) {
+    $siswa_list[] = $row;
+}
 
 include 'include/header.php';
 include 'include/navbar.php';
 include 'include/sidebar.php';
 ?>
 
-<div class="p-4 sm:ml-64 bg-slate-50 min-h-screen">
-    <div class="p-4 rounded-lg mt-14 max-w-full mx-auto">
-        
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6 flex flex-col md:flex-row justify-between md:items-center">
-            <div class="flex items-center mb-4 md:mb-0">
-                <div>
-                    <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Evaluasi Kelas Binaan</h2>
-                    <p class="text-sm text-slate-500 mt-1">
-                        Kelas: <span class="font-bold text-indigo-600"><?= htmlspecialchars($nama_kelas_lengkap) ?></span> &bull; 
-                        Semester: <span class="font-bold text-emerald-600"><?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> (<?= htmlspecialchars($tahun_aktif) ?>)</span>
-                    </p>
-                </div>
-            </div>
+<div class="page-shell">
+  <div class="page-inner">
+
+    <!-- Page Header -->
+    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h1 class="page-title">Evaluasi Kelas Binaan</h1>
+        <p class="page-subtitle">
+          Kelas <span class="font-bold text-indigo-600"><?= htmlspecialchars($nama_kelas_lengkap) ?></span>
+          &bull; Sem. <?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> (<?= htmlspecialchars($tahun_aktif) ?>)
+        </p>
+      </div>
+      <div class="bg-emerald-50 text-emerald-700 px-3 py-2 rounded-xl border border-emerald-100 text-xs font-semibold flex items-center gap-1.5 shrink-0 self-stretch sm:self-auto justify-center">
+        <i class="ri-shield-check-line"></i> Auto-save aktif (Perubahan disimpan otomatis)
+      </div>
+    </div>
+
+    <form action="proses_evaluasi_wali" method="POST" id="formEvaluasi">
+      <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
+      <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
+
+      <?php if (count($siswa_list) > 0): ?>
+
+        <!-- ═══ DESKTOP VIEW: FULL TABLE (sm+) ═══ -->
+        <div class="hidden sm:block table-scroll-wrap">
+          <table class="ui-table">
+            <thead>
+              <tr>
+                <th rowspan="2" class="w-10 text-center border-r border-slate-200">No</th>
+                <th rowspan="2" class="border-r border-slate-200">Nama Santri</th>
+                <th colspan="4" class="text-center bg-blue-50/50 border-r border-b border-slate-200">Kepribadian</th>
+                <th colspan="4" class="text-center bg-emerald-50/50 border-r border-b border-slate-200">Ekstrakurikuler</th>
+                <th colspan="3" class="text-center bg-amber-50/50 border-r border-b border-slate-200">Absensi</th>
+                <th rowspan="2" class="text-center">Catatan</th>
+              </tr>
+              <tr>
+                <!-- Kepribadian -->
+                <th class="bg-blue-50/20 text-center border-r border-slate-100">Kelakuan</th>
+                <th class="bg-blue-50/20 text-center border-r border-slate-100">Kerajinan</th>
+                <th class="bg-blue-50/20 text-center border-r border-slate-100">Kerapian</th>
+                <th class="bg-blue-50/20 text-center border-r border-slate-200">Kedisiplinan</th>
+                <!-- Ekskul -->
+                <th class="bg-emerald-50/20 text-center border-r border-slate-100">Al-Qur'an</th>
+                <th class="bg-emerald-50/20 text-center border-r border-slate-100">Kitab</th>
+                <th class="bg-emerald-50/20 text-center border-r border-slate-100">Muhafadhoh</th>
+                <th class="bg-emerald-50/20 text-center border-r border-slate-200">Kaligrafi</th>
+                <!-- Absen -->
+                <th class="bg-amber-50/20 text-center border-r border-slate-100" title="Sakit">S</th>
+                <th class="bg-amber-50/20 text-center border-r border-slate-100" title="Izin">I</th>
+                <th class="bg-amber-50/20 text-center border-r border-slate-200" title="Alpha">A</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php 
+              $no = 1;
+              $options_kepribadian = ['A' => 'Amat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
+              
+              function getColorClass($val) {
+                  switch($val) {
+                      case 'C': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+                      case 'D': return 'bg-red-50 text-red-700 border-red-200';
+                      default: return 'bg-white text-slate-700 border-slate-200';
+                  }
+              }
+
+              foreach ($siswa_list as $row): 
+                $id_s = $row['id_siswa'];
+                $kelakuan = $row['kelakuan'] ?: 'B';
+                $kerajinan = $row['kerajinan'] ?: 'B';
+                $kerapian = $row['kerapian'] ?: 'B';
+                $kedisiplinan = $row['kedisiplinan'] ?: 'B';
+                $baca_quran = $row['baca_quran'] ?: 'B';
+                $baca_kitab = $row['baca_kitab'] ?: 'B';
+                $muhafadhoh = $row['muhafadhoh'] ?: 'B';
+                $kaligrafi = $row['kaligrafi'] ?: 'B';
+                $sakit = $row['sakit'] ?? 0;
+                $izin = $row['izin'] ?? 0;
+                $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
+              ?>
+              <tr>
+                <td class="text-center text-slate-400 text-xs border-r border-slate-200"><?= $no++ ?></td>
+                <td class="border-r border-slate-200 font-semibold text-slate-800 text-xs">
+                  <p class="truncate max-w-[150px] uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                  <p class="text-[9px] font-normal font-mono text-slate-400 mt-0.5"><?= htmlspecialchars($row['nisn']) ?></p>
+                  <input type="hidden" name="id_siswa[]" value="<?= $id_s ?>">
+                </td>
+                <!-- Kepribadian -->
+                <td class="p-1 border-r border-slate-100">
+                  <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kelakuan) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-100">
+                  <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kerajinan) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-100">
+                  <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kerapian) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-200">
+                  <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <!-- Ekskul -->
+                <td class="p-1 border-r border-slate-100">
+                  <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($baca_quran) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-100">
+                  <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-100">
+                  <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <td class="p-1 border-r border-slate-200">
+                  <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
+                    <?php foreach($options_kepribadian as $val => $label): ?>
+                      <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </td>
+                <!-- Absen -->
+                <td class="p-1 border-r border-slate-100">
+                  <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="ui-input py-1 px-0.5 text-center font-bold text-xs w-10">
+                </td>
+                <td class="p-1 border-r border-slate-100">
+                  <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="ui-input py-1 px-0.5 text-center font-bold text-xs w-10">
+                </td>
+                <td class="p-1 border-r border-slate-200">
+                  <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="ui-input py-1 px-0.5 text-center font-bold text-xs w-10">
+                </td>
+                <!-- Catatan -->
+                <td class="p-1">
+                  <textarea name="catatan[<?= $id_s ?>]" rows="1" class="ui-textarea min-h-8 py-1 text-xs" placeholder="Catatan..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
         </div>
 
-        <form action="proses_evaluasi_wali" method="POST" id="formEvaluasi">
-            <input type="hidden" name="id_kelas" value="<?= $id_kelas ?>">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-6">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
-                            <tr>
-                                <th rowspan="2" class="py-3 px-4 font-bold text-center border border-slate-300">No</th>
-                                <th rowspan="2" class="py-3 px-4 font-bold min-w-[200px] border border-slate-300">Nama Santri / NISN</th>
-                                <th colspan="4" class="py-3 px-4 font-bold text-center border border-slate-300 bg-blue-50">Kepribadian</th>
-                                <th colspan="4" class="py-3 px-4 font-bold text-center border border-slate-300 bg-emerald-50">Ekstrakurikuler</th>
-                                <th colspan="3" class="py-3 px-4 font-bold text-center border border-slate-300 bg-amber-50">Absensi</th>
-                                <th rowspan="2" class="py-3 px-4 font-bold text-center min-w-[250px] border border-slate-300">Catatan Wali Kelas</th>
-                            </tr>
-                            <tr>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-blue-50/50">Kelakuan</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-blue-50/50">Kerajinan</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-blue-50/50">Kerapian</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-blue-50/50">Kedisiplinan</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-emerald-50/50">Baca Al Qur'an</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-emerald-50/50">Baca Kitab</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-emerald-50/50">Muhafadhoh</th>
-                                <th class="py-2 px-3 font-bold text-center border border-slate-300 bg-emerald-50/50">Kaligrafi Arab</th>
-                                <th class="py-2 px-2 font-bold text-center border border-slate-300 bg-amber-50/50" title="Sakit">S</th>
-                                <th class="py-2 px-2 font-bold text-center border border-slate-300 bg-amber-50/50" title="Izin">I</th>
-                                <th class="py-2 px-2 font-bold text-center border border-slate-300 bg-amber-50/50" title="Alpha">A</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $no = 1;
-                            $options_kepribadian = ['A' => 'Sangat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
-                            $options_ekstra = ['A' => 'Sangat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
-                            
-                            function getColorClass($val) {
-                                switch($val) {
-                                    case 'C': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-                                    case 'D': return 'bg-red-100 text-red-800 border-red-300';
-                                    default: return 'bg-gray-50 text-gray-900 border-gray-300';
-                                }
-                            }
-                            
-                            while($row = mysqli_fetch_assoc($result_siswa)): 
-                                $id_s = $row['id_siswa'];
-                                $kelakuan = $row['kelakuan'] ?: 'B';
-                                $kerajinan = $row['kerajinan'] ?: 'B';
-                                $kerapian = $row['kerapian'] ?: 'B';
-                                $kedisiplinan = $row['kedisiplinan'] ?: 'B';
-                                $baca_quran = $row['baca_quran'] ?: 'B';
-                                $baca_kitab = $row['baca_kitab'] ?: 'B';
-                                $muhafadhoh = $row['muhafadhoh'] ?: 'B';
-                                $kaligrafi = $row['kaligrafi'] ?: 'B';
-                                $sakit = $row['sakit'] ?? 0;
-                                $izin = $row['izin'] ?? 0;
-                                $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
-                            ?>
-                            <tr class="hover:bg-slate-50 transition-colors">
-                                <td class="py-2 px-4 text-center border border-slate-300"><?= $no++ ?></td>
-                                <td class="py-2 px-4 border border-slate-300">
-                                    <div class="font-bold text-slate-800"><?= htmlspecialchars($row['nama']) ?></div>
-                                    <div class="text-xs text-slate-500"><?= htmlspecialchars($row['nisn']) ?></div>
-                                    <input type="hidden" name="id_siswa[]" value="<?= $id_s ?>">
-                                </td>
-                                
-                                <!-- Kepribadian -->
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="kelakuan[<?= $id_s ?>]" class="<?= getColorClass($kelakuan) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_kepribadian as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="kerajinan[<?= $id_s ?>]" class="<?= getColorClass($kerajinan) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_kepribadian as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="kerapian[<?= $id_s ?>]" class="<?= getColorClass($kerapian) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_kepribadian as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="kedisiplinan[<?= $id_s ?>]" class="<?= getColorClass($kedisiplinan) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_kepribadian as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
+        <!-- ═══ MOBILE VIEW: CARD-ACCORDION LIST (below sm) ═══ -->
+        <div class="sm:hidden space-y-2 mb-20">
+          <?php 
+          $no = 1;
+          foreach ($siswa_list as $row): 
+            $id_s = $row['id_siswa'];
+            $kelakuan = $row['kelakuan'] ?: 'B';
+            $kerajinan = $row['kerajinan'] ?: 'B';
+            $kerapian = $row['kerapian'] ?: 'B';
+            $kedisiplinan = $row['kedisiplinan'] ?: 'B';
+            $baca_quran = $row['baca_quran'] ?: 'B';
+            $baca_kitab = $row['baca_kitab'] ?: 'B';
+            $muhafadhoh = $row['muhafadhoh'] ?: 'B';
+            $kaligrafi = $row['kaligrafi'] ?: 'B';
+            $sakit = $row['sakit'] ?? 0;
+            $izin = $row['izin'] ?? 0;
+            $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
+          ?>
+          <div class="ui-card">
+            <!-- Header Card (Nama Santri) -->
+            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                <p class="text-[10px] text-slate-400 font-mono"><?= htmlspecialchars($row['nisn']) ?></p>
+              </div>
+            </div>
 
-                                <!-- Ekstrakurikuler -->
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="baca_quran[<?= $id_s ?>]" class="<?= getColorClass($baca_quran) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_ekstra as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="baca_kitab[<?= $id_s ?>]" class="<?= getColorClass($baca_kitab) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_ekstra as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="muhafadhoh[<?= $id_s ?>]" class="<?= getColorClass($muhafadhoh) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_ekstra as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <select name="kaligrafi[<?= $id_s ?>]" class="<?= getColorClass($kaligrafi) ?> text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5">
-                                        <?php foreach($options_ekstra as $val => $label): ?>
-                                        <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $label ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </td>
-
-                                <!-- Absensi -->
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="w-12 text-center text-xs bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5 block">
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="w-12 text-center text-xs bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5 block">
-                                </td>
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="w-12 text-center text-xs bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5 block">
-                                </td>
-
-                                <!-- Catatan -->
-                                <td class="py-2 px-2 border border-slate-300">
-                                    <textarea name="catatan[<?= $id_s ?>]" rows="2" class="block p-2 w-full text-xs text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Tulis catatan..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                            <?php if($no == 1): ?>
-                            <tr>
-                                <td colspan="10" class="py-2 px-6 text-center text-slate-500 border border-slate-300">Tidak ada santri di kelas ini.</td>
-                            </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+            <!-- Body Tabs (Sub-forms) -->
+            <div class="p-4 space-y-4">
+              
+              <!-- Tab 1: Kepribadian -->
+              <div>
+                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-user-heart-line text-xs"></i> Kepribadian</p>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
+                    <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
+                    <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
+                    <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
+                    <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
                 </div>
-            </div>
+              </div>
 
-            <div class="flex justify-end mt-4 items-center">
+              <!-- Tab 2: Ekstrakurikuler -->
+              <div class="pt-3 border-t border-slate-100">
+                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-book-read-line text-xs"></i> Ekstrakurikuler</p>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
+                    <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
+                    <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
+                    <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
+                    <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
+                      <?php foreach($options_kepribadian as $val => $label): ?>
+                        <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Absensi -->
+              <div class="pt-3 border-t border-slate-100">
+                <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-calendar-todo-line text-xs"></i> Absensi (Hari)</p>
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                    <span class="text-xs text-slate-500 font-semibold">Sakit</span>
+                    <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                  </div>
+                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                    <span class="text-xs text-slate-500 font-semibold">Izin</span>
+                    <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                  </div>
+                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                    <span class="text-xs text-slate-500 font-semibold">Alpha</span>
+                    <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 4: Catatan -->
+              <div class="pt-3 border-t border-slate-100">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"><i class="ri-chat-1-line text-xs"></i> Catatan Wali Kelas</p>
+                <textarea name="catatan[<?= $id_s ?>]" rows="2" class="ui-textarea text-xs py-2 px-3" placeholder="Tulis catatan perkembangan santri..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
+              </div>
+
             </div>
-        </form>
-    </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+
+      <?php else: ?>
+        <div class="ui-empty-state">
+          <div class="ui-empty-icon"><i class="ri-team-line text-2xl"></i></div>
+          <h3 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Santri</h3>
+          <p class="text-sm text-slate-400">Belum ada santri terdaftar di kelas binaan Anda untuk tahun ajaran aktif.</p>
+        </div>
+      <?php endif; ?>
+    </form>
+  </div>
 </div>
 
-<!-- Hidden div for Tailwind CDN parser to detect dynamic JS/PHP classes -->
-<div class="hidden bg-yellow-50 text-yellow-700 bg-red-50 text-red-700 bg-white text-slate-700"></div>
-
+<!-- Dynamic color changer for dropdown status selection -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function() {
     const form = document.getElementById('formEvaluasi');

@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_SUPER_ADMIN);
 include 'include/header.php';
 include 'include/navbar.php';
@@ -37,7 +38,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                 <?php endif; ?>
 
                 <form action="proses_tambah_kelas" method="POST" class="space-y-5">
-                    
+                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900">Tingkat Kelas <span class="text-red-500">*</span></label>
                         <select name="id_tingkat" id="id_tingkat" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-3 transition-colors" required>

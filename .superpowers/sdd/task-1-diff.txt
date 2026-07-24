@@ -1,0 +1,380 @@
+diff --git a/app/Views/data_guru.php b/app/Views/data_guru.php
+index c82352d..8482292 100644
+--- a/app/Views/data_guru.php
++++ b/app/Views/data_guru.php
+@@ -8,139 +8,204 @@ include 'include/navbar.php';
+ include 'include/sidebar.php';
+ 
+ // Pagination & Search
+-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
++$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
++$like = '%' . $search . '%';
+ $limit = 10; // Jumlah data per halaman
+ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+ if ($page < 1) $page = 1;
+ $offset = ($page - 1) * $limit;
+ 
+-$where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+-if (!empty($search)) {
+-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
+-}
++$base_where = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
++$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
+ 
+ // Hitung total data
+-$count_query = "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $where_clause";
+-$count_result = mysqli_query($koneksi, $count_query);
++if (!empty($search)) {
++    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where$search_condition");
++    mysqli_stmt_bind_param($count_stmt, 'sss', $like, $like, $like);
++} else {
++    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where");
++}
++mysqli_stmt_execute($count_stmt);
++$count_result = mysqli_stmt_get_result($count_stmt);
+ $total_data = mysqli_fetch_assoc($count_result)['total'];
++mysqli_stmt_close($count_stmt);
+ $total_pages = ceil($total_data / $limit);
+ 
+ // Ambil data pengguna dan guru dengan limit
+-$query = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
++$main_sql = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
+                  g.id_guru, g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
+           FROM pengguna p 
+           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
+-          $where_clause
+-          ORDER BY p.nama ASC
+-          LIMIT $limit OFFSET $offset";
+-$result = mysqli_query($koneksi, $query);
++          $base_where";
++if (!empty($search)) {
++    $main_sql .= $search_condition;
++}
++$main_sql .= " ORDER BY p.nama ASC LIMIT ? OFFSET ?";
++
++$stmt = mysqli_prepare($koneksi, $main_sql);
++if (!empty($search)) {
++    mysqli_stmt_bind_param($stmt, 'sssii', $like, $like, $like, $limit, $offset);
++} else {
++    mysqli_stmt_bind_param($stmt, 'ii', $limit, $offset);
++}
++mysqli_stmt_execute($stmt);
++$result = mysqli_stmt_get_result($stmt);
+ ?>
+ 
+-<div class="p-4 sm:ml-64">
+-    <div class="p-4 rounded-lg mt-14 max-w-7xl mx-auto">
+-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+-            <div>
+-                <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Data Guru</h2>
+-                <p class="text-sm text-gray-500 mt-1">Kelola data profil dan akun login guru</p>
+-            </div>
+-            
+-            <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+-                <form class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+-                    <div class="relative w-full sm:w-64">
+-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+-                            <i class="ri-search-line text-gray-400"></i>
+-                        </div>
+-                        <input type="text" name="search" id="searchInput" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" 
+-                               class="bg-white border border-gray-200 text-gray-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 py-2 shadow-sm transition-colors" 
+-                               placeholder="Cari nama, NIP, username..."
+-                               hx-get="data_guru.php" 
+-                               hx-trigger="keyup changed delay:500ms, search" 
+-                               hx-target="body" 
+-                               hx-push-url="true">
+-                    </div>
+-                    <?php if (!empty($_GET['search'])): ?>
+-                    <a href="data_guru" hx-get="data_guru.php" hx-target="body" hx-push-url="true" class="inline-flex justify-center items-center p-2 bg-gray-50 hover:bg-red-50 text-gray-500 hover:text-red-600 border border-gray-200 hover:border-red-200 rounded-lg transition-colors shadow-sm" title="Reset Pencarian">
+-                        <i class="ri-close-line text-lg leading-none"></i>
+-                    </a>
+-                    <?php endif; ?>
+-                </form>
+-
+-                <a href="export_guru<?php echo !empty($search) ? '?search=' . urlencode($search) : ''; ?>" hx-disable="true" hx-boost="false" class="inline-flex justify-center items-center px-4 py-2.5 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+-                    <i class="ri-file-download-line mr-2 text-lg"></i>
+-                    Export
+-                </a>
+-                <button type="button" onclick="openOffcanvas('offcanvas-import-guru')" class="inline-flex justify-center items-center px-4 py-2.5 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+-                    <i class="ri-file-excel-2-line mr-2 text-lg"></i>
+-                    Import
+-                </button>
+-                <button type="button" onclick="tambahGuru()" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-xl text-sm px-6 py-2.5 text-center inline-flex items-center shadow-lg shadow-blue-500/30 transition-all duration-200 whitespace-nowrap">
+-                    <i class="ri-add-line mr-2 text-lg"></i> Tambah Guru
+-                </button>
+-            </div>
++<div class="page-shell">
++  <div class="page-inner">
++    <!-- Page Header -->
++    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
++      <div>
++        <h1 class="page-title">Data Guru</h1>
++        <p class="page-subtitle">Kelola data profil dan akun login guru</p>
++      </div>
++      <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
++        <div class="relative flex-1 sm:flex-none sm:w-56">
++          <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
++          <input type="text" name="search" id="searchInput"
++                 value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>"
++                 class="ui-input pl-9 py-2"
++                 placeholder="Cari nama, NIP..."
++                 hx-get="data_guru.php" hx-trigger="keyup changed delay:500ms, search"
++                 hx-target="body" hx-push-url="true">
+         </div>
++        <?php if (!empty($_GET['search'])): ?>
++        <a href="data_guru" class="btn btn-ghost btn-sm"><i class="ri-close-line"></i></a>
++        <?php endif; ?>
++        <a href="export_guru<?php echo !empty($search) ? '?search='.urlencode($search) : ''; ?>"
++           hx-disable="true" class="btn btn-secondary btn-sm text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100">
++          <i class="ri-file-download-line"></i> Export
++        </a>
++        <button type="button" onclick="openOffcanvas('offcanvas-import-guru')"
++                class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
++          <i class="ri-file-excel-2-line"></i> Import
++        </button>
++        <button type="button" onclick="tambahGuru()" class="btn btn-primary btn-sm">
++          <i class="ri-add-line"></i> Tambah Guru
++        </button>
++      </div>
++    </div>
++
+ 
+ 
+ 
+-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+-            <div class="overflow-x-auto">
+-                <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
+-                    <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+-                        <tr>
+-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">NIP / NIK</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap min-w-[200px]">Nama Lengkap</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">L/P</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">No. HP</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Peran</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Username</th>
+-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Status</th>
+-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 whitespace-nowrap">Aksi</th>
+-                        </tr>
+-                    </thead>
+-                <tbody>
++    <!-- MOBILE CARD LIST (below sm) -->
++    <div class="sm:hidden space-y-2 mb-4">
++      <?php
++      $mobile_sql = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, g.id_guru, g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where";
++      if (!empty($search)) {
++          $mobile_sql .= $search_condition;
++      }
++      $mobile_sql .= " ORDER BY p.nama ASC LIMIT ? OFFSET ?";
++      $mobile_stmt = mysqli_prepare($koneksi, $mobile_sql);
++      if (!empty($search)) {
++          mysqli_stmt_bind_param($mobile_stmt, 'sssii', $like, $like, $like, $limit, $offset);
++      } else {
++          mysqli_stmt_bind_param($mobile_stmt, 'ii', $limit, $offset);
++      }
++      mysqli_stmt_execute($mobile_stmt);
++      $result_mobile = mysqli_stmt_get_result($mobile_stmt);
++      $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
++      $no_m = 1;
++      while ($row_m = mysqli_fetch_assoc($result_mobile)):
++        $nama_display = $row_m['nama_lengkap'] ? $row_m['nama_lengkap'] : $row_m['nama'];
++        $inisial = mb_strtoupper(mb_substr($nama_display, 0, 1, 'UTF-8'));
++        $color = $avatar_colors[ord($inisial) % 5];
++        $badge_class = $row_m['status'] === 'Aktif' ? 'badge-success' : 'badge-danger';
++      ?>
++      <div class="ui-card px-4 py-3">
++        <div class="flex items-center gap-3">
++          <div class="shrink-0 w-10 h-10 rounded-full <?= $color ?> flex items-center justify-center text-sm font-bold select-none">
++            <?= $inisial ?>
++          </div>
++          <div class="flex-1 min-w-0">
++            <p class="font-semibold text-slate-800 text-sm truncate"><?= htmlspecialchars($nama_display) ?></p>
++            <div class="flex flex-wrap items-center gap-x-2 mt-0.5">
++              <span class="badge badge-info text-[10px]"><?= htmlspecialchars($row_m['peran']) ?></span>
++              <span class="badge <?= $badge_class ?> text-[10px]"><?= htmlspecialchars($row_m['status']) ?></span>
++              <?php if ($row_m['nip']): ?>
++              <span class="text-[10px] text-slate-400 font-mono"><?= htmlspecialchars($row_m['nip']) ?></span>
++              <?php endif; ?>
++            </div>
++          </div>
++          <div class="shrink-0 flex items-center gap-0.5">
++            <button type="button"
++                    onclick="editGuru(<?= $row_m['id_pengguna'] ?>, '<?= $row_m['id_guru'] ? $row_m['id_guru'] : '' ?>', '<?= htmlspecialchars(addslashes($row_m['nip'] ?? ''), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($row_m['nama_lengkap'] ?? $row_m['nama']), ENT_QUOTES) ?>', '<?= $row_m['jenis_kelamin'] ?? 'L' ?>', '<?= htmlspecialchars(addslashes($row_m['tempat_lahir'] ?? ''), ENT_QUOTES) ?>', '<?= $row_m['tanggal_lahir'] ?? '' ?>', '<?= htmlspecialchars(addslashes($row_m['no_hp'] ?? ''), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes(str_replace(["", "
++"], ["\r", "\n"], $row_m['alamat'] ?? '')), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($row_m['username']), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($row_m['peran']), ENT_QUOTES) ?>')"
++                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50">
++              <i class="ri-edit-line text-base"></i>
++            </button>
++            <button type="button"
++                    onclick="confirmDelete(<?= $row_m['id_pengguna'] ?>, '<?= htmlspecialchars(addslashes($row_m['nama_lengkap'] ?? $row_m['nama'])) ?>')"
++                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50">
++              <i class="ri-delete-bin-line text-base"></i>
++            </button>
++          </div>
++        </div>
++      </div>
++      <?php endwhile; ?>
++    </div>
++
++    <!-- DESKTOP TABLE (sm+) -->
++    <div class="hidden sm:block table-scroll-wrap">
++      <table class="ui-table">
++        <thead>
++          <tr>
++            <th class="w-12 text-center">No</th>
++            <th>Nama Lengkap</th>
++            <th>NIP / NIK</th>
++            <th>No. HP</th>
++            <th>Peran</th>
++            <th>Status</th>
++            <th class="text-center w-24">Aksi</th>
++          </tr>
++        </thead>
++        <tbody>
+                         <?php 
+                         $no = 1;
+                         if (mysqli_num_rows($result) > 0) {
+                             while ($row = mysqli_fetch_assoc($result)): 
+                         ?>
+-                            <tr class="hover:bg-slate-50 transition-colors group">
+-                                <td class="py-2 px-6 border border-slate-300 font-medium text-slate-900 whitespace-nowrap text-center"><?php echo $no++; ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?php echo $row['nip'] ? htmlspecialchars($row['nip']) : '-'; ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 font-bold text-slate-800 text-base whitespace-nowrap"><?php echo $row['nama_lengkap'] ? htmlspecialchars($row['nama_lengkap']) : htmlspecialchars($row['nama']); ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?php echo ($row['jenis_kelamin'] == 'L') ? 'Laki-laki' : (($row['jenis_kelamin'] == 'P') ? 'Perempuan' : '-'); ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?php echo $row['no_hp'] ? htmlspecialchars($row['no_hp']) : '-'; ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full"><?php echo htmlspecialchars($row['peran']); ?></span></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?php echo htmlspecialchars($row['username']); ?></td>
+-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap">
+-                                    <?php if ($row['status'] == 'Aktif'): ?>
+-                                        <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-200 shadow-sm">Aktif</span>
+-                                    <?php else: ?>
+-                                        <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200 shadow-sm">Dihapus</span>
+-                                    <?php endif; ?>
+-                                </td>
+-                                <td class="py-2 px-6 border border-slate-300 text-center whitespace-nowrap">
+-                                    <div class="flex items-center justify-center gap-2">
++          <tr>
++            <td class="text-center text-slate-400 text-xs"><?php echo $no++; ?></td>
++            <td>
++              <p class="font-semibold text-slate-800"><?php echo $row['nama_lengkap'] ? htmlspecialchars($row['nama_lengkap']) : htmlspecialchars($row['nama']); ?></p>
++              <p class="text-xs text-slate-400"><?php echo htmlspecialchars($row['username']); ?></p>
++            </td>
++            <td class="font-mono text-xs text-slate-500"><?php echo $row['nip'] ? htmlspecialchars($row['nip']) : '-'; ?></td>
++            <td class="text-slate-500"><?php echo $row['no_hp'] ? htmlspecialchars($row['no_hp']) : '-'; ?></td>
++            <td><span class="badge badge-info"><?php echo htmlspecialchars($row['peran']); ?></span></td>
++            <td>
++              <?php if ($row['status'] == 'Aktif'): ?>
++              <span class="badge badge-success">Aktif</span>
++              <?php else: ?>
++              <span class="badge badge-danger">Nonaktif</span>
++              <?php endif; ?>
++            </td>
++            <td>
++              <div class="flex items-center justify-center gap-1">
+                                         <button type="button" onclick="editGuru(<?= $row['id_pengguna']; ?>, '<?= $row['id_guru'] ? $row['id_guru'] : ''; ?>', '<?= htmlspecialchars(addslashes($row['nip'] ?? ''), ENT_QUOTES); ?>', '<?= htmlspecialchars(addslashes($row['nama_lengkap'] ?? $row['nama']), ENT_QUOTES); ?>', '<?= $row['jenis_kelamin'] ?? 'L'; ?>', '<?= htmlspecialchars(addslashes($row['tempat_lahir'] ?? ''), ENT_QUOTES); ?>', '<?= $row['tanggal_lahir'] ?? ''; ?>', '<?= htmlspecialchars(addslashes($row['no_hp'] ?? ''), ENT_QUOTES); ?>', '<?= htmlspecialchars(addslashes(str_replace(["\r", "\n"], ["\\r", "\\n"], $row['alamat'] ?? '')), ENT_QUOTES); ?>', '<?= htmlspecialchars(addslashes($row['username']), ENT_QUOTES); ?>', '<?= htmlspecialchars(addslashes($row['peran']), ENT_QUOTES); ?>')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg inline-flex items-center transition-colors shadow-sm" title="Edit">
+-                                            <i class="ri-edit-line text-lg"></i>
+-                                        </button>
+-                                        <button type="button" onclick="confirmDelete(<?php echo $row['id_pengguna']; ?>, '<?php echo htmlspecialchars(addslashes($row['nama_lengkap'] ?? $row['nama'])); ?>')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded-lg inline-flex items-center transition-colors shadow-sm" title="Hapus">
+-                                            <i class="ri-delete-bin-line text-lg"></i>
+-                                        </button>
+-                                    </div>
+-                                </td>
+-                            </tr>
++                <i class="ri-edit-line"></i>
++              </button>
++              <button type="button" onclick="confirmDelete(<?php echo $row['id_pengguna']; ?>, '<?php echo htmlspecialchars(addslashes($row['nama_lengkap'] ?? $row['nama'])); ?>')"
++                      class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50" title="Hapus">
++                <i class="ri-delete-bin-line"></i>
++              </button>
++            </div>
++          </td>
++        </tr>
+                         <?php 
+                             endwhile;
+-                        } else {
+-                            echo '<tr><td colspan="9" class="py-2 px-6 text-center text-slate-500 border border-slate-300">Belum ada data guru.</td></tr>';
+-                        }
++        } else {
++          echo '<tr><td colspan="7" class="py-12 text-center text-slate-400"><i class="ri-user-line text-3xl block mb-2"></i>Belum ada data guru.</td></tr>';
++        }
+                         ?>
+-                    </tbody>
+-                </table>
+-            </div>
+-        </div>
++      </tbody>
++      </table>
++    </div>
+ 
+-            <!-- Pagination -->
++    <!-- Pagination -->
+             <?php if ($total_pages > 1): ?>
+             <div class="flex flex-col md:flex-row justify-between items-center mt-6 space-y-3 md:space-y-0">
+                 <span class="text-sm text-gray-700 dark:text-gray-400">
+@@ -178,7 +243,7 @@ $result = mysqli_query($koneksi, $query);
+             </div>
+             <?php endif; ?>
+ 
+-    </div>
++  </div>
+ </div>
+ 
+ <!-- Offcanvas / Slide-over Panel for Guru -->
+diff --git a/app/Views/export_guru.php b/app/Views/export_guru.php
+index ceb14e2..23cff13 100644
+--- a/app/Views/export_guru.php
++++ b/app/Views/export_guru.php
+@@ -1,7 +1,7 @@
+ <?php
+ require 'koneksi.php';
+ require 'cek_sesi.php';
+-require 'vendor/autoload.php';
++require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
+ restrict_roles(RBAC_MANAGE_MASTER_DATA);
+ 
+ // Set header for download
+@@ -30,22 +30,28 @@ $data = [
+     ]
+ ];
+ 
+-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
++$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
++$like = '%' . $search . '%';
+ $where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+-
+-if (!empty($search)) {
+-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
+-}
++$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
+ 
+ // Ambil data guru dan pengguna
+-$query = "SELECT p.username, p.peran, p.status, 
++$main_sql = "SELECT p.username, p.peran, p.status, 
+                  g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
+           FROM pengguna p 
+           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
+-          $where_clause
+-          ORDER BY p.nama ASC";
++          $where_clause";
++if (!empty($search)) {
++    $main_sql .= $search_condition;
++}
++$main_sql .= " ORDER BY p.nama ASC";
+ 
+-$result = mysqli_query($koneksi, $query);
++$stmt = mysqli_prepare($koneksi, $main_sql);
++if (!empty($search)) {
++    mysqli_stmt_bind_param($stmt, 'sss', $like, $like, $like);
++}
++mysqli_stmt_execute($stmt);
++$result = mysqli_stmt_get_result($stmt);
+ 
+ $no = 1;
+ if ($result && mysqli_num_rows($result) > 0) {
+@@ -89,6 +95,7 @@ catat_log($koneksi, $_SESSION['id_pengguna'], 'Export Guru', 'Melakukan export d
+ 
+ // Generate Excel
+ $xlsx = Shuchkin\SimpleXLSXGen::fromArray($data);
++if (ob_get_length()) ob_end_clean();
+ $xlsx->downloadAs('Data_Guru_' . date('Ymd_His') . '.xlsx');
+ exit;
+ ?>

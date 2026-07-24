@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 
 header('Content-Type: application/json');
 
@@ -14,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $json_data = file_get_contents('php://input');
 $data = json_decode($json_data, true);
 
-if (!isset($data['csrf_token']) || $data['csrf_token'] !== $_SESSION['csrf_token']) {
+if (!isset($data['csrf_token']) || !verify_csrf_token($data['csrf_token'])) {
     echo json_encode(['status' => 'error', 'message' => 'Token CSRF tidak valid.']);
     exit;
 }

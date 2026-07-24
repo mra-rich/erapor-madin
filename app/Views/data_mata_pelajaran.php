@@ -18,53 +18,49 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
 }
 ?>
 
-<div class="p-4 sm:ml-64">
-  <div class="p-4 border-2 border-transparent mt-14">
+<div class="page-shell">
+  <div class="page-inner">
 
-    <!-- Header Halaman -->
+    <!-- Page Header -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Pengaturan Mata Pelajaran</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola status aktif/non-aktif mapel dan tetapkan guru pengajar tiap kelas</p>
+        <h1 class="page-title">Pengaturan Mata Pelajaran</h1>
+        <p class="page-subtitle">Kelola mata pelajaran dan pengampu guru</p>
       </div>
       <?php if ($is_admin): ?>
-      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-        <button type="button" onclick="openOffcanvasImport('offcanvas-import-mapel')" class="inline-flex justify-center items-center px-4 py-2.5 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
-          <i class="ri-file-excel-2-line mr-2 text-lg"></i> Import Excel
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" onclick="openOffcanvasImport('offcanvas-import-mapel')"
+                class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+          <i class="ri-file-excel-2-line"></i> Import Excel
         </button>
-        <button type="button" onclick="tambahMapelMaster()" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-xl text-sm px-6 py-2.5 text-center inline-flex items-center shadow-lg shadow-blue-500/30 transition-all duration-200 whitespace-nowrap">
-          <i class="ri-add-line mr-2 text-lg"></i> Tambah Master Mapel
+        <button type="button" onclick="tambahMapelMaster()" class="btn btn-primary btn-sm">
+          <i class="ri-add-line"></i> Tambah Master Mapel
         </button>
       </div>
       <?php endif; ?>
     </div>
 
     <!-- Form Filter Kelas -->
-    <div class="mb-6">
-      <form id="formPencarian" class="flex flex-wrap gap-4 items-end bg-white p-5 rounded-lg border shadow-sm">
+    <div class="ui-card ui-card-body mb-6">
+      <form id="formPencarian" class="flex flex-wrap gap-3 items-end">
           <?php
           $no_autosubmit = true;
           $id_kelas_selected = $id_kelas > 0 ? $id_kelas : 0;
           include 'include/filter_kelas.php';
           ?>
-          <div class="flex-none w-full xl:w-auto">
-              <button type="button" onclick="tampilkanMapel()"
-                  class="w-full bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition flex items-center justify-center font-bold shadow-sm">
-                  <i class="ri-search-line mr-2"></i> Tampilkan
+          <div class="flex-none w-full lg:w-auto">
+              <button type="button" onclick="tampilkanMapel()" class="btn btn-primary w-full lg:w-auto">
+                  <i class="ri-search-line"></i> Tampilkan
               </button>
           </div>
       </form>
     </div>
 
     <!-- State Kosong -->
-    <div id="empty-state" class="border border-blue-200 bg-blue-50/50 rounded-xl p-12 flex flex-col items-center justify-center text-center <?= $id_kelas > 0 ? 'hidden' : '' ?>">
-        <div class="text-blue-500 mb-4">
-            <i class="ri-book-open-line text-6xl"></i>
-        </div>
-        <h3 class="text-xl font-bold text-blue-800 mb-3">Pilih Kelas Terlebih Dahulu</h3>
-        <p class="text-blue-600 max-w-lg text-sm leading-relaxed">
-            Silakan pilih <b>Tingkat</b>, <b>Kelas</b>, dan <b>Rombel</b> dari menu dropdown di atas, lalu klik tombol <b class="font-semibold text-blue-700">Tampilkan</b> untuk memuat daftar mata pelajaran.
-        </p>
+    <div id="empty-state" class="ui-empty-state my-6 <?= $id_kelas > 0 ? 'hidden' : '' ?>">
+      <div class="ui-empty-icon"><i class="ri-book-open-line text-2xl"></i></div>
+      <h3 class="text-lg font-bold text-slate-700 mb-1">Pilih Kelas Terlebih Dahulu</h3>
+      <p class="text-sm text-slate-400 max-w-md">Pilih tingkat, kelas, dan rombel di atas lalu klik Tampilkan untuk mengelola mata pelajaran kelas.</p>
     </div>
 
     <!-- Kontainer Tabel Mapel -->
@@ -78,22 +74,21 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
             </h2>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                    <thead class="text-xs text-slate-700 uppercase bg-slate-50">
-                        <tr>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap min-w-[200px]">Mata Pelajaran</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap min-w-[150px]">Nama Kitab</th>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 whitespace-nowrap">Status</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap w-1/3">Guru Pengajar</th>
-                            <?php if ($is_admin): ?>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-20">Aksi</th>
-                            <?php endif; ?>
-                        </tr>
-                    </thead>
-                <tbody id="tbody-mapel">
+    <div class="table-scroll-wrap">
+      <table class="ui-table">
+        <thead>
+          <tr>
+            <th class="w-12 text-center">No</th>
+            <th>Mata Pelajaran</th>
+            <th>Nama Kitab</th>
+            <th class="w-32 text-center">Status</th>
+            <th class="w-1/3">Guru Pengajar</th>
+            <?php if ($is_admin): ?>
+            <th class="text-center w-24">Aksi</th>
+            <?php endif; ?>
+          </tr>
+        </thead>
+        <tbody id="tbody-mapel">
                     <?php if ($id_kelas > 0):
                         $query = "SELECT m.*, pm.id_guru, pm.status AS status_kelas, pm.nama_kitab
                                   FROM mata_pelajaran m
@@ -106,15 +101,15 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                             $is_aktif_kelas = ($row['status_kelas'] == 'Aktif' || !isset($row['status_kelas'])) ? true : false;
                     ?>
                         <tr class="hover:bg-slate-50 transition-colors group">
-                            <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-medium text-slate-900 text-center"><?= $no++ ?></td>
-                            <td class="py-2 px-6 border border-slate-300 font-bold text-slate-800 text-base">
+                            <td class="text-center text-slate-400 text-xs"><?= $no++ ?></td>
+                            <td>
                                 <?= htmlspecialchars($row['nama_mapel']); ?>
                                 <div class="text-sm font-arabic font-normal text-slate-500 mt-1" dir="rtl"><?= htmlspecialchars($row['nama_mapel_arab']); ?></div>
                             </td>
-                            <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-sm">
+                            <td>
                                 <?php if ($is_admin): ?>
                                 <div class="relative">
-                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Tulis nama kitab..." class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm transition-colors disabled:opacity-50" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Tulis nama kitab..." class="ui-input py-1.5 px-3" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                 </div>
                                 <?php else: ?>
                                     <div class="font-medium text-blue-700">
@@ -126,14 +121,14 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                                     </div>
                                 <?php endif; ?>
                             </td>
-                            <td class="py-2 px-6 border border-slate-300 whitespace-nowrap">
-                                <select id="status_mapel_<?= $row['id_mapel']; ?>" <?= !$is_admin ? 'disabled' : '' ?> class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm transition-colors cursor-pointer text-center font-bold <?= $is_aktif_kelas ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-slate-500 bg-slate-50'; ?>" onchange="toggleGuruSelect(this, <?= $row['id_mapel']; ?>); autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                            <td>
+                                <select id="status_mapel_<?= $row['id_mapel']; ?>" <?= !$is_admin ? 'disabled' : '' ?> class="ui-select py-1.5 px-3 text-center font-bold <?= $is_aktif_kelas ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : 'text-slate-500 bg-slate-50'; ?>" onchange="toggleGuruSelect(this, <?= $row['id_mapel']; ?>); autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                     <option value="Aktif" <?= $is_aktif_kelas ? 'selected' : ''; ?>>Aktif</option>
                                     <option value="Non-Aktif" <?= !$is_aktif_kelas ? 'selected' : ''; ?>>Non-Aktif</option>
                                 </select>
                             </td>
-                            <td class="py-2 px-6 border border-slate-300 whitespace-nowrap">
-                                <select id="guru_select_<?= $row['id_mapel']; ?>" <?= (!$is_aktif_kelas || !$is_admin) ? 'disabled' : ''; ?> class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm transition-colors cursor-pointer disabled:opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed" onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                            <td class="py-2 px-6  whitespace-nowrap">
+                                <select id="guru_select_<?= $row['id_mapel']; ?>" <?= (!$is_aktif_kelas || !$is_admin) ? 'disabled' : ''; ?> class="ui-select py-1.5 px-3" onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                     <option value="">-- Kosong (Belum Diatur) --</option>
                                     <?php foreach ($semua_guru as $g): ?>
                                         <option value="<?= $g['id_pengguna']; ?>" <?= ($row['id_guru'] == $g['id_pengguna']) ? 'selected' : ''; ?>>
@@ -143,7 +138,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                                 </select>
                             </td>
                             <?php if ($is_admin): ?>
-                            <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center space-x-1">
+                            <td class="py-2 px-6  whitespace-nowrap text-center space-x-1">
                                 <button type="button" onclick="editMapelMaster(<?= $row['id_mapel']; ?>, '<?= addslashes($row['nama_mapel']); ?>', '<?= addslashes($row['nama_mapel_arab']); ?>', '<?= addslashes($row['nama_kitab'] ?? ''); ?>', <?= $row['kkm']; ?>)" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg inline-flex items-center transition-colors shadow-sm" title="Edit Master Mapel">
                                     <i class="ri-edit-line text-lg"></i>
                                 </button>
@@ -155,7 +150,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                         </tr>
                     <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="6" class="py-2 px-6 text-center text-slate-400 border border-slate-300">Belum ada data. Gunakan filter di atas untuk memuat data.</td></tr>
+                        <tr><td colspan="6" class="py-2 px-6 text-center text-slate-400 ">Belum ada data. Gunakan filter di atas untuk memuat data.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
@@ -183,6 +178,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
     <!-- Body -->
     <div class="p-6 overflow-y-auto flex-1 bg-white">
         <form id="formMapel" action="proses_tambah_mapel" method="POST" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
             <input type="hidden" name="id_mapel" id="id_mapel">
             <input type="hidden" name="id_kelas_redirect" value="<?= $id_kelas; ?>">
             <input type="hidden" name="status" value="Aktif">
@@ -347,7 +343,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
         }).then((result) => {
             if (result.isConfirmed) {
                 const idKelas = document.getElementById('id_kelas_active').value;
-                window.location.href = 'proses_hapus_mapel.php?id=' + idMapel + '&kelas=' + idKelas;
+                window.location.href = 'proses_hapus_mapel.php?id=' + idMapel + '&kelas=' + idKelas + '&csrf_token=<?= generate_csrf_token(); ?>';
             }
         });
     }

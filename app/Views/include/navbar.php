@@ -1,4 +1,4 @@
-<nav class="fixed top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
+<nav class="fixed top-0 z-50 w-full bg-white border-b border-slate-200 transition-all duration-300">
   <div class="px-4 py-3 lg:px-6">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
@@ -71,8 +71,8 @@
             </button>
             
             <!-- Dropdown Notification -->
-            <div class="z-50 hidden my-4 w-72 text-base list-none bg-white divide-y divide-slate-100 rounded-2xl shadow-xl border border-slate-100 animate-fadeIn" id="dropdown-notification">
-                <div class="block px-4 py-3 text-sm font-bold text-center text-slate-700 bg-slate-50/50 rounded-t-2xl">
+            <div class="z-50 hidden my-4 w-72 text-base list-none bg-white divide-y divide-slate-100 rounded-xl shadow-lg border border-slate-200 animate-fadeIn" id="dropdown-notification">
+                <div class="block px-4 py-3 text-sm font-bold text-center text-slate-700 bg-slate-50 rounded-t-xl">
                     Notifikasi Sistem
                 </div>
                 <div class="divide-y divide-slate-50 max-h-80 overflow-y-auto">
@@ -122,7 +122,7 @@
               <i class="ri-arrow-down-s-line text-slate-400 hidden sm:block"></i>
             </button>
           </div>
-          <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-2xl shadow-xl border border-slate-100 w-56 animate-fadeIn" id="dropdown-user">
+          <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-slate-100 rounded-xl shadow-lg border border-slate-200 w-56 animate-fadeIn" id="dropdown-user">
             <div class="px-4 py-4" role="none">
               <p class="text-sm font-bold text-gray-900 truncate">
                 <?php echo $_SESSION['nama'] ?? 'User'; ?>

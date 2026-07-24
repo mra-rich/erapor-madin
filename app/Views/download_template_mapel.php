@@ -1,7 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
-require_once 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
 
 restrict_roles(['Admin']);
 
@@ -91,5 +91,6 @@ while ($row = mysqli_fetch_assoc($res_guru)) {
 $xlsx = SimpleXLSXGen::fromArray($data, 'Pengaturan Mapel');
 $xlsx->addSheet($data_guru, 'Referensi Guru');
 
+if (ob_get_length()) ob_end_clean();
 $xlsx->downloadAs('Template_Pengaturan_Mapel.xlsx');
 exit;

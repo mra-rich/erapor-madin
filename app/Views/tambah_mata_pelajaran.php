@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_SUPER_ADMIN);
 include 'include/header.php';
 include 'include/navbar.php';
@@ -36,7 +37,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                 <?php endif; ?>
 
                 <form action="proses_tambah_mapel" method="POST" class="space-y-6">
-                    
+                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block mb-2 text-sm font-semibold text-gray-900">Nama Mata Pelajaran <span class="text-red-500">*</span></label>

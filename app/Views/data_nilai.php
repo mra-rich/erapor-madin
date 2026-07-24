@@ -44,32 +44,6 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasList) > 0) {
 // Jika ada filter semester yang dipilih
 $selectedSemester = isset($_GET['semester']) && $_GET['semester'] !== "" ? $_GET['semester'] : null;
 
-// Proses hapus data
-if (isset($_GET['hapus'])) {
-    if (!isset($_GET['csrf_token']) || !verify_csrf_token($_GET['csrf_token'])) {
-        die("<script>alert('CSRF token validation failed'); window.location.href='data_nilai';</script>");
-    }
-    $id_transaksi = mysqli_real_escape_string($koneksi, $_GET['hapus']);
-
-    // Pencatatan Log Aktivitas (Standar AGENTS.md)
-    $id_pengguna_log = $_SESSION['id_pengguna'] ?? 0;
-    $aktivitas = "Menghapus data nilai (ID Transaksi: $id_transaksi)";
-    $tabel_terkait = "transaksi_raport, nilai, absensi, kepribadian, catatan_wali_kelas";
-    mysqli_query($koneksi, "INSERT INTO log_aktivitas (id_pengguna, aksi, detail) VALUES ('$id_pengguna_log', 'Hapus Data Nilai', '$aktivitas')");
-
-    // Hapus data dari tabel terkait
-    mysqli_query($koneksi, "DELETE FROM nilai WHERE id_transaksi = '$id_transaksi'");
-    mysqli_query($koneksi, "DELETE FROM absensi WHERE id_transaksi = '$id_transaksi'");
-    mysqli_query($koneksi, "DELETE FROM kepribadian WHERE id_transaksi = '$id_transaksi'");
-    mysqli_query($koneksi, "DELETE FROM catatan_wali_kelas WHERE id_transaksi = '$id_transaksi'");
-    mysqli_query($koneksi, "DELETE FROM transaksi_raport WHERE id_transaksi = '$id_transaksi'");
-
-    echo "<script>
-        alert('Data berhasil dihapus!');
-        window.location.href='data_nilai';
-    </script>";
-}
-
 // Tampilkan notifikasi jika ada
 if (isset($_GET['status'])) {
     if ($_GET['status'] == 'sukses') {
@@ -84,253 +58,349 @@ if (isset($_GET['status'])) {
 }
 ?>
 
-<div class="p-4 sm:ml-64">
-    <div class="p-4 border-2 border-transparent mt-14">
-        
-        <!-- Header Halaman -->
-        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Data Nilai Santri</h1>
-                <p class="text-sm text-gray-500 mt-1">Kelola dan filter data nilai, absensi, serta kepribadian santri</p>
-            </div>
-            
-            <div class="flex flex-wrap items-center gap-2">
-                <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-                <a href="tambah_nilai" class="inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm">
-                    <i class="fas fa-plus mr-1.5 text-base"></i> Tambah Nilai
-                </a>
-                <a href="import_nilai" class="inline-flex justify-center items-center px-4 py-2 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
-                    <i class="fas fa-file-excel mr-1.5 text-base"></i> Import Excel
-                </a>
-                <?php endif; ?>
-                <a href="export_nilai?kelas=<?= urlencode($selectedKelas ?? ''); ?>&semester=<?= urlencode($selectedSemester ?? ''); ?>" class="inline-flex justify-center items-center px-4 py-2 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
-                    <i class="fas fa-file-excel mr-1.5 text-base"></i> Export Excel
-                </a>
-            </div>
+<div class="page-shell">
+  <div class="page-inner">
+    
+    <!-- Page Header -->
+    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <h1 class="page-title">Data Nilai Santri</h1>
+        <p class="page-subtitle">Kelola dan filter data nilai, absensi, serta kepribadian santri</p>
+      </div>
+      
+      <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+          <a href="penilaian_mapel.php" class="btn btn-primary btn-sm flex-1 sm:flex-none">
+            <i class="ri-add-line"></i> Input Nilai
+          </a>
+          <a href="import_nilai.php" class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 flex-1 sm:flex-none">
+            <i class="ri-file-excel-2-line"></i> Import
+          </a>
+        <?php endif; ?>
+        <a href="export_nilai.php?kelas=<?= urlencode($selectedKelas ?? ''); ?>&semester=<?= urlencode($selectedSemester ?? ''); ?>" 
+           class="btn btn-secondary btn-sm text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 flex-1 sm:flex-none">
+          <i class="ri-file-download-line"></i> Export
+        </a>
+      </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="ui-card ui-card-body mb-6">
+      <form method="GET" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+        <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
+          <div class="sm:col-span-2">
+            <?php 
+            $no_autosubmit = true;
+            $id_kelas_selected = isset($id_kelas) ? $id_kelas : (isset($kelas_aktif) ? $kelas_aktif : 0); 
+            include 'include/filter_kelas.php'; 
+            ?>
+          </div>
+        <?php else: ?>
+          <div class="sm:col-span-2">
+            <label class="ui-label">Wali Kelas</label>
+            <input type="text" class="ui-input bg-slate-50 cursor-not-allowed font-medium text-slate-600" value="Kelas Anda" readonly>
+          </div>
+        <?php endif; ?>
+
+        <div>
+          <label class="ui-label">Semester</label>
+          <select name="semester" id="semester" class="ui-select cursor-pointer font-semibold">
+            <option value="">Semua Semester</option>
+            <option value="1" <?= ($selectedSemester == '1') ? 'selected' : ''; ?>>Semester 1 (Ganjil)</option>
+            <option value="2" <?= ($selectedSemester == '2') ? 'selected' : ''; ?>>Semester 2 (Genap)</option>
+          </select>
         </div>
 
-        <!-- Form Pencarian -->
-        <div class="mb-6">
-            <form method="GET" class="flex flex-wrap gap-4 items-end bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-                <?php if ($_SESSION['peran'] !== 'Wali Kelas'): ?>
-                <?php 
-                $no_autosubmit = true;
-                $id_kelas_selected = isset($id_kelas) ? $id_kelas : (isset($kelas_aktif) ? $kelas_aktif : 0); 
-                include 'include/filter_kelas.php'; 
-                ?>
-                <?php endif; ?>
-
-                <div class="flex-1 w-full min-w-[150px]">
-                    <label for="semester" class="block text-sm font-bold text-gray-700 mb-2">Semester</label>
-                    <select name="semester" id="semester" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-sm transition-colors cursor-pointer">
-                        <option value="">Semua Semester</option>
-                        <option value="1" <?= ($selectedSemester == '1') ? 'selected' : ''; ?>>Semester 1 (Ganjil)</option>
-                        <option value="2" <?= ($selectedSemester == '2') ? 'selected' : ''; ?>>Semester 2 (Genap)</option>
-                    </select>
-                </div>
-
-                <div class="flex-none w-full xl:w-auto flex gap-2">
-                    <button type="submit" class="w-full xl:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/30 transition-all flex justify-center items-center">
-                        <i class="ri-search-line mr-2"></i> Tampilkan
-                    </button>
-                    <?php if($selectedKelas || $selectedSemester): ?>
-                        <a href="data_nilai" class="w-full xl:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors flex items-center justify-center shadow-sm">
-                            <i class="ri-refresh-line mr-2"></i> Reset
-                        </a>
-                    <?php endif; ?>
-                </div>
-            </form>
+        <div class="sm:col-span-3 flex justify-end gap-2 mt-2">
+          <button type="submit" class="btn btn-primary px-6">
+            <i class="ri-search-line"></i> Tampilkan
+          </button>
+          <?php if($selectedKelas || $selectedSemester): ?>
+            <a href="data_nilai.php" class="btn btn-secondary px-6">
+              <i class="ri-refresh-line"></i> Reset
+            </a>
+          <?php endif; ?>
         </div>
+      </form>
+    </div>
 
-        <?php
-        // Jika kelas tertentu dipilih, tampilkan hanya kelas tersebut
-        if ($selectedKelas) {
-            $kelasToShow = array_filter($kelasList, function ($kelas) use ($selectedKelas) {
-                return $kelas['id_kelas'] == $selectedKelas;
-            });
-        } else {
-            // Jika tidak ada kelas yang dipilih, minta user memilih dulu
-            $kelasToShow = [];
-            echo '<div class="flex flex-col items-center justify-center p-12 mt-4 bg-white border border-gray-100 rounded-2xl shadow-sm">';
-            echo '<i class="ri-filter-3-line text-6xl text-blue-200 mb-4"></i>';
-            echo '<h3 class="text-xl font-bold text-gray-700">Pilih Kelas Terlebih Dahulu</h3>';
-            echo '<p class="text-gray-500 text-center mt-2 max-w-md">Silakan gunakan filter di atas untuk memilih Tingkat, Kelas, dan Rombel, kemudian klik <strong class="text-blue-600">Tampilkan</strong> untuk memuat data nilai.</p>';
-            echo '</div>';
+    <?php
+    if ($selectedKelas) {
+        $kelasToShow = array_filter($kelasList, function ($kelas) use ($selectedKelas) {
+            return $kelas['id_kelas'] == $selectedKelas;
+        });
+    } else {
+        $kelasToShow = [];
+        echo '<div class="ui-empty-state">';
+        echo '  <div class="ui-empty-icon"><i class="ri-filter-3-line text-2xl"></i></div>';
+        echo '  <h3 class="text-lg font-bold text-slate-700 mb-1">Pilih Kelas Terlebih Dahulu</h3>';
+        echo '  <p class="text-sm text-slate-400 max-w-sm">Gunakan filter kelas di atas untuk menampilkan rincian nilai santri.</p>';
+        echo '</div>';
+    }
+
+    foreach ($kelasToShow as $kelas):
+        $id_kelas = $kelas['id_kelas'];
+        $nama_kelas_lengkap = $kelas['nama_kelas_lengkap'];
+
+        $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
+        $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
+
+        $whereClause = "WHERE r.id_kelas = '$id_kelas' AND r.tahun_ajaran = '$ta_aktif'";
+        if ($selectedSemester) {
+            $whereClause .= " AND t.semester = '$selectedSemester'";
         }
 
-        // Loop untuk setiap kelas
-        foreach ($kelasToShow as $kelas):
-            $id_kelas = $kelas['id_kelas'];
-            $nama_kelas_lengkap = $kelas['nama_kelas_lengkap'];
+        $query = "SELECT s.id_siswa, s.nama, s.nomor_santri, r.id_kelas, t.id_transaksi, t.tahun_ajaran, t.semester,
+                         a.izin, a.sakit, a.tanpa_keterangan, k.kelakuan, k.kerajinan, k.kerapian, c.catatan
+                  FROM riwayat_kelas r
+                  JOIN siswa s ON r.id_siswa = s.id_siswa
+                  LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.tahun_ajaran = r.tahun_ajaran
+                  LEFT JOIN absensi a ON t.id_transaksi = a.id_transaksi
+                  LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
+                  LEFT JOIN catatan_wali_kelas c ON t.id_transaksi = c.id_transaksi
+                  $whereClause
+                  ORDER BY s.nama ASC";
 
-            // Query untuk siswa di kelas ini
-            $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
-            $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
+        $result = mysqli_query($koneksi, $query);
 
-            // Query untuk siswa di kelas ini
-            $whereClause = "WHERE r.id_kelas = '$id_kelas' AND r.tahun_ajaran = '$ta_aktif'";
-
-            // Tambahkan filter semester jika dipilih
-            if ($selectedSemester) {
-                $whereClause .= " AND t.semester = '$selectedSemester'";
+        if (mysqli_num_rows($result) > 0):
+            // Ambil mapel kelas
+            $queryMapel = "SELECT DISTINCT m.id_mapel, m.nama_mapel FROM mata_pelajaran m JOIN pengampu_mapel pm ON m.id_mapel = pm.id_mapel WHERE pm.id_kelas = '$id_kelas' AND pm.status = 'Aktif' ORDER BY m.id_mapel";
+            $resultMapel = mysqli_query($koneksi, $queryMapel);
+            $mapelList = [];
+            while ($mapel = mysqli_fetch_assoc($resultMapel)) {
+                $mapelList[] = $mapel;
             }
+    ?>
+            <div class="mb-8">
+              <h2 class="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                <i class="ri-folder-open-line text-indigo-500"></i> Kelas: <?= htmlspecialchars($nama_kelas_lengkap); ?>
+              </h2>
 
-            $query = "SELECT 
-                        s.id_siswa, 
-                        s.nama, 
-                        s.nomor_santri, 
-                        r.id_kelas, 
-                        t.id_transaksi,
-                        t.tahun_ajaran,
-                        t.semester, 
-                        s.nama_wali,
-                        a.izin, a.sakit, a.tanpa_keterangan,
-                        k.kelakuan, k.kerajinan, k.kerapian,
-                        c.catatan
-                            FROM riwayat_kelas r
-                            JOIN siswa s ON r.id_siswa = s.id_siswa
-                            LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.tahun_ajaran = r.tahun_ajaran
-                            LEFT JOIN absensi a ON t.id_transaksi = a.id_transaksi
-                            LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
-                            LEFT JOIN catatan_wali_kelas c ON t.id_transaksi = c.id_transaksi
-                            $whereClause
-                            ORDER BY s.nama ASC";
+              <!-- ═══ DESKTOP VIEW (sm+) ═══ -->
+              <div class="hidden sm:block table-scroll-wrap">
+                <table class="ui-table text-xs">
+                  <thead>
+                    <tr>
+                      <th rowspan="2" class="w-12 text-center border-r border-slate-200">No</th>
+                      <th rowspan="2" class="w-24 border-r border-slate-200">No. Induk</th>
+                      <th rowspan="2" class="min-w-[150px] border-r border-slate-200">Nama Santri</th>
+                      <th rowspan="2" class="w-20 text-center border-r border-slate-200">Sem.</th>
+                      
+                      <!-- Mapel header -->
+                      <th colspan="<?= count($mapelList); ?>" class="text-center border-b border-r border-slate-200">Mata Pelajaran</th>
 
-            $result = mysqli_query($koneksi, $query);
+                      <th rowspan="2" class="w-16 text-center border-r border-slate-200">Jml</th>
+                      <th rowspan="2" class="w-16 text-center border-r border-slate-200">Rata2</th>
+                      <th colspan="3" class="text-center border-b border-r border-slate-200">Kepribadian</th>
+                      <th rowspan="2" class="min-w-[150px]">Catatan Wali Kelas</th>
+                      <?php if ($_SESSION['peran'] !== 'Kepala Madrasah' && $_SESSION['peran'] !== 'Wali Kelas'): ?>
+                      <th rowspan="2" class="w-20 text-center">Aksi</th>
+                      <?php endif; ?>
+                    </tr>
+                    <tr>
+                      <?php foreach ($mapelList as $mapel): ?>
+                        <th class="font-semibold text-center border-r border-slate-100"><?= htmlspecialchars($mapel['nama_mapel']); ?></th>
+                      <?php endforeach; ?>
+                      <th class="w-12 text-center border-r border-slate-100">Kel</th>
+                      <th class="w-12 text-center border-r border-slate-100">Ker</th>
+                      <th class="w-12 text-center border-r border-slate-200">Rap</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    $no = 1;
+                    while ($row = mysqli_fetch_assoc($result)):
+                        $idSiswa = $row['id_siswa'];
+                        $idTransaksi = $row['id_transaksi'];
 
-            // Cek apakah ada siswa di kelas ini
-            if (mysqli_num_rows($result) > 0):
-        ?>
-                <div class="mb-8">
-                    <h2 class="text-xl font-bold mb-4">Kelas: <?= htmlspecialchars($nama_kelas_lengkap); ?></h2>
-
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div class="overflow-x-auto">
-                        <?php
-                        // Query untuk mata pelajaran di kelas ini
-                        $queryMapel = "SELECT m.id_mapel, m.nama_mapel FROM mata_pelajaran m JOIN mapel_kelas mk ON m.id_mapel = mk.id_mapel WHERE mk.id_kelas = '$id_kelas' ORDER BY m.id_mapel";
-                        $resultMapel = mysqli_query($koneksi, $queryMapel);
-                        $mapelByKategori = [];
-                        while ($mapel = mysqli_fetch_assoc($resultMapel)) {
-                            $mapelByKategori['Mata Pelajaran'][] = $mapel;
+                        $queryNilai = "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)";
+                        $resultNilai = mysqli_query($koneksi, $queryNilai);
+                        $nilaiMapel = [];
+                        $totalNilai = 0;
+                        $jumlahMapel = 0;
+                        while ($nilai = mysqli_fetch_assoc($resultNilai)) {
+                            $nilaiMapel[$nilai['id_mapel']] = $nilai['nilai_angka'];
+                            $totalNilai += (int)$nilai['nilai_angka'];
+                            $jumlahMapel++;
                         }
-                        ?>
-                        <table id="santriTable_<?= $id_kelas; ?>" class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                            <thead class="text-xs text-slate-700 uppercase bg-slate-50">
-                                <tr>
-                                    <th rowspan="2" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">No Induk</th>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Nama Santri</th>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Semester</th>
+                        $rataRata = $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
+                    ?>
+                    <tr>
+                      <td class="text-center text-slate-400 text-xs border-r border-slate-200"><?= $no++; ?></td>
+                      <td class="font-mono text-xs border-r border-slate-200"><?= htmlspecialchars($row['nomor_santri']); ?></td>
+                      <td class="font-semibold text-slate-800 border-r border-slate-200"><?= htmlspecialchars($row['nama']); ?></td>
+                      <td class="text-center text-slate-500 border-r border-slate-200"><?= $row['semester'] ? $row['semester'] : '-'; ?></td>
+                      
+                      <!-- Nilai mapel cells -->
+                      <?php foreach ($mapelList as $mapel): ?>
+                        <td class="text-center font-bold border-r border-slate-100 text-slate-700">
+                          <?= isset($nilaiMapel[$mapel['id_mapel']]) ? $nilaiMapel[$mapel['id_mapel']] : '-'; ?>
+                        </td>
+                      <?php endforeach; ?>
 
-                                    <!-- Generate kategori header -->
-                                    <?php foreach ($mapelByKategori as $kategori => $mapels): ?>
-                                        <th colspan="<?= count($mapels); ?>" class="py-4 px-6 font-bold border border-slate-300 text-center">
-                                            <?= htmlspecialchars($kategori); ?>
-                                        </th>
-                                    <?php endforeach; ?>
+                      <td class="text-center font-extrabold text-blue-600 border-r border-slate-200"><?= $totalNilai; ?></td>
+                      <td class="text-center font-extrabold text-emerald-600 border-r border-slate-200"><?= round($rataRata, 1); ?></td>
 
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 text-center whitespace-nowrap">Jumlah</th>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 text-center whitespace-nowrap">Rata-rata</th>
-                                    <th colspan="3" class="py-4 px-6 font-bold border border-slate-300 text-center">Kepribadian</th>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Catatan Wali Kelas</th>
-                                    <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-                                    <th rowspan="2" class="py-4 px-6 font-bold border border-slate-300 text-center">Aksi</th>
-                                    <?php endif; ?>
-                                </tr>
-                                <tr>
-                                    <!-- Generate sub-header mapel -->
-                                    <?php foreach ($mapelByKategori as $mapels): ?>
-                                        <?php foreach ($mapels as $mapel): ?>
-                                            <th class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap"><?= htmlspecialchars($mapel['nama_mapel']); ?></th>
-                                        <?php endforeach; ?>
-                                    <?php endforeach; ?>
+                      <td class="text-center font-bold border-r border-slate-100"><?= htmlspecialchars($row['kelakuan'] ?? '-'); ?></td>
+                      <td class="text-center font-bold border-r border-slate-100"><?= htmlspecialchars($row['kerajinan'] ?? '-'); ?></td>
+                      <td class="text-center font-bold border-r border-slate-200"><?= htmlspecialchars($row['kerapian'] ?? '-'); ?></td>
 
-                                    <th class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap text-center">Kelakuan</th>
-                                    <th class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap text-center">Kerajinan</th>
-                                    <th class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap text-center">Kerapihan</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                while ($row = mysqli_fetch_assoc($result)):
-                                    $idSiswa = $row['id_siswa'];
-                                    $idTransaksi = $row['id_transaksi'];
-
-                                    // Ambil nilai siswa dari tabel nilai
-                                    $queryNilai = "SELECT id_mapel, nilai_angka FROM nilai 
-                                                WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)";
-                                    $resultNilai = mysqli_query($koneksi, $queryNilai);
-
-                                    $nilaiMapel = [];
-                                    $totalNilai = 0;
-                                    $jumlahMapel = 0;
-
-                                    while ($nilai = mysqli_fetch_assoc($resultNilai)) {
-                                        $nilaiMapel[$nilai['id_mapel']] = $nilai['nilai_angka'];
-                                        $totalNilai += $nilai['nilai_angka'];
-                                        $jumlahMapel++;
-                                    }
-
-                                    $rataRata = $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
-                                ?>
-                                    <tr class="hover:bg-slate-50 transition-colors group">
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center"><?= $no++; ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?= htmlspecialchars($row['nomor_santri']); ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-medium"><?= htmlspecialchars($row['nama']); ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?= $row['semester'] ? 'Semester ' . $row['semester'] : '-'; ?></td>
-
-                                        <!-- Generate nilai siswa -->
-                                        <?php foreach ($mapelByKategori as $mapels): ?>
-                                            <?php foreach ($mapels as $mapel): ?>
-                                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                                                    <?= isset($nilaiMapel[$mapel['id_mapel']]) ? $nilaiMapel[$mapel['id_mapel']] : '-'; ?>
-                                                </td>
-                                            <?php endforeach; ?>
-                                        <?php endforeach; ?>
-
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center font-bold text-blue-600"><?= $totalNilai; ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center font-bold text-emerald-600"><?= round($rataRata, 2); ?></td>
-
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center"><?= htmlspecialchars($row['kelakuan'] ?? '-'); ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center"><?= htmlspecialchars($row['kerajinan'] ?? '-'); ?></td>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center"><?= htmlspecialchars($row['kerapian'] ?? '-'); ?></td>
-
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-slate-500 italic max-w-[200px] truncate" title="<?= htmlspecialchars($row['catatan'] ?? ''); ?>"><?= htmlspecialchars($row['catatan'] ?? '-'); ?></td>
-                                        <?php if ($_SESSION['peran'] !== 'Kepala Madrasah' && $_SESSION['peran'] !== 'Wali Kelas'): ?>
-                                        <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                                            <div class="flex justify-center space-x-1">
-                                                <?php if ($idTransaksi): ?>
-                                                    <a href="edit_nilai?id=<?= $idTransaksi; ?>" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200" title="Edit">
-                                                        <i class="ri-edit-line text-lg"></i>
-                                                    </a>
-                                                    <a href="data_nilai?hapus=<?= $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200" onclick="return sweetConfirm(event, this, 'Apakah Anda yakin ingin menghapus data ini?');" title="Hapus">
-                                                        <i class="ri-delete-bin-line text-lg"></i>
-                                                    </a>
-                                                <?php else: ?>
-                                                    <a href="tambah_nilai?id_siswa=<?= $idSiswa; ?>" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all duration-200" title="Tambah">
-                                                        <i class="ri-add-line text-lg"></i>
-                                                    </a>
-                                                <?php endif; ?>
-                                            </div>
-                                        </td>
-                                        <?php endif; ?>
-                                    </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                      <td class="text-slate-500 italic max-w-[150px] truncate" title="<?= htmlspecialchars($row['catatan'] ?? ''); ?>"><?= htmlspecialchars($row['catatan'] ?? '-'); ?></td>
+                      
+                      <?php if ($_SESSION['peran'] !== 'Kepala Madrasah' && $_SESSION['peran'] !== 'Wali Kelas'): ?>
+                      <td class="text-center">
+                        <div class="flex justify-center gap-0.5">
+                          <?php if ($idTransaksi): ?>
+                            <a href="edit_nilai.php?id=<?= $idTransaksi; ?>" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50" title="Edit">
+                              <i class="ri-edit-line"></i>
+                            </a>
+                            <a href="hapus_nilai.php?hapus=<?= (int) $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50" onclick="return sweetConfirm(event, this, 'Hapus data nilai?');" title="Hapus">
+                              <i class="ri-delete-bin-line"></i>
+                            </a>
+                          <?php else: ?>
+                            <a href="penilaian_mapel.php" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:text-emerald-600 hover:bg-emerald-50" title="Input Nilai">
+                              <i class="ri-add-line"></i>
+                            </a>
+                          <?php endif; ?>
                         </div>
+                      </td>
+                      <?php endif; ?>
+                    </tr>
+                    <?php endwhile; ?>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- ═══ MOBILE VIEW (below sm) ═══ -->
+              <div class="sm:hidden space-y-3">
+                <?php
+                // Reset pointer & loop again for mobile cards
+                mysqli_data_seek($result, 0);
+                $no_m = 1;
+                while ($row = mysqli_fetch_assoc($result)):
+                    $idSiswa = $row['id_siswa'];
+                    $idTransaksi = $row['id_transaksi'];
+
+                    // fetch nilai
+                    $resultNilai = mysqli_query($koneksi, "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)");
+                    $nilaiMapel = [];
+                    $totalNilai = 0;
+                    $jumlahMapel = 0;
+                    while ($nilai = mysqli_fetch_assoc($resultNilai)) {
+                        $nilaiMapel[$nilai['id_mapel']] = $nilai['nilai_angka'];
+                        $totalNilai += (int)$nilai['nilai_angka'];
+                        $jumlahMapel++;
+                    }
+                    $rataRata = $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
+                    
+                    $inisial = mb_strtoupper(mb_substr($row['nama'], 0, 1, 'UTF-8'));
+                    $colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
+                    $color = $colors[ord($inisial) % 5];
+                ?>
+                <div class="ui-card">
+                  <!-- Card Header -->
+                  <div class="flex items-center justify-between p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full <?= $color ?> flex items-center justify-center text-xs font-bold"><?= $inisial ?></div>
+                      <div class="min-w-0">
+                        <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                        <p class="text-[9px] text-slate-400 font-mono">No. Induk: <?= htmlspecialchars($row['nomor_santri']) ?></p>
+                      </div>
                     </div>
+                    <!-- Sem. & Rata2 badge -->
+                    <div class="flex flex-col items-end shrink-0">
+                      <span class="badge badge-info text-[9px]">Sem. <?= $row['semester'] ?: '-' ?></span>
+                      <span class="text-xs font-extrabold text-emerald-600 mt-1">Rata2: <?= round($rataRata, 1) ?></span>
+                    </div>
+                  </div>
+
+                  <!-- Card Body -->
+                  <div class="p-4 space-y-3">
+                    <!-- Mapel List Grid -->
+                    <div>
+                      <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">Nilai Pelajaran</p>
+                      <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <?php foreach ($mapelList as $mapel): 
+                          $valNilai = $nilaiMapel[$mapel['id_mapel']] ?? '-';
+                          $valInt = (int)$valNilai;
+                          $valColor = $valNilai === '-' ? 'text-slate-400' : ($valInt >= 70 ? 'text-emerald-700' : 'text-amber-700');
+                        ?>
+                          <div class="flex justify-between items-center text-xs">
+                            <span class="text-slate-500 truncate mr-2"><?= htmlspecialchars($mapel['nama_mapel']) ?></span>
+                            <span class="font-bold <?= $valColor ?>"><?= $valNilai ?></span>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+
+                    <!-- Kepribadian & Catatan -->
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center">
+                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
+                        <p class="text-[9px] text-slate-400 font-medium">Kelakuan</p>
+                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kelakuan'] ?? '-') ?></p>
+                      </div>
+                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
+                        <p class="text-[9px] text-slate-400 font-medium">Kerajinan</p>
+                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kerajinan'] ?? '-') ?></p>
+                      </div>
+                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
+                        <p class="text-[9px] text-slate-400 font-medium">Kerapian</p>
+                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kerapian'] ?? '-') ?></p>
+                      </div>
+                    </div>
+
+                    <!-- Catatan display -->
+                    <div class="pt-2.5 border-t border-slate-100">
+                      <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Catatan Wali</p>
+                      <p class="text-xs text-slate-600 italic bg-slate-50 p-2 rounded-lg border border-slate-100"><?= htmlspecialchars($row['catatan'] ?? '-') ?></p>
+                    </div>
+
+                    <!-- Actions for Mobile (only for role != Kepala Madrasah / Wali Kelas) -->
+                    <?php if ($_SESSION['peran'] !== 'Kepala Madrasah' && $_SESSION['peran'] !== 'Wali Kelas'): ?>
+                    <div class="pt-3 border-t border-slate-100 flex gap-2">
+                      <?php if ($idTransaksi): ?>
+                        <a href="edit_nilai.php?id=<?= $idTransaksi; ?>" class="btn btn-secondary btn-sm py-2 flex-1 text-xs justify-center"><i class="ri-edit-line"></i> Edit Nilai</a>
+                        <a href="hapus_nilai.php?hapus=<?= (int) $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="btn btn-secondary btn-sm py-2 flex-1 text-xs text-red-600 border-red-200 bg-red-50 hover:bg-red-100 justify-center" onclick="return sweetConfirm(event, this, 'Hapus data nilai?');"><i class="ri-delete-bin-line"></i> Hapus</a>
+                      <?php else: ?>
+                        <a href="penilaian_mapel.php" class="btn btn-primary btn-sm py-2 flex-1 text-xs justify-center"><i class="ri-add-line"></i> Input Nilai</a>
+                      <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+
+                  </div>
                 </div>
-        <?php
-            endif;
-        endforeach;
-        ?>
-    </div>
+                <?php endwhile; ?>
+              </div>
+
+            </div>
+    <?php
+        endif;
+    endforeach;
+    ?>
+  </div>
 </div>
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function sweetConfirm(event, element, message) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: message,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, lakukan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = element.href;
+        }
+    });
+    return false;
+}
+</script>
 
 <?php include 'include/footer.php'; ?>

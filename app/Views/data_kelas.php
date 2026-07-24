@@ -24,8 +24,8 @@ while ($t = mysqli_fetch_assoc($result_tingkat)) {
 }
 ?>
 
-<div class="p-4 sm:ml-64">
-    <div class="p-4 rounded-lg mt-14">
+<div class="page-shell">
+  <div class="page-inner">
         
         <div class="flex justify-between items-center mb-6">
             <div>
@@ -44,21 +44,70 @@ while ($t = mysqli_fetch_assoc($result_tingkat)) {
 
 
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table id="kelasTable" class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                    <thead class="text-xs text-slate-700 uppercase bg-slate-50">
-                        <tr>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Tingkatan</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Kelas</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Rombel</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Nama Kelas Lengkap</th>
-                            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Wali Kelas</th>
-                            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 whitespace-nowrap">Aksi</th>
-                        </tr>
-                    </thead>
-                <tbody>
+
+    <!-- MOBILE CARD LIST (below sm) -->
+    <div class="sm:hidden space-y-2 mb-4">
+      <?php
+      $query_m = "SELECT k.*, p.nama as nama_wali_kelas, t.nama_tingkat
+                   FROM kelas k
+                   LEFT JOIN pengguna p ON k.id_wali_kelas = p.id_pengguna
+                   LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat
+                   ORDER BY FIELD(t.nama_tingkat, 'Ibtida\'iyah', 'Tsanawiyah', 'Aliyah') ASC, CAST(k.nama_kelas AS UNSIGNED) ASC";
+      $result_m = mysqli_query($koneksi, $query_m);
+      while ($row_m = mysqli_fetch_assoc($result_m)):
+        $tc_m = $row_m['nama_tingkat'] ?? '';
+        $ta_m = $row_m['nama_kelas'];
+        $rd_m = (!isset($row_m['nama_rombel']) || $row_m['nama_rombel'] === '-') ? '' : $row_m['nama_rombel'] . ' ';
+        $sm_m = ['Ibtida\'iyah' => 'MIF', 'Tsanawiyah' => 'MTsF', 'Aliyah' => 'MAF'];
+        $sing_m = $sm_m[$tc_m] ?? $tc_m;
+        $nama_kelas_m = trim($ta_m . ' ' . $rd_m . $sing_m);
+        $inisial_m = mb_strtoupper(mb_substr($row_m['nama_wali_kelas'] ?? 'U', 0, 1));
+      ?>
+      <div class="ui-card px-4 py-3 cursor-pointer"
+           hx-get="data_santri.php?kelas=<?= $row_m['id_kelas'] ?>" hx-target="body" hx-push-url="true">
+        <div class="flex items-center gap-3">
+          <div class="shrink-0 w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-bold">
+            <?= $ta_m ?>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-slate-800 text-sm"><?= htmlspecialchars($nama_kelas_m) ?></p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="badge badge-info text-[10px]"><?= htmlspecialchars($tc_m) ?></span>
+              <span class="text-[10px] text-slate-400"><?= htmlspecialchars($row_m['nama_wali_kelas'] ?? 'Belum Diatur') ?></span>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-0.5" onclick="event.stopPropagation()">
+            <button type="button"
+                    onclick="editKelas(<?= $row_m['id_kelas'] ?>,'<?= addslashes($tc_m) ?>','<?= addslashes($ta_m) ?>','<?= addslashes($row_m['nama_rombel'] ?? '') ?>','<?= addslashes($row_m['id_wali_kelas'] ?? '') ?>')"
+                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50">
+              <i class="ri-edit-line text-base"></i>
+            </button>
+            <a hx-get="hapus_kelas.php?id=<?= $row_m['id_kelas'] ?>&csrf_token=<?= generate_csrf_token() ?>"
+               hx-target="closest div.ui-card" hx-swap="outerHTML swap:1s"
+               hx-confirm="Hapus kelas ini?"
+               class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer">
+              <i class="ri-delete-bin-line text-base"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <?php endwhile; ?>
+    </div>
+
+    <!-- DESKTOP TABLE (sm+) -->
+    <div class="hidden sm:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table id="kelasTable" class="ui-table">
+            <thead>
+              <tr>
+                <th class="w-12 text-center">No</th>
+                <th>Nama Kelas</th>
+                <th>Tingkatan</th>
+                <th>Wali Kelas</th>
+                <th class="text-center w-24">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
                         <?php
                         $query = "SELECT k.*, p.nama as nama_wali_kelas, t.nama_tingkat 
                                   FROM kelas k 
@@ -76,42 +125,42 @@ while ($t = mysqli_fetch_assoc($result_tingkat)) {
                             $singkatan = $singkatan_map[$tingkatan_kategori] ?? $tingkatan_kategori;
                             $nama_kelas_lengkap = trim($tingkatan_angka . ' ' . $rombel_display . $singkatan);
                         ?>
-                            <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" hx-get="data_santri.php?kelas=<?= $row['id_kelas']; ?>" hx-target="body" hx-push-url="true">
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-medium text-slate-900 text-center"><?= $no++; ?></td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-semibold text-slate-700">
-                                    <?= htmlspecialchars($tingkatan_kategori); ?>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap">
-                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-200 shadow-sm">Kelas <?= htmlspecialchars($tingkatan_angka); ?></span>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-extrabold text-blue-700 text-lg">
-                                    <?= ($row['nama_rombel'] === '-') ? '<span class="text-slate-400 text-sm font-normal italic">Tanpa Rombel</span>' : htmlspecialchars($row['nama_rombel'] ?? '-'); ?>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-bold text-slate-900 text-base">
-                                    <?= htmlspecialchars($nama_kelas_lengkap); ?>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-3 font-bold text-xs">
-                                            <?= substr(htmlspecialchars($row['nama_wali_kelas'] ?? 'U'), 0, 1); ?>
-                                        </div>
-                                        <span class="font-medium text-slate-800"><?= htmlspecialchars($row['nama_wali_kelas'] ?? 'Belum Diatur'); ?></span>
-                                    </div>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                                    <button type="button" onclick="event.stopPropagation(); editKelas(<?= $row['id_kelas']; ?>, '<?= addslashes($tingkatan_kategori); ?>', '<?= addslashes($tingkatan_angka); ?>', '<?= addslashes($row['nama_rombel'] ?? ''); ?>', '<?= addslashes($row['id_wali_kelas'] ?? ''); ?>')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2.5 rounded-xl inline-flex items-center transition-colors mr-2 shadow-sm" title="Edit">
-                                        <i class="ri-edit-line text-lg"></i>
-                                    </button>
-                                    <a hx-get="hapus_kelas.php?id=<?= $row['id_kelas']; ?>&csrf_token=<?= generate_csrf_token(); ?>" hx-target="closest tr" hx-swap="outerHTML swap:1s" hx-confirm="Yakin ingin menghapus kelas ini? Tindakan ini tidak dapat dibatalkan." class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl inline-flex items-center transition-colors shadow-sm cursor-pointer" onclick="event.stopPropagation();" title="Hapus">
-                                        <i class="ri-delete-bin-line text-lg"></i>
-                                    </a>
-                                </td>
-                            </tr>
+              <tr class="cursor-pointer" hx-get="data_santri.php?kelas=<?= $row['id_kelas']; ?>" hx-target="body" hx-push-url="true">
+                <td class="text-center text-slate-400 text-xs"><?= $no++; ?></td>
+                <td>
+                  <p class="font-semibold text-slate-800"><?= htmlspecialchars($nama_kelas_lengkap); ?></p>
+                  <p class="text-xs text-slate-400">Kelas <?= htmlspecialchars($tingkatan_angka); ?><?= ($row['nama_rombel'] && $row['nama_rombel'] !== '-') ? ' &bull; Rombel ' . htmlspecialchars($row['nama_rombel']) : ''; ?></p>
+                </td>
+                <td><span class="badge badge-info"><?= htmlspecialchars($tingkatan_kategori); ?></span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0">
+                      <?= mb_strtoupper(mb_substr($row['nama_wali_kelas'] ?? 'U', 0, 1)); ?>
+                    </div>
+                    <span class="text-sm text-slate-700"><?= htmlspecialchars($row['nama_wali_kelas'] ?? 'Belum Diatur'); ?></span>
+                  </div>
+                </td>
+                <td onclick="event.stopPropagation()">
+                  <div class="flex items-center justify-center gap-1">
+                    <button type="button"
+                            onclick="editKelas(<?= $row['id_kelas']; ?>,'<?= addslashes($tingkatan_kategori); ?>','<?= addslashes($tingkatan_angka); ?>','<?= addslashes($row['nama_rombel'] ?? ''); ?>','<?= addslashes($row['id_wali_kelas'] ?? ''); ?>')"
+                            class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50" title="Edit">
+                      <i class="ri-edit-line"></i>
+                    </button>
+                    <a hx-get="hapus_kelas.php?id=<?= $row['id_kelas']; ?>&csrf_token=<?= generate_csrf_token(); ?>"
+                       hx-target="closest tr" hx-swap="outerHTML swap:1s" hx-confirm="Hapus kelas ini?"
+                       class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer" title="Hapus">
+                      <i class="ri-delete-bin-line"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
                         <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>
+            </tbody>
+            </table>
         </div>
+    </div>
+  </div>
 </div>
 
 <!-- ================= MODAL OFFCANVAS TAMBAH KELAS ================= -->

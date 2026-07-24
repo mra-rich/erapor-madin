@@ -1,40 +1,5 @@
 <?php
-require 'koneksi.php';
-require 'cek_sesi.php';
-restrict_roles(RBAC_MANAGE_MASTER_DATA);
-include 'include/header.php';
-include 'include/navbar.php';
-include 'include/sidebar.php';
-
-// Ambil data tingkat
-$query = "SELECT * FROM tingkat_kelas ORDER BY id_tingkat ASC";
-$result = mysqli_query($koneksi, $query);
-
-// Handle tambah
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['tambah_tingkat'])) {
-    $nama_tingkat = mysqli_real_escape_string($koneksi, $_POST['nama_tingkat']);
-    $query_insert = "INSERT INTO tingkat_kelas (nama_tingkat) VALUES ('$nama_tingkat')";
-    if (mysqli_query($koneksi, $query_insert)) {
-        require_once 'logger.php';
-        catat_log($koneksi, $_SESSION['id_pengguna'], 'Tambah Tingkat', "Menambahkan tingkat baru: $nama_tingkat");
-        echo "<script>window.location.href='data_tingkat?status=success&message=Data berhasil ditambahkan';</script>";
-    } else {
-        echo "<script>window.location.href='data_tingkat?status=error&message=Data gagal ditambahkan';</script>";
-    }
-}
-
-// Handle hapus
-if (isset($_GET['hapus'])) {
-    $id_hapus = (int)$_GET['hapus'];
-    $query_hapus = "DELETE FROM tingkat_kelas WHERE id_tingkat = $id_hapus";
-    if (mysqli_query($koneksi, $query_hapus)) {
-        require_once 'logger.php';
-        catat_log($koneksi, $_SESSION['id_pengguna'], 'Hapus Tingkat', "Menghapus tingkat ID: $id_hapus");
-        echo "<script>window.location.href='data_tingkat?status=success&message=Data berhasil dihapus';</script>";
-    } else {
-        echo "<script>window.location.href='data_tingkat?status=error&message=Data gagal dihapus';</script>";
-    }
-}
+$tingkatList = $tingkatList ?? [];
 ?>
 
 <div class="p-4 sm:ml-64">
@@ -62,8 +27,8 @@ if (isset($_GET['hapus'])) {
                 <tbody class="divide-y divide-gray-50">
                     <?php 
                     $no = 1;
-                    if (mysqli_num_rows($result) > 0) {
-                        while ($row = mysqli_fetch_assoc($result)): 
+                    if (count($tingkatList) > 0) {
+                        foreach ($tingkatList as $row):
                     ?>
                         <tr class="hover:bg-slate-50 transition-colors group">
                             <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-medium text-slate-900 text-center"><?php echo $no++; ?></td>
@@ -71,7 +36,7 @@ if (isset($_GET['hapus'])) {
                                 <span class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-3 py-1.5 rounded-full shadow-sm border border-blue-200"><?php echo htmlspecialchars($row['nama_tingkat']); ?></span>
                             </td>
                             <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                                <a href="data_tingkat?hapus=<?php echo $row['id_tingkat']; ?>" onclick="return sweetConfirm(event, this, 'Yakin ingin menghapus? Tingkat ini mungkin digunakan di tabel Kelas dan Mapel!');" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl inline-flex items-center transition-colors shadow-sm cursor-pointer" title="Hapus">
+                                <a href="data_tingkat?hapus=<?php echo (int) $row['id_tingkat']; ?>&csrf_token=<?php echo generate_csrf_token(); ?>" onclick="return sweetConfirm(event, this, 'Yakin ingin menghapus? Tingkat ini mungkin digunakan di tabel Kelas dan Mapel!');" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl inline-flex items-center transition-colors shadow-sm cursor-pointer" title="Hapus">
                                     <i class="ri-delete-bin-line text-lg"></i>
                                 </a>
                             </td>
@@ -103,7 +68,8 @@ if (isset($_GET['hapus'])) {
                 </button>
             </div>
             <div class="p-4 md:p-5">
-                <form class="space-y-4" action="" method="POST">
+                <form class="space-y-4" action="data_tingkat" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
                     <div>
                         <label for="nama_tingkat" class="block mb-2 text-sm font-medium text-gray-900">Nama Tingkat</label>
                         <input type="text" name="nama_tingkat" id="nama_tingkat" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3" placeholder="Contoh: Kelas 1, Kelas 2" required>

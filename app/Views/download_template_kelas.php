@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
 
 $kelas_header_raw = ['TINGKATAN (Aliyah/Tsanawiyah/Ibtida\'iyah)', 'KELAS (Angka: 1/2/3)', 'ROMBEL (A/B/C atau -)', 'WALI_KELAS (NIP/NIK atau Nama)'];
 
@@ -24,6 +24,7 @@ foreach ([$sample_data1, $sample_data2] as $row) {
 }
 
 $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($kelas_data);
+if (ob_get_length()) ob_end_clean();
 $xlsx->downloadAs('template_kelas.xlsx');
 exit;
 ?>

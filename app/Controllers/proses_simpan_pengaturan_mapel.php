@@ -1,9 +1,13 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_MASTER_DATA);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        die("CSRF token validation failed.");
+    }
     $id_kelas = isset($_POST['id_kelas']) ? (int)$_POST['id_kelas'] : 0;
     $status_mapel = isset($_POST['status_mapel']) ? $_POST['status_mapel'] : [];
     $guru_mapel = isset($_POST['guru_mapel']) ? $_POST['guru_mapel'] : [];

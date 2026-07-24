@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_SUPER_ADMIN);
 
 if (!$koneksi) {
@@ -8,6 +9,9 @@ if (!$koneksi) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        die("CSRF token validation failed.");
+    }
     $nama_mapel = mysqli_real_escape_string($koneksi, $_POST['nama_mapel']);
     $nama_mapel_arab = mysqli_real_escape_string($koneksi, $_POST['nama_mapel_arab']);
     $nama_kitab = mysqli_real_escape_string($koneksi, $_POST['nama_kitab']);

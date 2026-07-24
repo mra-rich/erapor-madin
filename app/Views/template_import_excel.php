@@ -2,7 +2,9 @@
 require 'koneksi.php';
 require 'cek_sesi.php';
 restrict_roles(RBAC_VIEW_REPORTS);
-require 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
+
+use Shuchkin\SimpleXLSXGen;
 
 if (!isset($_GET['kelas'])) {
     die("Kelas tidak dipilih.");
@@ -11,11 +13,12 @@ if (!isset($_GET['kelas'])) {
 $id_kelas = (int)$_GET['kelas'];
 
 // Dapatkan nama kelas
-$query_kelas = mysqli_query($koneksi, "SELECT nama_kelas FROM kelas WHERE id_kelas = '$id_kelas'");
-$nama_kelas = mysqli_fetch_assoc($query_kelas)['nama_kelas'] ?? 'Kelas';
+$query_kelas = mysqli_query($koneksi, "SELECT k.nama_kelas, k.nama_rombel, t.nama_tingkat FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat WHERE k.id_kelas = '$id_kelas'");
+$row_k = mysqli_fetch_assoc($query_kelas);
+$nama_kelas = ($row_k['nama_kelas'] ?? '') . ' ' . ($row_k['nama_rombel'] ?? '');
 
-// Query mata pelajaran untuk kelas ini
-$query_mapel = "SELECT id_mapel, nama_mapel FROM mata_pelajaran WHERE id_kelas = '$id_kelas' ORDER BY id_mapel ASC";
+// Query mata pelajaran aktif untuk kelas ini
+$query_mapel = "SELECT DISTINCT m.id_mapel, m.nama_mapel FROM mata_pelajaran m JOIN pengampu_mapel pm ON m.id_mapel = pm.id_mapel WHERE pm.id_kelas = '$id_kelas' AND pm.status = 'Aktif' ORDER BY m.id_mapel ASC";
 $result_mapel = mysqli_query($koneksi, $query_mapel);
 
 $mapel_headers = [];
@@ -90,6 +93,7 @@ while ($siswa = mysqli_fetch_assoc($result_siswa)) {
 }
 
 $xlsx = SimpleXLSXGen::fromArray($data_excel);
+if (ob_get_length()) ob_end_clean();
 $xlsx->downloadAs("Template_Import_Nilai_{$nama_kelas}.xlsx");
 exit;
 ?>

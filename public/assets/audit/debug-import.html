@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="id"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>E-Rapor | MRA Digital Solution</title>
+    
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+
+    <style>
+        .bg-majestic {
+            background-image: url('https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .white-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .dark-glass {
+            background: rgba(6, 78, 59, 0.7); /* Emerald 900 with opacity */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(209, 213, 219, 0.5); /* gray-300 */
+        }
+        .input-field:focus {
+            background: #ffffff;
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Fallback layout saat CSS build gagal dimuat. */
+        .login-shell { width: min(100% - 2rem, 64rem); margin: 2rem auto; display: flex; overflow: hidden; border-radius: 2rem; }
+        .login-visual { width: 41.666667%; padding: 3rem; }
+        .login-panel { width: 58.333333%; padding: 5rem; }
+        @media (max-width: 1023px) {
+            .login-shell { width: calc(100% - 2rem); }
+            .login-visual { display: none; }
+            .login-panel { width: 100%; padding: 2rem; }
+        }
+    </style>
+</head>
+
+<body class="bg-majestic min-h-screen flex items-center justify-center relative font-sans overflow-hidden">
+    
+    <!-- Cinematic Overlays for better background contrast -->
+    <div class="absolute inset-0 bg-emerald-900/40 mix-blend-multiply"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900/60 to-black/30"></div>
+
+    <div class="login-shell w-full max-w-5xl flex flex-col lg:flex-row rounded-[2rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative z-10 m-4 sm:m-8 border border-white/20">
+        
+        <!-- Bagian Kiri: Visual Eksklusif (Dark Glass) -->
+        <div class="login-visual hidden lg:flex lg:w-5/12 dark-glass relative flex-col items-center justify-center p-12 text-center overflow-hidden">
+            <div class="relative z-10 text-white">
+                <div class="inline-flex items-center justify-center w-28 h-28 bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 mb-8 shadow-2xl relative group">
+                    <img src="assets/img/logo.png" alt="Logo" class="w-16 h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] relative z-10 transform group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'">
+                </div>
+                <h1 class="text-5xl font-extrabold font-outfit tracking-tighter mb-2 drop-shadow-lg">E-Rapor</h1>
+                <h2 class="text-sm font-bold text-emerald-300 tracking-[0.2em] uppercase mb-8">MRA Digital Solution</h2>
+                
+                <div class="w-12 h-1 bg-emerald-400 mx-auto rounded-full opacity-80"></div>
+                
+                <p class="mt-8 text-emerald-50 font-medium leading-relaxed max-w-sm mx-auto text-base">
+                    Platform digitalisasi rapor dan pemantauan akademik santri yang terintegrasi secara profesional.
+                </p>
+            </div>
+            
+            <!-- Dekorasi Garis -->
+            <div class="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+        </div>
+
+        <!-- Bagian Kanan: Form Login (White Glass - TERANG & JELAS) -->
+        <div class="login-panel w-full lg:w-7/12 p-8 sm:p-12 lg:p-20 relative flex items-center justify-center white-glass">
+            <div class="w-full max-w-md relative z-10">
+                
+                <div class="lg:hidden text-center mb-10">
+                    <img src="assets/img/logo.png" alt="Logo" class="w-20 h-20 mx-auto mb-4 drop-shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'">
+                    <h1 class="text-3xl font-extrabold text-emerald-900 font-outfit">E-Rapor</h1>
+                </div>
+
+                <div class="mb-10 text-center lg:text-left">
+                    <h2 class="text-3xl font-bold font-outfit mb-3 text-gray-900">Sign In</h2>
+                    <p class="text-gray-500 font-medium">Silakan masuk ke akun Anda untuk mengakses dashboard.</p>
+                </div>
+
+                <form action="proses_login" method="POST" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="00164d508935d7c8eb8d5ee484f56ce4174048c6dbfbf37b4e194af8cf18e555">
+                    
+                    <div class="group">
+                        <label for="username" class="block text-sm font-bold text-gray-700 mb-2 transition-colors group-focus-within:text-emerald-600">Username</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                <i class="ri-user-3-line text-gray-400 group-focus-within:text-emerald-600 transition-colors text-lg"></i>
+                            </div>
+                            <input type="text" name="username" id="username" class="input-field w-full pl-12 pr-4 py-4 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none transition-all font-semibold" placeholder="Masukkan username" required="">
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <label for="password" class="block text-sm font-bold text-gray-700 mb-2 transition-colors group-focus-within:text-emerald-600">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                                <i class="ri-lock-2-line text-gray-400 group-focus-within:text-emerald-600 transition-colors text-lg"></i>
+                            </div>
+                            <input type="password" name="password" id="password" class="input-field w-full pl-12 pr-12 py-4 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none transition-all font-semibold" placeholder="••••••••" required="">
+                            <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-emerald-600 transition-colors z-10">
+                                <i id="eye-icon" class="ri-eye-off-line text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-[0_10px_20px_rgba(5,150,105,0.3)] hover:shadow-[0_10px_25px_rgba(5,150,105,0.4)] transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                            <span class="text-lg">Masuk Sekarang</span>
+                            <i class="ri-arrow-right-line text-xl group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-14 text-center">
+                    <p class="text-xs text-gray-500 font-semibold tracking-wide">
+                        © 2026 MRA Digital Solution. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const icon = document.getElementById('eye-icon');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                icon.classList.remove('ri-eye-off-line');
+                icon.classList.add('ri-eye-line');
+            } else {
+                pwd.type = 'password';
+                icon.classList.remove('ri-eye-line');
+                icon.classList.add('ri-eye-off-line');
+            }
+        }
+    </script>
+
+</body></html>

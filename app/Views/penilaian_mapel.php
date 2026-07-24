@@ -53,84 +53,132 @@ if ($peran == 'Admin' || $peran == 'Kepala Madrasah') {
 }
 
 $result_mapel = mysqli_query($koneksi, $query_mapel);
+$mapel_list = [];
+if ($result_mapel) {
+    while ($row = mysqli_fetch_assoc($result_mapel)) {
+        $mapel_list[] = $row;
+    }
+}
 ?>
 
-<div class="p-4 sm:ml-64 bg-slate-50 min-h-screen">
-    <div class="p-4 rounded-lg mt-14 max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-            <div>
-                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">Kelas & Penilaian</h2>
-                <p class="text-sm text-slate-500 mt-1">
-                    Semester Aktif: <span class="font-bold text-emerald-600"><?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> (<?= htmlspecialchars($tahun_aktif) ?>)</span>
-                </p>
-            </div>
-        </div>
-
-        <?php if (mysqli_num_rows($result_mapel) > 0): ?>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-                        <thead class="text-xs text-slate-700 uppercase bg-slate-50">
-                            <tr>
-                                <th scope="col" class="py-4 px-6 font-bold text-center w-16 border border-slate-300">No</th>
-                                <th scope="col" class="py-4 px-6 font-bold border border-slate-300">Kelas</th>
-                                <th scope="col" class="py-4 px-6 font-bold border border-slate-300">Mata Pelajaran / Kitab</th>
-                                <th scope="col" class="py-4 px-6 font-bold border border-slate-300">Nama Guru</th>
-                                <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300">Status</th>
-                                <th scope="col" class="py-4 px-6 font-bold text-center w-40 border border-slate-300">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no = 1; while ($row = mysqli_fetch_assoc($result_mapel)): 
-                                $tingkatan_kategori = $row['nama_tingkat'] ?? '';
-                                $tingkatan_angka = $row['nama_kelas'];
-                                $rombel_display = (!isset($row['nama_rombel']) || $row['nama_rombel'] === '-') ? '' : $row['nama_rombel'] . ' ';
-                                $singkatan_map = ['Ibtida\'iyah' => 'MIF', 'Tsanawiyah' => 'MTsF', 'Aliyah' => 'MAF'];
-                                $singkatan = $singkatan_map[$tingkatan_kategori] ?? $tingkatan_kategori;
-                                $nama_kelas_lengkap = trim($tingkatan_angka . ' ' . $rombel_display . $singkatan);
-                                
-                                $status_badge = $row['jumlah_nilai'] > 0 
-                                    ? '<span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full"><i class="ri-check-line mr-1"></i>Sudah Dinilai</span>'
-                                    : '<span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full"><i class="ri-time-line mr-1"></i>Belum Dinilai</span>';
-                            ?>
-                            <tr class="hover:bg-slate-50 transition-colors group">
-                                <td class="py-2 px-6 text-center font-medium text-slate-900 border border-slate-300"><?= $no++ ?></td>
-                                <td class="py-2 px-6 border border-slate-300">
-                                    <span class="bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-lg border border-emerald-100"><?= htmlspecialchars($nama_kelas_lengkap) ?></span>
-                                </td>
-                                <td class="py-2 px-6 font-bold text-slate-800 border border-slate-300">
-                                    <?= htmlspecialchars($row['nama_mapel']) ?>
-                                    <?php if (!empty($row['nama_kitab'])): ?>
-                                    <span class="text-slate-500 font-normal text-sm ml-1">| <?= htmlspecialchars($row['nama_kitab']) ?></span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="py-2 px-6 border border-slate-300">
-                                    <div class="font-semibold text-slate-700"><?= htmlspecialchars($row['nama_guru']) ?></div>
-                                </td>
-                                <td class="py-2 px-6 text-center border border-slate-300">
-                                    <?= $status_badge ?>
-                                </td>
-                                <td class="py-2 px-6 text-center border border-slate-300">
-                                    <a href="input_nilai_massal?id_mapel=<?= $row['id_mapel'] ?>&id_kelas=<?= $row['id_kelas'] ?>" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold rounded-lg text-xs px-4 py-2 shadow-md shadow-blue-500/30 transition-all inline-flex items-center">
-                                        <i class="ri-pencil-fill mr-1"></i> Input
-                                    </a>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        <?php else: ?>
-            <div class="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-12 text-center">
-                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="ri-folder-info-line text-4xl text-slate-400"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800 mb-2">Belum Ada Kelas yang Diampu</h3>
-                <p class="text-slate-500 max-w-md mx-auto">Anda belum ditetapkan sebagai pengampu mata pelajaran apapun. Silakan hubungi Administrator untuk pengaturan jadwal mengajar.</p>
-            </div>
-        <?php endif; ?>
+<div class="page-shell">
+  <div class="page-inner">
+    
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="page-title">Kelas &amp; Penilaian</h1>
+      <p class="page-subtitle">
+        Semester Aktif: <span class="font-bold text-emerald-600"><?= $semester_aktif == 1 ? 'Ganjil' : 'Genap' ?> (<?= htmlspecialchars($tahun_aktif) ?>)</span>
+      </p>
     </div>
+
+    <?php if (count($mapel_list) > 0): ?>
+
+      <!-- ═══ DESKTOP VIEW (sm+) ═══ -->
+      <div class="hidden sm:block table-scroll-wrap">
+        <table class="ui-table">
+          <thead>
+            <tr>
+              <th class="w-12 text-center">No</th>
+              <th class="w-32">Kelas</th>
+              <th>Mata Pelajaran / Kitab</th>
+              <th>Nama Guru</th>
+              <th class="w-36 text-center">Status</th>
+              <th class="w-24 text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+            $no = 1; 
+            foreach ($mapel_list as $row): 
+              $tingkatan_kategori = $row['nama_tingkat'] ?? '';
+              $tingkatan_angka = $row['nama_kelas'];
+              $rombel_display = (!isset($row['nama_rombel']) || $row['nama_rombel'] === '-') ? '' : $row['nama_rombel'] . ' ';
+              $singkatan_map = ['Ibtida\'iyah' => 'MIF', 'Tsanawiyah' => 'MTsF', 'Aliyah' => 'MAF'];
+              $singkatan = $singkatan_map[$tingkatan_kategori] ?? $tingkatan_kategori;
+              $nama_kelas_lengkap = trim($tingkatan_angka . ' ' . $rombel_display . $singkatan);
+            ?>
+            <tr>
+              <td class="text-center text-slate-400 text-xs"><?= $no++ ?></td>
+              <td>
+                <span class="badge badge-success font-bold text-xs"><?= htmlspecialchars($nama_kelas_lengkap) ?></span>
+              </td>
+              <td>
+                <p class="font-semibold text-slate-800"><?= htmlspecialchars($row['nama_mapel']) ?></p>
+                <?php if (!empty($row['nama_kitab'])): ?>
+                <p class="text-xs text-slate-400">Kitab: <?= htmlspecialchars($row['nama_kitab']) ?></p>
+                <?php endif; ?>
+              </td>
+              <td class="text-slate-600 font-medium"><?= htmlspecialchars($row['nama_guru']) ?></td>
+              <td class="text-center">
+                <?php if ($row['jumlah_nilai'] > 0): ?>
+                  <span class="badge badge-success"><i class="ri-checkbox-circle-line"></i> Sudah Dinilai</span>
+                <?php else: ?>
+                  <span class="badge badge-warning"><i class="ri-time-line"></i> Belum Dinilai</span>
+                <?php endif; ?>
+              </td>
+              <td class="text-center">
+                <a href="input_nilai_massal.php?id_mapel=<?= $row['id_mapel'] ?>&id_kelas=<?= $row['id_kelas'] ?>" class="btn btn-primary btn-sm py-1.5 px-3">
+                  <i class="ri-pencil-line"></i> Input
+                </a>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ═══ MOBILE VIEW (below sm) ═══ -->
+      <div class="sm:hidden space-y-3">
+        <?php 
+        $no = 1; 
+        foreach ($mapel_list as $row): 
+          $tingkatan_kategori = $row['nama_tingkat'] ?? '';
+          $tingkatan_angka = $row['nama_kelas'];
+          $rombel_display = (!isset($row['nama_rombel']) || $row['nama_rombel'] === '-') ? '' : $row['nama_rombel'] . ' ';
+          $singkatan_map = ['Ibtida\'iyah' => 'MIF', 'Tsanawiyah' => 'MTsF', 'Aliyah' => 'MAF'];
+          $singkatan = $singkatan_map[$tingkatan_kategori] ?? $tingkatan_kategori;
+          $nama_kelas_lengkap = trim($tingkatan_angka . ' ' . $rombel_display . $singkatan);
+        ?>
+        <div class="ui-card p-4 space-y-3">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-bold text-slate-800 text-base leading-tight"><?= htmlspecialchars($row['nama_mapel']) ?></p>
+              <?php if (!empty($row['nama_kitab'])): ?>
+              <p class="text-xs text-slate-500 mt-1"><i class="ri-book-3-line"></i> <?= htmlspecialchars($row['nama_kitab']) ?></p>
+              <?php endif; ?>
+            </div>
+            <span class="badge badge-success shrink-0 font-bold text-xs"><?= htmlspecialchars($nama_kelas_lengkap) ?></span>
+          </div>
+
+          <div class="flex flex-col gap-1 text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <p><span class="font-semibold text-slate-400">Guru:</span> <?= htmlspecialchars($row['nama_guru']) ?></p>
+            <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-50">
+              <div>
+                <?php if ($row['jumlah_nilai'] > 0): ?>
+                  <span class="badge badge-success text-[10px]"><i class="ri-checkbox-circle-line"></i> Sudah Dinilai</span>
+                <?php else: ?>
+                  <span class="badge badge-warning text-[10px]"><i class="ri-time-line"></i> Belum Dinilai</span>
+                <?php endif; ?>
+              </div>
+              <a href="input_nilai_massal.php?id_mapel=<?= $row['id_mapel'] ?>&id_kelas=<?= $row['id_kelas'] ?>" class="btn btn-primary btn-sm py-1.5 px-4 text-xs">
+                <i class="ri-pencil-line"></i> Input Nilai
+              </a>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+      </div>
+
+    <?php else: ?>
+      <div class="ui-empty-state">
+        <div class="ui-empty-icon"><i class="ri-folder-info-line text-2xl"></i></div>
+        <h3 class="text-lg font-bold text-slate-700 mb-1">Belum Ada Kelas Diampu</h3>
+        <p class="text-sm text-slate-400 max-w-sm">Anda belum ditugaskan sebagai pengampu mata pelajaran kelas mana pun.</p>
+      </div>
+    <?php endif; ?>
+
+  </div>
 </div>
 
 <?php include 'include/footer.php'; ?>

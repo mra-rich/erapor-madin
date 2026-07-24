@@ -6,15 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard E-Rapor</title>
   <?php
-    // Base URL untuk asset (relatif terhadap root project)
-    // .htaccess sudah handle rewrite: assets/* → public/assets/*, css/* → public/css/*
-    // Jadi kita cukup pakai path relatif.
-    $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-    $assetBase = rtrim($scriptDir, '/');
-    if (str_contains($assetBase, '/public')) {
-        $assetBase = dirname($assetBase);
-    }
-    $assetBase = rtrim($assetBase, '/') . '/';
+    // Aset selalu dilayani dari root publik oleh Apache, Vercel, dan router development.
+    // Hindari `//css/...`, yang browser tafsirkan sebagai URL ke host bernama `css`.
+    $assetBase = '/';
   ?>
   <link rel="icon" type="image/x-icon" href="<?= $assetBase ?>assets/img/logo.png">
   <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />

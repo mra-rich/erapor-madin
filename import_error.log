@@ -1,4 +1,0 @@
-MySQL Error: Cannot add or update a child row: a foreign key constraint fails (`e_raport`.`siswa`, CONSTRAINT `fk_siswa_kelas` FOREIGN KEY (`id_kelas`) REFERENCES `kelas` (`id_kelas`) ON DELETE SET NULL)
-Query: INSERT INTO siswa (nisn, nama, tempat_lahir, tanggal_lahir, jenis_kelamin, status_dalam_keluarga, anak_ke, nomor_santri, id_kelas, tahun_ajaran, alamat, sekolah_asal, diterima_di_kelas, diterima_pada_tanggal, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, alamat_orang_tua, nama_wali, pekerjaan_wali, no_handphone, status) 
-                      VALUES ('0012345678', 'Ahmad Budi', 'Jakarta', '2010-05-15', 'L', 'Anak Kandung', 1, 'SNT-001', 1, '1446/1447', 'Jl. Mawar No. 5', 'SDN 1 Jakarta', '1', '2022-07-15', 'Budi Santoso', 'Siti Aminah', 'Wiraswasta', 'Ibu Rumah Tangga', 'Jl. Mawar No. 5', '', '', '081234567890', 'Aktif')
-

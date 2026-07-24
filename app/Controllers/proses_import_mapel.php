@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 
 restrict_roles(['Admin']);
 
@@ -11,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
     echo json_encode(['success' => false, 'message' => 'CSRF Token tidak valid']);
     exit;
 }

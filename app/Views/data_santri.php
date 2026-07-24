@@ -45,19 +45,19 @@ include 'include/navbar.php';
 include 'include/sidebar.php';
 ?>
 
-<div class="p-4 sm:ml-64">
-  <div class="p-4 border-2 border-transparent mt-14">
+<div class="page-shell">
+  <div class="page-inner">
     
     <!-- Header Halaman -->
     <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">Data Santri</h1>
-        <p class="text-sm text-gray-500 mt-1">Kelola data induk santri, import dari excel, dan export data.</p>
+        <h1 class="page-title">Data Santri</h1>
+        <p class="page-subtitle">Kelola data induk santri, import dari excel, dan export data.</p>
       </div>
       <!-- Tombol Aksi Kanan Atas -->
       <div class="flex flex-wrap items-center gap-2">
         <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-        <button type="button" onclick="openOffcanvas('offcanvas-tambah-siswa')" class="inline-flex justify-center items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-sm text-sm">
+        <button type="button" onclick="openOffcanvas('offcanvas-tambah-siswa')" class="btn btn-primary btn-sm">
           <i class="ri-user-add-line mr-1.5 text-base"></i> Tambah
         </button>
         <?php endif; ?>
@@ -67,11 +67,11 @@ include 'include/sidebar.php';
               $export_url .= "?kelas=" . (int)$_GET['kelas'];
           }
         ?>
-        <a href="<?= $export_url ?>" target="_blank" download="Data_Santri.xls" class="inline-flex justify-center items-center px-4 py-2 text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 focus:ring-2 focus:ring-indigo-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+        <a href="<?= $export_url ?>" target="_blank" download="Data_Santri.xls" class="btn btn-secondary btn-sm text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100">
           <i class="ri-file-download-line mr-1.5 text-base"></i> Export
         </a>
         <?php if ($_SESSION['peran'] === 'Admin'): ?>
-          <button type="button" onclick="openOffcanvas('offcanvas-import-siswa')" class="inline-flex justify-center items-center px-4 py-2 text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 focus:ring-2 focus:ring-emerald-300 font-medium rounded-lg text-sm transition-colors shadow-sm">
+          <button type="button" onclick="openOffcanvas('offcanvas-import-siswa')" class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
             <i class="ri-file-excel-2-line mr-1.5 text-base"></i> Import
           </button>
         <?php endif; ?>
@@ -82,7 +82,7 @@ include 'include/sidebar.php';
 
 
     <!-- Toolbar: Search kiri + Filter Kelas kanan -->
-    <div class="mb-4 flex flex-wrap gap-3 items-center bg-white px-4 py-3 rounded-lg border border-gray-200 shadow-sm">
+    <div class="ui-card ui-card-body mb-4 flex flex-wrap gap-3 items-center">
 
         <!-- Search Box (Auto-submit) — di KIRI -->
         <div class="relative w-full md:w-64">
@@ -137,20 +137,67 @@ include 'include/sidebar.php';
     </div>
 
 
-    <!-- DataTable -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <!-- MOBILE CARD LIST (below sm) -->
+    <div class="sm:hidden space-y-2 mb-4">
+      <?php
+      $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
+      $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
+      while ($row_m = mysqli_fetch_assoc($result2)):
+        $inisial = mb_strtoupper(mb_substr($row_m['nama'], 0, 1, 'UTF-8'));
+        $color = $avatar_colors[ord($inisial) % 5];
+      ?>
+      <div class="ui-card px-4 py-3 <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>cursor-pointer active:bg-slate-50<?php endif; ?>"
+           <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>onclick="openEditSantri(<?= $row_m['id_siswa'] ?>)"<?php endif; ?>>
+        <div class="flex items-center gap-3">
+          <div class="shrink-0 w-10 h-10 rounded-full <?= $color ?> flex items-center justify-center text-sm font-bold select-none">
+            <?= $inisial ?>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-slate-800 text-sm truncate"><?= htmlspecialchars($row_m['nama']) ?></p>
+            <div class="flex items-center flex-wrap gap-x-2 gap-y-0 mt-0.5">
+              <span class="text-xs text-slate-400 font-mono"><?= htmlspecialchars($row_m['nomor_santri']) ?></span>
+              <?php if (!empty($row_m['nama_kelas'])): ?>
+              <span class="text-xs text-blue-600 font-medium"><?= htmlspecialchars($row_m['nama_kelas']) ?></span>
+              <?php endif; ?>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-0.5" onclick="event.stopPropagation()">
+            <button type="button" onclick="openDetailSantri(<?= $row_m['id_siswa'] ?>)"
+                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-emerald-600 hover:bg-emerald-50">
+              <i class="ri-eye-line text-base"></i>
+            </button>
+            <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+            <button type="button" onclick="openEditSantri(<?= $row_m['id_siswa'] ?>)"
+                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50">
+              <i class="ri-edit-line text-base"></i>
+            </button>
+            <?php endif; ?>
+            <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+            <a hx-get="hapus_santri.php?id=<?= $row_m['id_siswa'] ?>&konfirmasi=ya&csrf_token=<?= generate_csrf_token() ?>"
+               hx-target="body" hx-confirm="Hapus <?= htmlspecialchars($row_m['nama']) ?>?"
+               class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer">
+              <i class="ri-delete-bin-line text-base"></i>
+            </a>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+      <?php endwhile; ?>
+    </div>
+
+    <!-- DESKTOP TABLE (sm+) -->
+    <div class="hidden sm:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
         <div class="overflow-x-auto">
-      <table id="santriTable" class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
-        <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+      <table id="santriTable" class="ui-table">
+        <thead>
           <tr>
-            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 w-16">No</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Nama</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">No. Induk</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Kelas</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Tahun Ajaran</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Alamat</th>
-            <th scope="col" class="py-4 px-6 font-bold border border-slate-300 whitespace-nowrap">Nama Wali</th>
-            <th scope="col" class="py-4 px-6 font-bold text-center border border-slate-300 whitespace-nowrap">Aksi</th>
+            <th class="w-12 text-center">No</th>
+            <th>Nama</th>
+            <th>No. Induk</th>
+            <th>Kelas</th>
+            <th>Tahun Ajaran</th>
+            <th>Nama Wali</th>
+            <th class="text-center w-28">Aksi</th>
           </tr>
         </thead>
         <tbody>
@@ -158,29 +205,34 @@ include 'include/sidebar.php';
           $no = ($page - 1) * $per_page + 1;
           while ($row = mysqli_fetch_assoc($result)) :
           ?>
-            <tr class="hover:bg-slate-50 transition-colors group <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>cursor-pointer<?php endif; ?>" <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>onclick="openEditSantri(<?= $row['id_siswa']; ?>)"<?php endif; ?>>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center font-medium text-slate-900"><?= $no++; ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-bold text-slate-900"><?= htmlspecialchars($row['nama']); ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><span class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md text-xs font-semibold font-mono"><?= htmlspecialchars($row['nomor_santri']); ?></span></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap font-medium text-blue-600"><?= htmlspecialchars($row['nama_kelas'] ?? 'Belum Ada Kelas'); ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?= htmlspecialchars($row['tahun_ajaran']); ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-slate-500 truncate max-w-[200px]" title="<?= htmlspecialchars($row['alamat'] ?? '-'); ?>"><?= htmlspecialchars($row['alamat'] ?? '-'); ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap"><?= htmlspecialchars($row['nama_wali']); ?></td>
-              <td class="py-2 px-6 border border-slate-300 whitespace-nowrap text-center">
-                <div class="flex justify-center space-x-1">
-                    <button type="button" onclick="event.stopPropagation(); openDetailSantri(<?= $row['id_siswa']; ?>)" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all duration-200" title="Detail">
-                        <i class="ri-eye-line text-lg"></i>
-                    </button>
-                    <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-                    <button type="button" onclick="event.stopPropagation(); openEditSantri(<?= $row['id_siswa']; ?>)" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200" title="Edit">
-                        <i class="ri-edit-line text-lg"></i>
-                    </button>
-                    <?php endif; ?>
-                    <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-                    <a hx-get="hapus_santri.php?id=<?= $row['id_siswa']; ?>&konfirmasi=ya&csrf_token=<?= generate_csrf_token(); ?>" hx-target="closest tr" hx-swap="outerHTML swap:1s" hx-confirm="Apakah Anda yakin ingin menghapus data ini?" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 cursor-pointer" onclick="event.stopPropagation();" title="Hapus">
-                        <i class="ri-delete-bin-line text-lg"></i>
-                    </a>
-                    <?php endif; ?>
+            <tr class="<?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>cursor-pointer<?php endif; ?>"
+                <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>onclick="openEditSantri(<?= $row['id_siswa'] ?>)"<?php endif; ?>>
+              <td class="text-center text-slate-400 text-xs"><?= $no++ ?></td>
+              <td><p class="font-semibold text-slate-800"><?= htmlspecialchars($row['nama']) ?></p></td>
+              <td><span class="badge badge-neutral font-mono"><?= htmlspecialchars($row['nomor_santri']) ?></span></td>
+              <td class="font-medium text-blue-600 text-sm"><?= htmlspecialchars($row['nama_kelas'] ?? 'Belum Ada Kelas') ?></td>
+              <td class="text-slate-500"><?= htmlspecialchars($row['tahun_ajaran']) ?></td>
+              <td class="text-slate-600"><?= htmlspecialchars($row['nama_wali']) ?></td>
+              <td onclick="event.stopPropagation()">
+                <div class="flex justify-center gap-1">
+                  <button type="button" onclick="openDetailSantri(<?= $row['id_siswa'] ?>)"
+                          class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-emerald-600 hover:bg-emerald-50" title="Detail">
+                    <i class="ri-eye-line"></i>
+                  </button>
+                  <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+                  <button type="button" onclick="openEditSantri(<?= $row['id_siswa'] ?>)"
+                          class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50" title="Edit">
+                    <i class="ri-edit-line"></i>
+                  </button>
+                  <?php endif; ?>
+                  <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+                  <a hx-get="hapus_santri.php?id=<?= $row['id_siswa'] ?>&konfirmasi=ya&csrf_token=<?= generate_csrf_token() ?>"
+                     hx-target="closest tr" hx-swap="outerHTML swap:1s" hx-confirm="Hapus santri ini?"
+                     onclick="event.stopPropagation();"
+                     class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer" title="Hapus">
+                    <i class="ri-delete-bin-line"></i>
+                  </a>
+                  <?php endif; ?>
                 </div>
               </td>
             </tr>

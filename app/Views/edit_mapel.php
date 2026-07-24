@@ -1,6 +1,7 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_SUPER_ADMIN);
 
 // Cek apakah ada ID mapel
@@ -58,6 +59,7 @@ $tingkat_result = mysqli_query($koneksi, $tingkat_query);
                 <?php endif; ?>
 
                 <form action="proses_edit_mapel" method="POST" class="space-y-6">
+                    <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
                     <input type="hidden" name="id_mapel" value="<?= $mapel['id_mapel']; ?>">
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

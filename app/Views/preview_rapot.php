@@ -131,6 +131,31 @@ function getDeskripsiKepribadian($nilai) {
             box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
             page-break-after: always;
             position: relative;
+            transform-origin: top left;
+        }
+
+        /* Responsive Viewport Wrapper untuk Layar Kecil (Mobile/Tablet) */
+        .preview-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+            padding: 15px;
+            box-sizing: border-box;
+            display: block;
+            position: relative;
+        }
+
+        @media (max-width: 21.5cm) {
+            body {
+                background-color: #f1f5f9;
+            }
+            .preview-wrapper {
+                padding: 10px;
+            }
+            .page {
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
 
         h1 {
@@ -242,6 +267,7 @@ function getDeskripsiKepribadian($nilai) {
         <p style="margin-top:5px; font-size:12px; font-weight:normal;">Tekan tombol di atas untuk mencetak dokumen.</p>
     </div>
 
+    <div class="preview-wrapper">
     <?php 
         $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
         $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
@@ -263,9 +289,9 @@ function getDeskripsiKepribadian($nilai) {
         $total_nilai = 0;
         $absensi = ['sakit' => 0, 'izin' => 0, 'tanpa_keterangan' => 0];
         $kepribadian = ['kelakuan' => '-', 'kerajinan' => '-', 'kerapian' => '-'];
-        $ekskul = ['pramuka' => '-', 'pmr' => '-', 'paskibra' => '-'];
+        $ekskul = ['baca_quran' => '-', 'baca_kitab' => '-', 'muhafadhoh' => '-', 'kaligrafi' => '-'];
         $catatan = ['catatan' => ''];
-
+        
         if ($id_transaksi) {
             $query_nilai = mysqli_query($koneksi, "
                 SELECT mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka 
@@ -287,142 +313,181 @@ function getDeskripsiKepribadian($nilai) {
             if ($c = mysqli_fetch_assoc($query_cat)) $catatan = $c;
         }
     ?>
-
-    <?php if ($id_transaksi): ?>
-    <div class="page" id="laporan-container">
-        <!-- Kop Surat -->
-        <div style="text-align: center; margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
-            <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
-            <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
-        </div>
-
-        <h1>LAPORAN HASIL BELAJAR</h1>
-
-        <div class="header-info">
-            <table class="info-table">
-                <tr>
-                    <td class="info-label">Nama Santri</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['nama']) ?></td>
-                    <td class="info-label">Kelas</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['nama_kelas']) ?></td>
-                </tr>
-                <tr>
-                    <td class="info-label">Nomor Induk</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['nomor_santri']) ?></td>
-                    <td class="info-label">Tahun Pelajaran</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['tahun_ajaran']) ?></td>
-                </tr>
-            </table>
-        </div>
-
-        <table>
-            <tr>
-                <th rowspan="2">No</th>
-                <th rowspan="2">Mata Pelajaran</th>
-                <th rowspan="2">KKM</th>
-                <th colspan="3">Hasil Tes</th>
-                <th colspan="2" class="arabic"> نتائج التمرين الأول </th>
-                <th class="arabic" rowspan="2">الفنون</th>
-                <th class="arabic" rowspan="2">الرقم</th>
-            </tr>
-            <tr>
-                <th>Angka</th>
-                <th>Predikat</th>
-                <th>Huruf</th>
-                <th class="arabic">اللفظ</th>
-                <th class="arabic">الرقم</th>
-            </tr>
-            
-            <tr class="section-header">
-                <td colspan="10" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
-            </tr>
-            <?php 
-            $no = 1;
-            foreach ($semua_nilai as $n) { 
-                $angka = (int)$n['nilai_angka'];
-            ?>
-            <tr>
-                <td><?= $no ?></td>
-                <td style="text-align:left;"><?= htmlspecialchars($n['nama_mapel']) ?></td>
-                <td><?= htmlspecialchars($n['kkm'] ?? '65') ?></td>
-                <td><?= $angka ?></td>
-                <td style="font-weight:bold;"><?= getPredikat($angka) ?></td>
-                <td><?= konversiNilaiKeHuruf($angka) ?></td>
-                <td class="arabic"><?= angkaKeHurufArab($angka) ?></td>
-                <td class="arabic"><?= angkaKeArab($angka) ?></td>
-                <td class="arabic"><?= htmlspecialchars($n['nama_mapel_arab']) ?></td>
-                <td class="arabic"><?= angkaKeArab($no++) ?></td>
-            </tr>
-            <?php } ?>
-
-            <tr style="font-weight:bold; background-color:#f9f9f9;">
-                <td colspan="2">JUMLAH</td>
-                <td></td>
-                <td><?= $total_nilai ?></td>
-                <td></td>
-                <td><?= konversiNilaiKeHuruf($total_nilai) ?></td>
-                <td class="arabic"><?= angkaKeHurufArab($total_nilai) ?></td>
-                <td class="arabic"><?= angkaKeArab($total_nilai) ?></td>
-                <td class="arabic"></td>
-                <td colspan="2" class="arabic">الجملة</td>
-            </tr>
-            <tr style="font-weight:bold; background-color:#f9f9f9;">
-                <td colspan="2">RANGKING</td>
-                <td></td><td></td><td></td><td></td><td></td><td></td>
-                <td colspan="2" class="arabic">المقام/ة</td>
-            </tr>
-        </table>
-
-        <?php if ($semester == 2): ?>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
-            <tr>
-                <td style="border:1px solid #000; padding:10px;">
-                    <strong>Keputusan:</strong><br>
-                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
-                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
-                </td>
-            </tr>
-        </table>
-        <?php endif; ?>
-
-        <div class="footer">
-            <div>
-                <table>
-                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
-                    <tr><td>1</td><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
-                </table>
-            </div>
-            <div>
-                <table>
-                    <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td><td colspan="2" class="arabic" style="background-color:#f2f2f2;">الغياب</td></tr>
-                    <tr><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit']) ?></td><td class="arabic"><?= angkaKeArab($absensi['sakit']) ?></td><td class="arabic">مريض</td></tr>
-                    <tr><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin']) ?></td><td class="arabic"><?= angkaKeArab($absensi['izin']) ?></td><td class="arabic">إذن</td></tr>
-                    <tr><td style="text-align:left;">Tanpa Keterangan</td><td><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td><td class="arabic"><?= angkaKeArab($absensi['tanpa_keterangan']) ?></td><td class="arabic">غائب</td></tr>
-                </table>
-            </div>
-            <div>
-                <table>
-                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
-                    <tr><td>1</td><td style="text-align:left;">Pramuka</td><td><?= htmlspecialchars($ekskul['pramuka']) ?></td><td><?= getDeskripsiKepribadian($ekskul['pramuka']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">PMR</td><td><?= htmlspecialchars($ekskul['pmr']) ?></td><td><?= getDeskripsiKepribadian($ekskul['pmr']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Paskibra</td><td><?= htmlspecialchars($ekskul['paskibra']) ?></td><td><?= getDeskripsiKepribadian($ekskul['paskibra']) ?></td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="catatan">
-            <p style="margin-bottom:2px; font-weight:bold;">Catatan Wali Kelas:</p>
-            <p style="margin-top:0;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></p>
-        </div>
+	
+	    <?php if ($id_transaksi): ?>
+	    <div class="page" id="laporan-container">
+	        <!-- Kop Surat -->
+	        <div style="text-align: center; margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
+	            <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
+	            <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
+	            <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
+	        </div>
+	
+	        <h1>LAPORAN HASIL BELAJAR</h1>
+	
+	        <div class="header-info">
+	            <table class="info-table">
+	                <tr>
+	                    <td class="info-label">Nama Santri</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['nama']) ?></td>
+	                    <td class="info-label">Kelas</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['nama_kelas']) ?></td>
+	                </tr>
+	                <tr>
+	                    <td class="info-label">Nomor Induk</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['nomor_santri']) ?></td>
+	                    <td class="info-label">Tahun Pelajaran</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['tahun_ajaran']) ?></td>
+	                </tr>
+	            </table>
+	        </div>
+	
+	        <table>
+	            <tr>
+	                <th rowspan="2">No</th>
+	                <th rowspan="2">Mata Pelajaran</th>
+	                <th rowspan="2">KKM</th>
+	                <th colspan="3">Hasil Tes</th>
+	                <th colspan="2" class="arabic"> نتائج التمرين الأول </th>
+	                <th class="arabic" rowspan="2">الفنون</th>
+	                <th class="arabic" rowspan="2">الرقم</th>
+	            </tr>
+	            <tr>
+	                <th>Angka</th>
+	                <th>Predikat</th>
+	                <th>Huruf</th>
+	                <th class="arabic">اللفظ</th>
+	                <th class="arabic">الرقم</th>
+	            </tr>
+	            
+	            <tr class="section-header">
+	                <td colspan="10" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
+	            </tr>
+	            <?php 
+	            $no = 1;
+	            foreach ($semua_nilai as $n) { 
+	                $angka = (int)$n['nilai_angka'];
+	            ?>
+	            <tr>
+	                <td><?= $no ?></td>
+	                <td style="text-align:left;"><?= htmlspecialchars($n['nama_mapel']) ?></td>
+	                <td><?= htmlspecialchars($n['kkm'] ?? '65') ?></td>
+	                <td><?= $angka ?></td>
+	                <td style="font-weight:bold;"><?= getPredikat($angka) ?></td>
+	                <td><?= konversiNilaiKeHuruf($angka) ?></td>
+	                <td class="arabic"><?= angkaKeHurufArab($angka) ?></td>
+	                <td class="arabic"><?= angkaKeArab($angka) ?></td>
+	                <td class="arabic"><?= htmlspecialchars($n['nama_mapel_arab']) ?></td>
+	                <td class="arabic"><?= angkaKeArab($no++) ?></td>
+	            </tr>
+	            <?php } ?>
+	
+	            <tr style="font-weight:bold; background-color:#f9f9f9;">
+	                <td colspan="2">JUMLAH</td>
+	                <td></td>
+	                <td><?= $total_nilai ?></td>
+	                <td></td>
+	                <td><?= konversiNilaiKeHuruf($total_nilai) ?></td>
+	                <td class="arabic"><?= angkaKeHurufArab($total_nilai) ?></td>
+	                <td class="arabic"><?= angkaKeArab($total_nilai) ?></td>
+	                <td class="arabic"></td>
+	                <td colspan="2" class="arabic">الجملة</td>
+	            </tr>
+	            <tr style="font-weight:bold; background-color:#f9f9f9;">
+	                <td colspan="2">RANGKING</td>
+	                <td></td><td></td><td></td><td></td><td></td><td></td>
+	                <td colspan="2" class="arabic">المقام/ة</td>
+	            </tr>
+	        </table>
+	
+	        <?php if ($semester == 2): ?>
+	        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
+	            <tr>
+	                <td style="border:1px solid #000; padding:10px;">
+	                    <strong>Keputusan:</strong><br>
+	                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
+	                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
+	                </td>
+	            </tr>
+	        </table>
+	        <?php endif; ?>
+	
+	        <div class="footer">
+	            <div>
+	                <table>
+	                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
+	                    <tr><td>1</td><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
+	                    <tr><td>2</td><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
+	                    <tr><td>3</td><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
+	                </table>
+	            </div>
+	            <div>
+	                <table>
+	                    <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td><td colspan="2" class="arabic" style="background-color:#f2f2f2;">الغياب</td></tr>
+	                    <tr><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit']) ?></td><td class="arabic"><?= angkaKeArab($absensi['sakit']) ?></td><td class="arabic">مريض</td></tr>
+	                    <tr><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin']) ?></td><td class="arabic"><?= angkaKeArab($absensi['izin']) ?></td><td class="arabic">إذن</td></tr>
+	                    <tr><td style="text-align:left;">Tanpa Keterangan</td><td><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td><td class="arabic"><?= angkaKeArab($absensi['tanpa_keterangan']) ?></td><td class="arabic">غائب</td></tr>
+	                </table>
+	            </div>
+	            <div>
+	                <table>
+	                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
+	                    <tr><td>1</td><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran']) ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_quran']) ?></td></tr>
+	                    <tr><td>2</td><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab']) ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_kitab']) ?></td></tr>
+	                    <tr><td>3</td><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td><td><?= getDeskripsiKepribadian($ekskul['muhafadhoh']) ?></td></tr>
+	                    <tr><td>4</td><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi']) ?></td><td><?= getDeskripsiKepribadian($ekskul['kaligrafi']) ?></td></tr>
+	                </table>
+	            </div>
+	        </div>
+	
+	        <div class="catatan">
+	            <p style="margin-bottom:2px; font-weight:bold;">Catatan Wali Kelas:</p>
+	            <p style="margin-top:0;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></p>
+	        </div>
+	    </div>
+	    <?php else: ?>
+	    <div class="page" style="display:flex; justify-content:center; align-items:center; height:100vh;">
+	        <h3 style="color:red;">Belum ada data rapor/nilai untuk siswa ini pada semester tersebut.</h3>
+	    </div>
+	    <?php endif; ?>
+	    <?php endforeach; ?>
     </div>
-    <?php else: ?>
-    <div class="page" style="display:flex; justify-content:center; align-items:center; height:100vh;">
-        <h3 style="color:red;">Belum ada data rapor/nilai untuk siswa ini pada semester tersebut.</h3>
-    </div>
-    <?php endif; ?>
-    <?php endforeach; ?>
+
+    <script>
+        function adjustPreviewScale() {
+            if (window.matchMedia('(max-width: 21.5cm)').matches) {
+                const wrapper = document.querySelector('.preview-wrapper');
+                const pages = document.querySelectorAll('.page');
+                if (!wrapper || pages.length === 0) return;
+
+                const wrapperWidth = wrapper.clientWidth - 20; // clientWidth excludes scrollbar
+                const originalWidth = 794; // Standard A4 width pixel estimation
+                const scale = wrapperWidth / originalWidth;
+                
+                // Calculate left margin to center the scaled page
+                const leftMargin = Math.max(0, (wrapper.clientWidth - (originalWidth * scale)) / 2);
+
+                pages.forEach(page => {
+                    page.style.transform = `scale(${scale})`;
+                    page.style.marginLeft = `${leftMargin}px`;
+                    
+                    const scaledHeight = page.offsetHeight * scale;
+                    const gap = page.offsetHeight - scaledHeight;
+                    page.style.marginBottom = `-${gap - 15}px`;
+                });
+            } else {
+                document.querySelectorAll('.page').forEach(page => {
+                    page.style.transform = '';
+                    page.style.marginLeft = '';
+                    page.style.marginBottom = '';
+                });
+            }
+        }
+
+        window.addEventListener('resize', adjustPreviewScale);
+        window.addEventListener('load', adjustPreviewScale);
+        // Jalankan berkala untuk memastikan HTMX load juga ter-scale
+        setTimeout(adjustPreviewScale, 500);
+    </script>
 </body>
 </html>

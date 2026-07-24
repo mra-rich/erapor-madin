@@ -1,9 +1,10 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_GRADES);
 
-$id_pengguna = $_SESSION['id_pengguna'] ?? 0;
+$id_pengguna = (int)($_SESSION['id_pengguna'] ?? 0);
 $peran = $_SESSION['peran'] ?? '';
 
 if (!in_array($peran, ['Wali Kelas', 'Admin'])) {
@@ -11,7 +12,16 @@ if (!in_array($peran, ['Wali Kelas', 'Admin'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_kelas = $_POST['id_kelas'] ?? 0;
+    if (!isset($_POST['csrf_token']) || !verify_csrf_token($_POST['csrf_token'])) {
+        if (($_POST['ajax'] ?? '') === '1') {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'CSRF token validation failed.']);
+        } else {
+            die("CSRF token validation failed.");
+        }
+        exit;
+    }
+    $id_kelas = (int)($_POST['id_kelas'] ?? 0);
     $id_siswa_arr = $_POST['id_siswa'] ?? [];
     
     // Arrays data
@@ -33,12 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $q_pengaturan = mysqli_query($koneksi, "SELECT * FROM pengaturan LIMIT 1");
     $data_pengaturan = mysqli_fetch_assoc($q_pengaturan);
-    $tahun_aktif = $data_pengaturan['tahun_ajaran'];
-    $semester_aktif = $data_pengaturan['semester'];
+    $tahun_aktif = mysqli_real_escape_string($koneksi, $data_pengaturan['tahun_ajaran']);
+    $semester_aktif = (int)$data_pengaturan['semester'];
 
     mysqli_begin_transaction($koneksi);
     try {
         foreach ($id_siswa_arr as $id_siswa) {
+            $id_siswa = (int)$id_siswa;
             // 1. Dapatkan atau Buat transaksi_raport
             $q_cek_tr = mysqli_query($koneksi, "SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $id_siswa AND tahun_ajaran = '$tahun_aktif' AND semester = $semester_aktif");
             

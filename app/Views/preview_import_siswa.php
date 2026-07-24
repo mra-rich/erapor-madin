@@ -2,7 +2,7 @@
 require 'koneksi.php';
 require 'cek_sesi.php';
 require_once 'csrf.php';
-require 'vendor/autoload.php';
+require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
 restrict_roles(RBAC_VIEW_REPORTS);
 
 header('Content-Type: application/json');

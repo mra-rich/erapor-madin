@@ -1,7 +1,13 @@
 <?php
 require 'koneksi.php';
 require 'cek_sesi.php';
+require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_MASTER_DATA);
+
+// CSRF Check
+if (!isset($_GET['csrf_token']) || !verify_csrf_token($_GET['csrf_token'])) {
+    die("Aksi diblokir karena token keamanan tidak valid (Potensi serangan CSRF).");
+}
 
 $id_mapel = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $id_kelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
