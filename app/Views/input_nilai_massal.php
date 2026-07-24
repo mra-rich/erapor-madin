@@ -200,12 +200,12 @@ include 'include/sidebar.php';
         <div class="fixed sm:relative bottom-0 left-0 right-0 sm:bottom-auto z-20 bg-white/95 sm:bg-white backdrop-blur-sm border-t border-slate-200 px-4 py-3 sm:rounded-xl sm:mt-4 sm:shadow-sm">
           <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto flex-wrap">
             <!-- Auto-jump toggle -->
-            <label class="flex items-center gap-2 cursor-pointer select-none" title="Jika diaktifkan, kursor otomatis pindah ke santri berikutnya setelah menekan Enter">
-              <div class="relative">
-                <input type="checkbox" id="chk-auto-jump" class="sr-only peer">
-                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500"></div>
+            <label class="flex items-center gap-2 cursor-pointer select-none" title="Kursor otomatis pindah ke santri berikutnya setelah Enter atau 3 digit">
+              <input type="checkbox" id="chk-auto-jump" class="sr-only">
+              <div id="auto-jump-track" class="w-10 h-6 rounded-full border-2 border-slate-300 bg-slate-200 flex items-center transition-colors duration-200 px-0.5">
+                <div id="auto-jump-thumb" class="w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 translate-x-0"></div>
               </div>
-              <span class="text-xs font-semibold text-slate-500 peer-checked:text-indigo-600" id="auto-jump-label">Auto-lompat baris</span>
+              <span id="auto-jump-label" class="text-xs font-semibold text-slate-500">Auto-lompat baris</span>
             </label>
             <div class="flex gap-2 w-full sm:w-auto">
               <button type="button" id="btn-fill-all" class="btn btn-secondary btn-sm flex-1 sm:flex-none">
@@ -262,62 +262,84 @@ document.getElementById('btn-fill-all')?.addEventListener('click', function() {
 
 // ── Auto-Jump Feature ───────────────────────────────────────────────────────
 (function() {
-  const chk = document.getElementById('chk-auto-jump');
+  const chk    = document.getElementById('chk-auto-jump');
+  const track  = document.getElementById('auto-jump-track');
+  const thumb  = document.getElementById('auto-jump-thumb');
+  const label  = document.getElementById('auto-jump-label');
   if (!chk) return;
 
-  // Restore preference from localStorage
+  // Restore + render toggle state
+  function setToggle(on) {
+    chk.checked = on;
+    if (on) {
+      track.style.backgroundColor = '#6366f1'; // indigo-500
+      track.style.borderColor     = '#6366f1';
+      thumb.style.transform       = 'translateX(16px)';
+      label.style.color           = '#4338ca'; // indigo-700
+    } else {
+      track.style.backgroundColor = '#e2e8f0'; // slate-200
+      track.style.borderColor     = '#cbd5e1'; // slate-300
+      thumb.style.transform       = 'translateX(0)';
+      label.style.color           = '#64748b'; // slate-500
+    }
+    localStorage.setItem('nilai_auto_jump', on ? '1' : '0');
+  }
+
   const saved = localStorage.getItem('nilai_auto_jump');
-  chk.checked = (saved === null) ? true : (saved === '1');
-  chk.addEventListener('change', function() {
-    localStorage.setItem('nilai_auto_jump', this.checked ? '1' : '0');
-  });
+  setToggle(saved === null ? true : saved === '1'); // default ON
 
-  function getAutoJump() { return chk.checked; }
+  // clicking label triggers checkbox change — intercept here
+  chk.addEventListener('change', function() { setToggle(this.checked); });
 
-  // Build ordered list of all value inputs (both desktop and mobile share same name)
-  // We use only .input-nilai (desktop) when screen >= sm, .input-nilai-mobile on small screens.
-  // For simplicity, we collect both classes and jump through them in DOM order.
+  function isEnabled() { return chk.checked; }
+
+  // Collect visible input fields in DOM order
   function getInputs() {
-    // Prefer visible inputs — pick .input-nilai-mobile on small screens, .input-nilai on large
     const isMobile = window.matchMedia('(max-width: 639px)').matches;
-    const sel = isMobile ? '.input-nilai-mobile' : '.input-nilai';
-    return Array.from(document.querySelectorAll(sel));
+    return Array.from(document.querySelectorAll(isMobile ? '.input-nilai-mobile' : '.input-nilai'));
   }
 
   function jumpToNext(current) {
-    if (!getAutoJump()) return;
     const inputs = getInputs();
     const idx = inputs.indexOf(current);
     if (idx >= 0 && idx < inputs.length - 1) {
       const next = inputs[idx + 1];
       next.focus();
+      // select all text so next keystroke overwrites existing value
       next.select();
+      // scroll into view for mobile
+      next.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
 
   let jumpTimer = null;
 
+  // Enter key → jump (desktop & some mobile keyboards)
   document.addEventListener('keydown', function(e) {
-    if (!getAutoJump()) return;
-    const target = e.target;
-    const isNilaiInput = target.classList.contains('input-nilai') || target.classList.contains('input-nilai-mobile');
-    if (!isNilaiInput) return;
+    if (!isEnabled()) return;
+    const t = e.target;
+    if (!t.classList.contains('input-nilai') && !t.classList.contains('input-nilai-mobile')) return;
     if (e.key === 'Enter') {
       e.preventDefault();
-      jumpToNext(target);
+      clearTimeout(jumpTimer);
+      jumpToNext(t);
     }
   }, true);
 
+  // Auto-jump after 2+ digit input with short delay
+  // Works on HP keyboard where Enter may not fire reliably
   document.addEventListener('input', function(e) {
-    if (!getAutoJump()) return;
-    const target = e.target;
-    const isNilaiInput = target.classList.contains('input-nilai') || target.classList.contains('input-nilai-mobile');
-    if (!isNilaiInput) return;
-    // Auto-jump when 3 digits typed OR value hits 100
-    const v = target.value;
-    if (v.length === 3 || (v.length >= 2 && parseInt(v) === 100)) {
-      clearTimeout(jumpTimer);
-      jumpTimer = setTimeout(function() { jumpToNext(target); }, 250);
+    if (!isEnabled()) return;
+    const t = e.target;
+    if (!t.classList.contains('input-nilai') && !t.classList.contains('input-nilai-mobile')) return;
+    const v = t.value.replace(/\D/g, ''); // digits only
+    const n = parseInt(v);
+    // Jump when: value has 3 chars, OR value = 100, OR value 10-99 after 800ms idle
+    clearTimeout(jumpTimer);
+    if (v.length === 3 || n === 100) {
+      jumpTimer = setTimeout(function() { jumpToNext(t); }, 300);
+    } else if (v.length === 2 && n >= 10 && n <= 99) {
+      jumpTimer = setTimeout(function() { jumpToNext(t); }, 900);
     }
   });
 })();
