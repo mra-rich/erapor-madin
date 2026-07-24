@@ -45,7 +45,15 @@ $workflow = [
     <div class="ui-empty-state p-8 text-center"><i class="ri-user-unfollow-line text-4xl text-amber-500"></i><h2 class="mt-3 text-xl font-bold text-slate-900">Anda belum ditetapkan sebagai Wali Kelas</h2><p class="mt-2 text-sm text-slate-500">Hubungi admin untuk menetapkan kelas binaan pada akun ini.</p></div>
   <?php else: ?>
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-8">
-  <?php foreach ([['Kelas Binaan', $className, 'data_santri', 'ri-building-4-line', 'stat-card-blue'], ['Santri Aktif', $students, 'penilaian_mapel', 'ri-group-line', 'stat-card-emerald'], ['Mapel Lengkap', $subjectComplete . '/' . $subjectTotal, 'evaluasi_wali', 'ri-book-open-line', 'stat-card-orange'], ['Evaluasi Lengkap', $evaluationComplete . '/' . $students, 'cetak_rapot', 'ri-file-check-line', 'stat-card-violet']] as $card): ?><a href="<?= $e($card[2]) ?>" class="stat-card <?= $card[4] ?> flex items-center justify-between gap-3 group min-w-0"><div><p class="stat-card-label"><?= $e($card[0]) ?></p><h3 class="stat-card-value"><?= $e($card[1]) ?></h3></div><div class="stat-card-icon"><i class="<?= $e($card[3]) ?> text-2xl"></i></div></a><?php endforeach; ?>
+  <?php foreach ([['Kelas Binaan', $className, 'data_santri', 'ri-building-4-line', 'stat-card-blue'], ['Santri Aktif', $students, 'penilaian_mapel', 'ri-group-line', 'stat-card-emerald'], ['Mapel Lengkap', $subjectComplete . '/' . $subjectTotal, 'evaluasi_wali', 'ri-book-open-line', 'stat-card-orange'], ['Evaluasi Lengkap', $evaluationComplete . '/' . $students, 'cetak_rapot', 'ri-file-check-line', 'stat-card-violet']] as $i => $card): ?>
+  <a href="<?= $e($card[2]) ?>" class="stat-card <?= $card[4] ?> flex items-center justify-between gap-3 group min-w-0">
+    <div class="min-w-0 flex-1">
+      <p class="stat-card-label truncate"><?= $e($card[0]) ?></p>
+      <h3 class="<?= $i === 0 ? 'text-lg sm:text-xl font-bold text-white leading-tight truncate' : 'stat-card-value' ?>" title="<?= $e($card[1]) ?>"><?= $e($card[1]) ?></h3>
+    </div>
+    <div class="stat-card-icon shrink-0"><i class="<?= $e($card[3]) ?> text-2xl"></i></div>
+  </a>
+<?php endforeach; ?>
   </div>
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-8"><div class="ui-card overflow-hidden xl:col-span-2"><div class="ui-card-header"><h2 class="text-lg font-bold text-slate-900">Progres Nilai per Mata Pelajaran</h2></div><div class="p-4 space-y-4">
   <?php if ($subjects): foreach ($subjects as $subject): $percent=max(0,min(100,(int)($subject['percentage'] ?? 0))); $status=(string)($subject['status'] ?? 'Belum'); $badge=$status === 'Lengkap' ? 'bg-emerald-50 text-emerald-700' : ($status === 'Sebagian' ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600'); ?>
