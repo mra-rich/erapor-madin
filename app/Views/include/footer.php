@@ -1,4 +1,64 @@
-<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+
+<?php
+// Tentukan halaman aktif untuk Bottom Navigation
+$curr = basename($_SERVER['PHP_SELF']);
+$peran = $_SESSION['peran'] ?? '';
+
+// Mapping tab aktif
+$tab_active = 'dashboard';
+if (in_array($curr, ['data_santri.php', 'data_guru.php', 'data_kelas.php'])) $tab_active = 'data';
+elseif (in_array($curr, ['penilaian_mapel.php', 'data_nilai.php', 'input_nilai_massal.php'])) $tab_active = 'nilai';
+elseif (in_array($curr, ['evaluasi_wali.php', 'cetak_rapot.php', 'kenaikan_kelas.php'])) $tab_active = 'evaluasi';
+elseif ($curr == 'profil.php') $tab_active = 'profil';
+?>
+
+<!-- MOBILE BOTTOM NAVIGATION (MODERN PILL) -->
+<nav class="sm:hidden fixed bottom-4 left-4 right-4 z-50 px-2 py-2 bg-white/90 backdrop-blur-md border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full flex justify-between items-center transition-all">
+    
+    <!-- Tab: Dashboard -->
+    <a href="dashboard" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'dashboard' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
+        <i class="<?= $tab_active == 'dashboard' ? 'ri-dashboard-fill' : 'ri-dashboard-line' ?> text-xl mb-0.5"></i>
+        <span class="text-[9px] font-bold tracking-wide">Home</span>
+    </a>
+
+    <!-- Tab: Data (Khusus Admin/Wali) -->
+    <?php if (in_array($peran, ['Admin', 'Kepala Madrasah', 'Wali Kelas'])): ?>
+    <a href="data_santri" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'data' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
+        <i class="<?= $tab_active == 'data' ? 'ri-folder-user-fill' : 'ri-folder-user-line' ?> text-xl mb-0.5"></i>
+        <span class="text-[9px] font-bold tracking-wide">Data</span>
+    </a>
+    <?php endif; ?>
+
+    <!-- Tab: Nilai -->
+    <a href="penilaian_mapel" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'nilai' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
+        <i class="<?= $tab_active == 'nilai' ? 'ri-edit-box-fill' : 'ri-edit-box-line' ?> text-xl mb-0.5"></i>
+        <span class="text-[9px] font-bold tracking-wide">Nilai</span>
+    </a>
+
+    <!-- Tab: Evaluasi/Rapor (Khusus Admin/Wali) -->
+    <?php if (in_array($peran, ['Admin', 'Wali Kelas'])): ?>
+    <a href="evaluasi_wali" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'evaluasi' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
+        <i class="<?= $tab_active == 'evaluasi' ? 'ri-survey-fill' : 'ri-survey-line' ?> text-xl mb-0.5"></i>
+        <span class="text-[9px] font-bold tracking-wide">Evaluasi</span>
+    </a>
+    <?php endif; ?>
+
+    <!-- Tab: Profil -->
+    <a href="profil" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'profil' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
+        <i class="<?= $tab_active == 'profil' ? 'ri-user-smile-fill' : 'ri-user-smile-line' ?> text-xl mb-0.5"></i>
+        <span class="text-[9px] font-bold tracking-wide">Profil</span>
+    </a>
+</nav>
+
+<!-- Padding bottom adjustment for mobile so content doesn't hide behind floating nav -->
+<style>
+    @media (max-width: 640px) {
+        body { padding-bottom: 5rem !important; }
+        .page-shell { padding-bottom: 2rem !important; }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>@3.1.2/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $assetBase ?? '' ?>assets/js/main.js"></script>
 <?php if (isset($_GET['status']) && isset($_GET['message'])): ?>
