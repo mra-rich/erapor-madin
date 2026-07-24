@@ -79,7 +79,7 @@ class DashboardController extends BaseController
         $studentSql = "SELECT COUNT(DISTINCT s.id_siswa) total FROM riwayat_kelas r JOIN siswa s ON s.id_siswa = r.id_siswa WHERE r.id_kelas = ? AND r.tahun_ajaran = ? AND s.status = 'Aktif'";
         $stmt = $this->db->prepare($studentSql); $stmt->bind_param('is', $idKelas, $tahunAktif); $stmt->execute(); $dashboard['student_total'] = (int) $stmt->get_result()->fetch_assoc()['total']; $stmt->close();
 
-        $subjectSql = "SELECT DISTINCT m.id_mapel, m.nama_mapel, p.nama nama_guru FROM pengampu_mapel pm JOIN mata_pelajaran m ON m.id_mapel = pm.id_mapel AND m.status = 'Aktif' LEFT JOIN pengguna p ON p.id_pengguna = pm.id_pengguna WHERE pm.id_kelas = ? AND pm.status = 'Aktif' ORDER BY m.nama_mapel";
+        $subjectSql = "SELECT DISTINCT m.id_mapel, m.nama_mapel, p.nama nama_guru FROM pengampu_mapel pm JOIN mata_pelajaran m ON m.id_mapel = pm.id_mapel AND m.status = 'Aktif' LEFT JOIN pengguna p ON p.id_pengguna = pm.id_guru WHERE pm.id_kelas = ? AND pm.status = 'Aktif' ORDER BY m.nama_mapel";
         $stmt = $this->db->prepare($subjectSql); $stmt->bind_param('i', $idKelas); $stmt->execute(); $subjects = $stmt->get_result()->fetch_all(MYSQLI_ASSOC); $stmt->close();
         $gradeSql = "SELECT COUNT(DISTINCT n.id_transaksi) total FROM nilai n JOIN transaksi_raport tr ON tr.id_transaksi = n.id_transaksi JOIN riwayat_kelas r ON r.id_siswa = tr.id_siswa JOIN siswa s ON s.id_siswa = tr.id_siswa WHERE n.id_mapel = ? AND r.id_kelas = ? AND r.tahun_ajaran = ? AND tr.tahun_ajaran = ? AND tr.semester = ? AND s.status = 'Aktif'";
         foreach ($subjects as &$subject) {
