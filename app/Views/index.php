@@ -44,9 +44,12 @@
         .login-visual { width: 41.666667%; padding: 3rem; }
         .login-panel { width: 58.333333%; padding: 5rem; }
         @media (max-width: 1023px) {
-            .login-shell { width: calc(100% - 2rem); }
+            body.bg-majestic { background: #f8fafc !important; }
+            .login-shell { width: 100%; margin: 0; border-radius: 0; box-shadow: none; border: none; min-height: 100vh; flex-direction: column; justify-content: center; }
             .login-visual { display: none; }
-            .login-panel { width: 100%; padding: 2rem; }
+            .login-panel { width: 100%; padding: 2rem; background: transparent; backdrop-filter: none; }
+            .bg-emerald-900\/40, .bg-gradient-to-br { display: none !important; }
+            .input-field { background: #fff; border: 1px solid #e2e8f0; }
         }
     </style>
 </head>
@@ -83,9 +86,12 @@
         <div class="login-panel w-full lg:w-7/12 p-8 sm:p-12 lg:p-20 relative flex items-center justify-center white-glass">
             <div class="w-full max-w-md relative z-10">
                 
-                <div class="lg:hidden text-center mb-10">
-                    <img src="assets/img/logo.png" alt="Logo" class="w-20 h-20 mx-auto mb-4 drop-shadow-md" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'" />
-                    <h1 class="text-3xl font-extrabold text-emerald-900 font-outfit">E-Rapor</h1>
+                <div class="lg:hidden text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 mb-5 relative group">
+                        <img src="assets/img/logo.png" alt="Logo" class="w-12 h-12 object-contain" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3003/3003511.png'" />
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-emerald-800 font-outfit tracking-tight mb-1">E-Rapor</h1>
+                    <h2 class="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase">MRA Digital Solution</h2>
                 </div>
 
                 <div class="mb-10 text-center lg:text-left">
