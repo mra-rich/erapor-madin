@@ -236,143 +236,312 @@ include 'include/sidebar.php';
           </table>
         </div>
 
-        <!-- ═══ MOBILE VIEW: CARD-ACCORDION LIST (below sm) ═══ -->
-        <div class="sm:hidden space-y-2 mb-20">
-          <?php 
-          $no = 1;
-          foreach ($siswa_list as $row): 
-            $id_s = $row['id_siswa'];
-            $kelakuan = $row['kelakuan'] ?: 'B';
-            $kerajinan = $row['kerajinan'] ?: 'B';
-            $kerapian = $row['kerapian'] ?: 'B';
-            $kedisiplinan = $row['kedisiplinan'] ?: 'B';
-            $baca_quran = $row['baca_quran'] ?: 'B';
-            $baca_kitab = $row['baca_kitab'] ?: 'B';
-            $muhafadhoh = $row['muhafadhoh'] ?: 'B';
-            $kaligrafi = $row['kaligrafi'] ?: 'B';
-            $sakit = $row['sakit'] ?? 0;
-            $izin = $row['izin'] ?? 0;
-            $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
-          ?>
-          <div class="ui-card">
-            <!-- Header Card (Nama Santri) -->
-            <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
-              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
-              <div class="flex-1 min-w-0">
-                <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
-                <p class="text-[10px] text-slate-400 font-mono"><?= htmlspecialchars($row['nisn']) ?></p>
-              </div>
-            </div>
-
-            <!-- Body Tabs (Sub-forms) -->
-            <div class="p-4 space-y-4">
-              
-              <!-- Tab 1: Kepribadian -->
-              <div>
-                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-user-heart-line text-xs"></i> Kepribadian</p>
-                <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
-                    <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
-                    <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
-                    <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
-                    <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Tab 2: Ekstrakurikuler -->
-              <div class="pt-3 border-t border-slate-100">
-                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-book-read-line text-xs"></i> Ekstrakurikuler</p>
-                <div class="grid grid-cols-2 gap-2">
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
-                    <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
-                    <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
-                    <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
-                    <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
-                      <?php foreach($options_kepribadian as $val => $label): ?>
-                        <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Tab 3: Absensi -->
-              <div class="pt-3 border-t border-slate-100">
-                <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-calendar-todo-line text-xs"></i> Absensi (Hari)</p>
-                <div class="grid grid-cols-3 gap-2">
-                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
-                    <span class="text-xs text-slate-500 font-semibold">Sakit</span>
-                    <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
-                  </div>
-                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
-                    <span class="text-xs text-slate-500 font-semibold">Izin</span>
-                    <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
-                  </div>
-                  <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
-                    <span class="text-xs text-slate-500 font-semibold">Alpha</span>
-                    <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Tab 4: Catatan -->
-              <div class="pt-3 border-t border-slate-100">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"><i class="ri-chat-1-line text-xs"></i> Catatan Wali Kelas</p>
-                <textarea name="catatan[<?= $id_s ?>]" rows="2" class="ui-textarea text-xs py-2 px-3" placeholder="Tulis catatan perkembangan santri..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
-              </div>
-
+        <!-- ═══ MOBILE VIEW: WITH SWITCHER & TAB MODE (below sm) ═══ -->
+        <div class="sm:hidden mb-20 space-y-4">
+          <!-- View Switcher -->
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between gap-3">
+            <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+              <i class="ri-layout-grid-line text-sm text-indigo-600"></i> Mode Tampilan
+            </span>
+            <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+              <button type="button" id="btnModeDetail" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1">
+                <i class="ri-slideshow-line"></i> Detail (Card)
+              </button>
+              <button type="button" id="btnModeTab" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1">
+                <i class="ri-list-check-3"></i> Ringkas (Tab)
+              </button>
             </div>
           </div>
-          <?php endforeach; ?>
+
+          <!-- 1. Mode Detail (Original Stack Layout) -->
+          <div id="mobile-detail-view" class="space-y-2">
+            <?php 
+            $no = 1;
+            foreach ($siswa_list as $row): 
+              $id_s = $row['id_siswa'];
+              $kelakuan = $row['kelakuan'] ?: 'B';
+              $kerajinan = $row['kerajinan'] ?: 'B';
+              $kerapian = $row['kerapian'] ?: 'B';
+              $kedisiplinan = $row['kedisiplinan'] ?: 'B';
+              $baca_quran = $row['baca_quran'] ?: 'B';
+              $baca_kitab = $row['baca_kitab'] ?: 'B';
+              $muhafadhoh = $row['muhafadhoh'] ?: 'B';
+              $kaligrafi = $row['kaligrafi'] ?: 'B';
+              $sakit = $row['sakit'] ?? 0;
+              $izin = $row['izin'] ?? 0;
+              $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
+            ?>
+            <div class="ui-card">
+              <!-- Header Card (Nama Santri) -->
+              <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
+                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                  <p class="text-[10px] text-slate-400 font-mono"><?= htmlspecialchars($row['nisn']) ?></p>
+                </div>
+              </div>
+
+              <!-- Body Tabs (Sub-forms) -->
+              <div class="p-4 space-y-4">
+                
+                <!-- Tab 1: Kepribadian -->
+                <div>
+                  <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-user-heart-line text-xs"></i> Kepribadian</p>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
+                      <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
+                      <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
+                      <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
+                      <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 2: Ekstrakurikuler -->
+                <div class="pt-3 border-t border-slate-100">
+                  <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-book-read-line text-xs"></i> Ekstrakurikuler</p>
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
+                      <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
+                      <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
+                      <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
+                      <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 3: Absensi -->
+                <div class="pt-3 border-t border-slate-100">
+                  <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="ri-calendar-todo-line text-xs"></i> Absensi (Hari)</p>
+                  <div class="grid grid-cols-3 gap-2">
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Sakit</span>
+                      <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Izin</span>
+                      <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Alpha</span>
+                      <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tab 4: Catatan -->
+                <div class="pt-3 border-t border-slate-100">
+                  <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"><i class="ri-chat-1-line text-xs"></i> Catatan Wali Kelas</p>
+                  <textarea name="catatan[<?= $id_s ?>]" rows="2" class="ui-textarea text-xs py-2 px-3" placeholder="Tulis catatan perkembangan santri..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
+                </div>
+
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+
+          <!-- 2. Mode Tab Kategori (New Tabbed Layout) -->
+          <div id="mobile-tab-view" class="hidden space-y-4">
+            <!-- Tab buttons bar -->
+            <div class="flex bg-slate-100 p-1 rounded-lg border border-slate-200 gap-1 overflow-x-auto">
+              <button type="button" data-tab="kepribadian" class="mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1">
+                <i class="ri-user-heart-line text-xs"></i> Kepribadian
+              </button>
+              <button type="button" data-tab="ekskul" class="mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1">
+                <i class="ri-book-read-line text-xs"></i> Ekskul
+              </button>
+              <button type="button" data-tab="absensi" class="mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1">
+                <i class="ri-calendar-todo-line text-xs"></i> Absensi
+              </button>
+              <button type="button" data-tab="catatan" class="mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1">
+                <i class="ri-chat-1-line text-xs"></i> Catatan
+              </button>
+            </div>
+
+            <!-- Student cards in tab mode -->
+            <div class="space-y-3">
+              <?php 
+              $no_tab = 1;
+              foreach ($siswa_list as $row): 
+                $id_s = $row['id_siswa'];
+                $kelakuan = $row['kelakuan'] ?: 'B';
+                $kerajinan = $row['kerajinan'] ?: 'B';
+                $kerapian = $row['kerapian'] ?: 'B';
+                $kedisiplinan = $row['kedisiplinan'] ?: 'B';
+                $baca_quran = $row['baca_quran'] ?: 'B';
+                $baca_kitab = $row['baca_kitab'] ?: 'B';
+                $muhafadhoh = $row['muhafadhoh'] ?: 'B';
+                $kaligrafi = $row['kaligrafi'] ?: 'B';
+                $sakit = $row['sakit'] ?? 0;
+                $izin = $row['izin'] ?? 0;
+                $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
+              ?>
+              <div class="ui-card p-4">
+                <!-- Student Name & NISN -->
+                <div class="flex items-center gap-3 mb-3 border-b border-slate-100 pb-2">
+                  <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-[10px] font-bold"><?= $no_tab++ ?></div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-slate-800 text-xs truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                    <p class="text-[9px] text-slate-400 font-mono"><?= htmlspecialchars($row['nisn']) ?></p>
+                  </div>
+                </div>
+
+                <!-- Content Kepribadian -->
+                <div class="mobile-tab-content" data-tab-content="kepribadian">
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
+                      <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
+                      <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
+                      <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
+                      <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Content Ekskul -->
+                <div class="mobile-tab-content hidden" data-tab-content="ekskul">
+                  <div class="grid grid-cols-2 gap-2">
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
+                      <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
+                      <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
+                      <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
+                      <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
+                        <?php foreach($options_kepribadian as $val => $label): ?>
+                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Content Absensi -->
+                <div class="mobile-tab-content hidden" data-tab-content="absensi">
+                  <div class="grid grid-cols-3 gap-2">
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Sakit</span>
+                      <input type="number" name="sakit[<?= $id_s ?>]" value="<?= $sakit ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Izin</span>
+                      <input type="number" name="izin[<?= $id_s ?>]" value="<?= $izin ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between border rounded-lg px-3 py-1 bg-slate-50">
+                      <span class="text-xs text-slate-500 font-semibold">Alpha</span>
+                      <input type="number" name="alpha[<?= $id_s ?>]" value="<?= $tanpa_keterangan ?>" min="0" class="w-8 h-8 text-center text-xs font-bold bg-transparent border-0 focus:ring-0 focus:outline-none p-0">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Content Catatan -->
+                <div class="mobile-tab-content hidden" data-tab-content="catatan">
+                  <textarea name="catatan[<?= $id_s ?>]" rows="2" class="ui-textarea text-xs py-2 px-3" placeholder="Tulis catatan perkembangan santri..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
+                </div>
+
+              </div>
+              <?php endforeach; ?>
+            </div>
+          </div>
+
         </div>
 
       <?php else: ?>
@@ -408,6 +577,86 @@ include 'include/sidebar.php';
         }
     }
 
+    // View Switcher & Tab selection logic
+    const btnModeDetail = document.getElementById('btnModeDetail');
+    const btnModeTab = document.getElementById('btnModeTab');
+    const detailView = document.getElementById('mobile-detail-view');
+    const tabView = document.getElementById('mobile-tab-view');
+    const tabButtons = document.querySelectorAll('.mobile-tab-btn');
+    const tabContents = document.querySelectorAll('.mobile-tab-content');
+
+    function applyMode(mode) {
+        if (mode === 'tab') {
+            detailView.classList.add('hidden');
+            tabView.classList.remove('hidden');
+            btnModeTab.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1 bg-white shadow-sm text-indigo-600 border border-slate-200";
+            btnModeDetail.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1 text-slate-500 hover:text-slate-700 bg-transparent";
+        } else {
+            tabView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            btnModeDetail.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1 bg-white shadow-sm text-indigo-600 border border-slate-200";
+            btnModeTab.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 flex items-center gap-1 text-slate-500 hover:text-slate-700 bg-transparent";
+        }
+        localStorage.setItem('eval_view_mode', mode);
+    }
+
+    function applyTab(tab) {
+        tabButtons.forEach(btn => {
+            if (btn.getAttribute('data-tab') === tab) {
+                btn.className = "mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1 bg-indigo-600 text-white shadow-sm";
+            } else {
+                btn.className = "mobile-tab-btn flex-1 py-1.5 px-2.5 text-center text-xs font-bold rounded-md transition-all duration-200 whitespace-nowrap flex items-center justify-center gap-1 text-slate-500 hover:text-slate-700 bg-slate-50";
+            }
+        });
+        tabContents.forEach(content => {
+            if (content.getAttribute('data-tab-content') === tab) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        });
+        localStorage.setItem('eval_view_tab', tab);
+    }
+
+    if (btnModeDetail && btnModeTab) {
+        btnModeDetail.addEventListener('click', () => applyMode('detail'));
+        btnModeTab.addEventListener('click', () => applyMode('tab'));
+        
+        // Initial load for mode
+        const savedMode = localStorage.getItem('eval_view_mode') || 'detail';
+        applyMode(savedMode);
+    }
+
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyTab(btn.getAttribute('data-tab'));
+            });
+        });
+
+        // Initial load for tab
+        const savedTab = localStorage.getItem('eval_view_tab') || 'kepribadian';
+        applyTab(savedTab);
+    }
+
+    // Sync input values across different views (Desktop, Mobile Detail, Mobile Tab)
+    function syncValue(target) {
+        if (target && target.name) {
+            const val = target.value;
+            const matches = form.querySelectorAll(`[name="${CSS.escape(target.name)}"]`);
+            matches.forEach(el => {
+                if (el !== target) {
+                    if (el.value !== val) {
+                        el.value = val;
+                        if (el.tagName === 'SELECT' && el.classList.contains('eval-select')) {
+                            updateColor(el);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     let saveTimeout = null;
 
     const autoSave = () => {
@@ -436,6 +685,7 @@ include 'include/sidebar.php';
     };
 
     form.addEventListener('input', (e) => {
+        syncValue(e.target);
         clearTimeout(saveTimeout);
         saveTimeout = setTimeout(autoSave, 1000);
     });
@@ -443,6 +693,7 @@ include 'include/sidebar.php';
     selects.forEach(select => {
         updateColor(select);
         select.addEventListener("change", () => {
+            syncValue(select);
             updateColor(select);
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(autoSave, 500);
