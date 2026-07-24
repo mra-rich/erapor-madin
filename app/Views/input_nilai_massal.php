@@ -198,8 +198,15 @@ include 'include/sidebar.php';
 
         <!-- Sticky Save Bar -->
         <div class="fixed sm:relative bottom-0 left-0 right-0 sm:bottom-auto z-20 bg-white/95 sm:bg-white backdrop-blur-sm border-t border-slate-200 px-4 py-3 sm:rounded-xl sm:mt-4 sm:shadow-sm">
-          <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto">
-            <p class="text-xs text-slate-400 hidden sm:block">Skala 0-100. Predikat dihitung otomatis.</p>
+          <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto flex-wrap">
+            <!-- Auto-jump toggle -->
+            <label class="flex items-center gap-2 cursor-pointer select-none" title="Jika diaktifkan, kursor otomatis pindah ke santri berikutnya setelah menekan Enter">
+              <div class="relative">
+                <input type="checkbox" id="chk-auto-jump" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500"></div>
+              </div>
+              <span class="text-xs font-semibold text-slate-500 peer-checked:text-indigo-600" id="auto-jump-label">Auto-lompat baris</span>
+            </label>
             <div class="flex gap-2 w-full sm:w-auto">
               <button type="button" id="btn-fill-all" class="btn btn-secondary btn-sm flex-1 sm:flex-none">
                 <i class="ri-magic-line"></i> Isi Semua
@@ -252,6 +259,69 @@ document.getElementById('btn-fill-all')?.addEventListener('click', function() {
     if (inp.value === '') { inp.value = n; inp.dispatchEvent(new Event('input')); }
   });
 });
+
+// ── Auto-Jump Feature ───────────────────────────────────────────────────────
+(function() {
+  const chk = document.getElementById('chk-auto-jump');
+  if (!chk) return;
+
+  // Restore preference from localStorage
+  const saved = localStorage.getItem('nilai_auto_jump');
+  chk.checked = (saved === null) ? true : (saved === '1');
+  chk.addEventListener('change', function() {
+    localStorage.setItem('nilai_auto_jump', this.checked ? '1' : '0');
+  });
+
+  function getAutoJump() { return chk.checked; }
+
+  // Build ordered list of all value inputs (both desktop and mobile share same name)
+  // We use only .input-nilai (desktop) when screen >= sm, .input-nilai-mobile on small screens.
+  // For simplicity, we collect both classes and jump through them in DOM order.
+  function getInputs() {
+    // Prefer visible inputs — pick .input-nilai-mobile on small screens, .input-nilai on large
+    const isMobile = window.matchMedia('(max-width: 639px)').matches;
+    const sel = isMobile ? '.input-nilai-mobile' : '.input-nilai';
+    return Array.from(document.querySelectorAll(sel));
+  }
+
+  function jumpToNext(current) {
+    if (!getAutoJump()) return;
+    const inputs = getInputs();
+    const idx = inputs.indexOf(current);
+    if (idx >= 0 && idx < inputs.length - 1) {
+      const next = inputs[idx + 1];
+      next.focus();
+      next.select();
+    }
+  }
+
+  let jumpTimer = null;
+
+  document.addEventListener('keydown', function(e) {
+    if (!getAutoJump()) return;
+    const target = e.target;
+    const isNilaiInput = target.classList.contains('input-nilai') || target.classList.contains('input-nilai-mobile');
+    if (!isNilaiInput) return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      jumpToNext(target);
+    }
+  }, true);
+
+  document.addEventListener('input', function(e) {
+    if (!getAutoJump()) return;
+    const target = e.target;
+    const isNilaiInput = target.classList.contains('input-nilai') || target.classList.contains('input-nilai-mobile');
+    if (!isNilaiInput) return;
+    // Auto-jump when 3 digits typed OR value hits 100
+    const v = target.value;
+    if (v.length === 3 || (v.length >= 2 && parseInt(v) === 100)) {
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(function() { jumpToNext(target); }, 250);
+    }
+  });
+})();
+// ────────────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.input-nilai').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
   document.querySelectorAll('.input-nilai-mobile').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
