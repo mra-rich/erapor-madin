@@ -66,7 +66,7 @@
         <div class="login-visual hidden lg:flex lg:w-5/12 dark-glass relative flex-col items-center justify-center p-12 text-center overflow-hidden">
             <div class="relative z-10 text-white">
                 <div class="inline-flex items-center justify-center w-28 h-28 bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 mb-8 shadow-2xl relative group">
-                    <img src="/assets/mockups/logo-erapor-premium.png" alt="Logo" class="w-16 h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] relative z-10 transform group-hover:scale-110 transition-transform duration-500"  />
+                    <img src="/assets/img/logo.png" alt="Logo" class="w-16 h-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] relative z-10 transform group-hover:scale-110 transition-transform duration-500"  />
                 </div>
                 <h1 class="text-5xl font-extrabold font-outfit tracking-tighter mb-2 drop-shadow-lg">E-Rapor</h1>
                 <h2 class="text-sm font-bold text-emerald-300 tracking-[0.2em] uppercase mb-8">MRA Digital Solution</h2>
@@ -88,7 +88,7 @@
                 
                 <div class="lg:hidden text-center mb-8">
                     <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-2xl shadow-sm border border-slate-100 mb-5 relative group">
-                        <img src="/assets/mockups/logo-erapor-premium.png" alt="Logo" class="w-12 h-12 object-contain"  />
+                        <img src="/assets/img/logo.png" alt="Logo" class="w-12 h-12 object-contain"  />
                     </div>
                     <h1 class="text-3xl font-extrabold text-emerald-800 font-outfit tracking-tight mb-1">E-Rapor</h1>
                     <h2 class="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase">MRA Digital Solution</h2>
