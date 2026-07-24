@@ -2,7 +2,7 @@
   <div class="px-4 py-3 lg:px-6">
     <div class="flex items-center justify-between">
       <div class="flex items-center justify-start rtl:justify-end">
-        <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="hidden sm:hidden items-center p-2 text-sm text-gray-500 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-colors">
+        <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-xl sm:hidden hover:bg-emerald-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-colors">
           <span class="sr-only">Buka sidebar</span>
           <i class="ri-menu-2-line text-2xl"></i>
         </button>
