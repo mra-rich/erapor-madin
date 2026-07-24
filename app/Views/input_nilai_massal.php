@@ -155,7 +155,7 @@ include 'include/sidebar.php';
                   <input type="number" name="nilai[<?= $siswa['id_siswa'] ?>]"
                          value="<?= htmlspecialchars($siswa['nilai_angka'] ?? '') ?>"
                          class="w-20 rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-center font-bold text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors input-nilai"
-                         min="0" max="100" oninput="convertNilai(this,'huruf_<?= $siswa['id_siswa'] ?>')" placeholder="-">
+                         min="0" max="100" oninput="convertNilai(this,'huruf_<?= $siswa['id_siswa'] ?>')" placeholder="">
                 </td>
                 <td class="text-center">
                   <input type="text" id="huruf_<?= $siswa['id_siswa'] ?>"
@@ -190,7 +190,7 @@ include 'include/sidebar.php';
 	              <input type="number" id="m-nilai-<?= $siswa['id_siswa'] ?>" name="nilai[<?= $siswa['id_siswa'] ?>]"
 	                     value="<?= htmlspecialchars($siswa['nilai_angka'] ?? '') ?>"
 	                     class="w-20 h-10 rounded-xl border border-slate-300 bg-white text-base text-center font-bold text-slate-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:outline-none transition-colors input-nilai-mobile shadow-sm"
-	                     min="0" max="100" oninput="convertNilaiMobile(this,'m-huruf-<?= $siswa['id_siswa'] ?>')" placeholder="-">
+	                     min="0" max="100" oninput="convertNilaiMobile(this,'m-huruf-<?= $siswa['id_siswa'] ?>')" placeholder="">
 	            </div>
           </div>
           <?php endforeach; ?>
