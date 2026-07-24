@@ -174,7 +174,17 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                         ?>
                         <input type="hidden" name="tahun_ajaran" value="<?= $next_ta; ?>">
 
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <!-- Action Bar & Select All (Mobile) -->
+                        <div class="sm:hidden mb-3 flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-2">
+                                <input id="m-checkbox-all" type="checkbox" class="w-6 h-6 text-emerald-600 bg-slate-50 border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer transition-colors shadow-sm">
+                                <label for="m-checkbox-all" class="text-sm font-bold text-slate-700">Pilih Semua</label>
+                            </div>
+                            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md"><span id="m-selected-count">0</span> Terpilih</span>
+                        </div>
+
+                        <!-- Desktop Table -->
+                        <div class="hidden sm:block bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                             <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-slate-600 border-collapse border border-slate-300">
                                 <thead class="text-xs text-slate-700 uppercase bg-slate-50">
@@ -191,17 +201,17 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if(mysqli_num_rows($resultSiswa) > 0): ?>
+                                    <?php if(mysqli_num_rows($resultSiswa) > 0): mysqli_data_seek($resultSiswa, 0); ?>
                                         <?php while ($siswa = mysqli_fetch_assoc($resultSiswa)): ?>
-                                            <tr class="hover:bg-slate-50 transition-colors group">
-                                                <td class="w-4 py-2 px-6 border border-slate-300">
+                                            <tr class="hover:bg-slate-50 transition-colors group cursor-pointer" onclick="document.getElementById('checkbox-<?= $siswa['id_siswa']; ?>').click()">
+                                                <td class="w-4 py-2 px-6 border border-slate-300" onclick="event.stopPropagation()">
                                                     <div class="flex items-center justify-center">
                                                         <input id="checkbox-<?= $siswa['id_siswa']; ?>" name="siswa_ids[]" value="<?= $siswa['id_siswa']; ?>" type="checkbox" class="w-5 h-5 text-emerald-600 bg-white border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer transition-colors shadow-sm siswa-checkbox">
                                                         <label for="checkbox-<?= $siswa['id_siswa']; ?>" class="sr-only">checkbox</label>
                                                     </div>
                                                 </td>
-                                                <td class="py-2 px-6 border border-slate-300"><?= htmlspecialchars($siswa['nisn']); ?></td>
-                                                <td class="py-2 px-6 text-slate-500 border border-slate-300"><?= htmlspecialchars($siswa['nomor_santri']); ?></td>
+                                                <td class="py-2 px-6 border border-slate-300"><?= htmlspecialchars($siswa['nisn'] ?? '-'); ?></td>
+                                                <td class="py-2 px-6 text-slate-500 border border-slate-300"><?= htmlspecialchars($siswa['nomor_santri'] ?? '-'); ?></td>
                                                 <td class="py-2 px-6 font-bold text-slate-800 text-base border border-slate-300"><?= htmlspecialchars($siswa['nama']); ?></td>
                                             </tr>
                                         <?php endwhile; ?>
@@ -214,16 +224,46 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                             </table>
                             </div>
                         </div>
-                        
-                        <div class="flex justify-end border-t border-slate-100 pt-6 mt-4 gap-4">
+
+                        <!-- Mobile Card List -->
+                        <div class="sm:hidden space-y-3 mb-24">
+                            <?php if(mysqli_num_rows($resultSiswa) > 0): mysqli_data_seek($resultSiswa, 0); $no=1; ?>
+                                <?php while ($siswa = mysqli_fetch_assoc($resultSiswa)): ?>
+                                    <label for="m-checkbox-<?= $siswa['id_siswa']; ?>" class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm cursor-pointer active:bg-slate-50 transition-colors relative">
+                                        <!-- Checkbox Area -->
+                                        <div class="shrink-0 flex items-center justify-center w-8 h-8">
+                                            <input id="m-checkbox-<?= $siswa['id_siswa']; ?>" value="<?= $siswa['id_siswa']; ?>" type="checkbox" class="w-6 h-6 text-emerald-600 bg-slate-50 border-slate-300 rounded focus:ring-emerald-500 focus:ring-2 cursor-pointer transition-colors shadow-sm m-siswa-checkbox">
+                                        </div>
+                                        <!-- Info Area -->
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($siswa['nama']); ?></p>
+                                            <div class="flex gap-3 mt-1">
+                                                <span class="text-[10px] text-slate-500 font-mono bg-slate-100 px-1.5 py-0.5 rounded">NISN: <?= htmlspecialchars($siswa['nisn'] ?? '-'); ?></span>
+                                                <span class="text-[10px] text-slate-400 font-mono">No: <?= htmlspecialchars($siswa['nomor_santri'] ?? '-'); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="shrink-0 text-slate-200 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                            <i class="ri-checkbox-circle-fill text-2xl opacity-0 transition-opacity" id="icon-<?= $siswa['id_siswa']; ?>"></i>
+                                        </div>
+                                    </label>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <div class="bg-white p-6 text-center rounded-xl border border-slate-200 shadow-sm">
+                                    <p class="text-sm text-slate-400">Tidak ada data siswa aktif.</p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="fixed sm:relative bottom-0 left-0 right-0 sm:bottom-auto z-30 bg-white/95 sm:bg-transparent backdrop-blur-sm border-t sm:border-t sm:border-slate-100 px-4 py-3 sm:px-0 sm:py-0 pt-6 mt-4 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none">
                             <input type="hidden" name="action_type" id="action_type" value="naik">
                             
-                            <button type="button" class="text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-bold rounded-xl text-base px-8 py-3.5 text-center inline-flex items-center transition-all" onclick="if(confirm('Apakah Anda yakin ingin MELULUSKAN siswa terpilih menjadi ALUMNI? Mereka tidak akan naik kelas tetapi masuk ke daftar Arsip/Alumni.')) { document.getElementById('action_type').value='lulus'; document.getElementById('formKenaikan').submit(); }">
-                                <i class="ri-graduation-cap-line mr-2 text-xl"></i> Luluskan (Alumni)
+                            <button type="button" class="text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-bold rounded-xl text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-3.5 text-center inline-flex justify-center items-center transition-all w-full sm:w-auto" onclick="if(confirm('Apakah Anda yakin ingin MELULUSKAN siswa terpilih menjadi ALUMNI? Mereka tidak akan naik kelas tetapi masuk ke daftar Arsip/Alumni.')) { document.getElementById('action_type').value='lulus'; document.getElementById('formKenaikan').submit(); }">
+                                <i class="ri-graduation-cap-line mr-2 text-lg sm:text-xl"></i> Luluskan
                             </button>
                             
-                            <button type="button" class="text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-bold rounded-xl text-base px-8 py-3.5 text-center inline-flex items-center transition-all shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5" onclick="if(confirm('Apakah Anda yakin ingin menaikkan kelas siswa yang dipilih?')) { document.getElementById('action_type').value='naik'; document.getElementById('formKenaikan').submit(); }">
-                                <i class="ri-arrow-up-circle-line mr-2 text-xl"></i> Proses Kenaikan Kelas
+                            <button type="button" class="text-white bg-emerald-600 hover:bg-emerald-700 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-bold rounded-xl text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-3.5 text-center inline-flex justify-center items-center transition-all shadow-lg shadow-emerald-500/30 transform hover:-translate-y-0.5 w-full sm:w-auto" onclick="if(confirm('Apakah Anda yakin ingin menaikkan kelas siswa yang dipilih?')) { document.getElementById('action_type').value='naik'; document.getElementById('formKenaikan').submit(); }">
+                                <i class="ri-arrow-up-circle-line mr-2 text-lg sm:text-xl"></i> Naik Kelas
                             </button>
                         </div>
                     </form>
@@ -231,13 +271,96 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
             </div>
             
             <script>
-                // Script untuk Select All checkbox
-                document.getElementById('checkbox-all').addEventListener('change', function(e) {
-                    var checkboxes = document.querySelectorAll('.siswa-checkbox');
-                    for (var i = 0; i < checkboxes.length; i++) {
-                        checkboxes[i].checked = e.target.checked;
-                    }
-                });
+                // 1. Sync Desktop and Mobile Checkboxes into the Form Array
+                const form = document.getElementById('formKenaikan');
+                const deskCheckboxes = document.querySelectorAll('.siswa-checkbox');
+                const mobCheckboxes = document.querySelectorAll('.m-siswa-checkbox');
+                
+                function updateSelectedCount() {
+                    let count = 0;
+                    const isMobile = window.innerWidth < 640;
+                    const activeBoxes = isMobile ? mobCheckboxes : deskCheckboxes;
+                    activeBoxes.forEach(cb => { if(cb.checked) count++; });
+                    const counter = document.getElementById('m-selected-count');
+                    if(counter) counter.innerText = count;
+                }
+
+                // Desktop logic
+                const deskCheckAll = document.getElementById('checkbox-all');
+                if (deskCheckAll) {
+                    deskCheckAll.addEventListener('change', function(e) {
+                        deskCheckboxes.forEach(cb => cb.checked = e.target.checked);
+                        updateSelectedCount();
+                    });
+                }
+                deskCheckboxes.forEach(cb => cb.addEventListener('change', updateSelectedCount));
+
+                // Mobile logic
+                const mobCheckAll = document.getElementById('m-checkbox-all');
+                if (mobCheckAll) {
+                    mobCheckAll.addEventListener('change', function(e) {
+                        mobCheckboxes.forEach(cb => {
+                            cb.checked = e.target.checked;
+                            // Visual indicator
+                            const icon = document.getElementById('icon-' + cb.value);
+                            if(icon) {
+                                if(cb.checked) {
+                                    icon.classList.remove('opacity-0');
+                                    icon.classList.add('text-emerald-500', 'opacity-100');
+                                    cb.closest('label').classList.add('border-emerald-500', 'bg-emerald-50/30');
+                                } else {
+                                    icon.classList.remove('text-emerald-500', 'opacity-100');
+                                    icon.classList.add('opacity-0');
+                                    cb.closest('label').classList.remove('border-emerald-500', 'bg-emerald-50/30');
+                                }
+                            }
+                        });
+                        updateSelectedCount();
+                    });
+
+                    mobCheckboxes.forEach(cb => {
+                        cb.addEventListener('change', function() {
+                            const icon = document.getElementById('icon-' + cb.value);
+                            if(icon) {
+                                if(cb.checked) {
+                                    icon.classList.remove('opacity-0');
+                                    icon.classList.add('text-emerald-500', 'opacity-100');
+                                    cb.closest('label').classList.add('border-emerald-500', 'bg-emerald-50/30');
+                                } else {
+                                    icon.classList.remove('text-emerald-500', 'opacity-100');
+                                    icon.classList.add('opacity-0');
+                                    cb.closest('label').classList.remove('border-emerald-500', 'bg-emerald-50/30');
+                                }
+                            }
+                            updateSelectedCount();
+                            
+                            // Uncheck "Select All" if one is unchecked
+                            if(!cb.checked) mobCheckAll.checked = false;
+                        });
+                    });
+                }
+
+                // Clone checked mobile boxes to hidden inputs if on mobile
+                // to avoid duplicates and ensure form submission works
+                if(form) {
+                    form.addEventListener('submit', function(e) {
+                        const isMobile = window.innerWidth < 640;
+                        if (isMobile) {
+                            // Uncheck desktop so they don't submit
+                            deskCheckboxes.forEach(cb => cb.checked = false);
+                            // Add mobile values as hidden inputs
+                            mobCheckboxes.forEach(cb => {
+                                if (cb.checked) {
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = 'siswa_ids[]';
+                                    input.value = cb.value;
+                                    form.appendChild(input);
+                                }
+                            });
+                        }
+                    });
+                }
             </script>
         <?php endif; ?> <!-- endif kelas asal -->
         <?php endif; ?> <!-- endif semester aktif == 2 -->
