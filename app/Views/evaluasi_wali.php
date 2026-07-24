@@ -127,7 +127,7 @@ include 'include/sidebar.php';
             <tbody>
               <?php 
               $no = 1;
-              $options_kepribadian = ['A' => 'Amat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
+              $options_kepribadian = ['A' => 'Sangat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
               
               function getColorClass($val) {
                   switch($val) {

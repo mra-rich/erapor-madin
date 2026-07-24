@@ -178,7 +178,7 @@ include 'include/sidebar.php';
                 $v = $siswa['nilai_angka'] ?? '';
                 if ($v !== '' && $v !== null) {
                   $vi = (int)$v;
-                  if ($vi >= 90) echo 'Amat Baik';
+                  if ($vi >= 90) echo 'Sangat Baik';
                   elseif ($vi >= 80) echo 'Baik';
                   elseif ($vi >= 70) echo 'Cukup';
                   elseif ($vi >= 60) echo 'Kurang';
@@ -234,7 +234,7 @@ include 'include/sidebar.php';
 function getNilaiLabel(v) {
   if (v === '' || isNaN(v)) return '';
   v = Math.min(100, Math.max(0, parseInt(v)));
-  if (v >= 90) return 'Amat Baik';
+  if (v >= 90) return 'Sangat Baik';
   if (v >= 80) return 'Baik';
   if (v >= 70) return 'Cukup';
   if (v >= 60) return 'Kurang';
