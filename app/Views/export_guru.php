@@ -30,22 +30,28 @@ $data = [
     ]
 ];
 
-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
-$where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
-
-if (!empty($search)) {
-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
-}
+$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
+$like = '%' . $search . '%';
+$base_where = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
 
 // Ambil data guru dan pengguna
-$query = "SELECT p.username, p.peran, p.status, 
+$export_sql = "SELECT p.username, p.peran, p.status, 
                  g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
           FROM pengguna p 
           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
-          $where_clause
-          ORDER BY p.nama ASC";
-
-$result = mysqli_query($koneksi, $query);
+          $base_where";
+if (!empty($search)) {
+    $export_sql .= $search_condition;
+}
+$export_sql .= " ORDER BY p.nama ASC";
+$stmt = mysqli_prepare($koneksi, $export_sql);
+if (!empty($search)) {
+    mysqli_stmt_bind_param($stmt, 'sss', $like, $like, $like);
+}
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+mysqli_stmt_close($stmt);
 
 $no = 1;
 if ($result && mysqli_num_rows($result) > 0) {

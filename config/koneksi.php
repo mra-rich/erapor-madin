@@ -18,7 +18,9 @@ if ($ssl) {
 $koneksi->real_connect($host, $user, $password, $database, $port, NULL, $ssl);
 
 if ($koneksi->connect_error) {
-    die("Koneksi gagal: " . $koneksi->connect_error);
+    error_log("DB connect failed: " . $koneksi->connect_error);
+    http_response_code(503);
+    die("Layanan tidak tersedia. Silakan coba lagi nanti.");
 }
 
 if (!class_exists('SysSession')) {

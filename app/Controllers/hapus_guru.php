@@ -4,8 +4,9 @@ require 'cek_sesi.php';
 require_once 'csrf.php';
 restrict_roles(RBAC_MANAGE_MASTER_DATA);
 
-// Cek apakah ada ID yang dikirim
-if (!isset($_GET['id']) || empty($_GET['id'])) {
+// Cek apakah ada ID yang dikirim (GET untuk initial load, POST untuk konfirmasi)
+$id_raw = $_POST['id'] ?? $_GET['id'] ?? '';
+if (empty($id_raw)) {
     if (isset($_SERVER['HTTP_HX_REQUEST'])) {
         echo "<script>window.location.href='data_guru.php?status=error&message=Terjadi kesalahan';</script>";
         exit;
@@ -14,7 +15,7 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
     exit();
 }
 
-$id_pengguna = intval($_GET['id']);
+$id_pengguna = intval($id_raw);
 
 // Cek apakah guru ada
 $cek_query = "SELECT p.*, g.nip FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna WHERE p.id_pengguna = ?";
@@ -44,10 +45,11 @@ if ($id_pengguna == $_SESSION['id_pengguna']) {
     exit;
 }
 
-// Jika konfirmasi sudah dilakukan
-if (isset($_GET['konfirmasi']) && $_GET['konfirmasi'] == 'ya') {
-    // CSRF Check for actual deletion
-    if (!isset($_GET['csrf_token']) || !verify_csrf_token($_GET['csrf_token'])) {
+// Jika konfirmasi sudah dilakukan (POST only — CSRF token harus dari form POST)
+if (isset($_POST['konfirmasi']) && $_POST['konfirmasi'] == 'ya') {
+    // CSRF Check — token harus dari $_POST, tidak dari GET URL
+    $csrf = $_POST['csrf_token'] ?? '';
+    if (empty($csrf) || !verify_csrf_token($csrf)) {
         die("Aksi diblokir karena token keamanan tidak valid (Potensi serangan CSRF).");
     }
 
@@ -112,9 +114,14 @@ include 'include/sidebar.php';
             </div>
 
             <div class="flex space-x-4">
-                <a href="hapus_guru.php?id=<?php echo $id_pengguna; ?>&konfirmasi=ya&csrf_token=<?php echo isset($_GET['csrf_token']) ? htmlspecialchars($_GET['csrf_token']) : generate_csrf_token(); ?>" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700 transition-colors duration-200">
-                    Ya, Hapus Data
-                </a>
+                <form method="POST" action="hapus_guru.php" style="display:inline;">
+                    <input type="hidden" name="id" value="<?php echo $id_pengguna; ?>">
+                    <input type="hidden" name="konfirmasi" value="ya">
+                    <input type="hidden" name="csrf_token" value="<?php echo generate_csrf_token(); ?>">
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700 transition-colors duration-200">
+                        Ya, Hapus Data
+                    </button>
+                </form>
                 <a href="data_guru.php" class="px-4 py-2 bg-gray-500 text-white font-medium rounded hover:bg-gray-600 transition-colors duration-200">
                     Batal
                 </a>

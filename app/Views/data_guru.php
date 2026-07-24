@@ -8,32 +8,48 @@ include 'include/navbar.php';
 include 'include/sidebar.php';
 
 // Pagination & Search
-$search = isset($_GET['search']) ? mysqli_real_escape_string($koneksi, $_GET['search']) : '';
+$search = trim(isset($_GET['search']) ? $_GET['search'] : '');
+$like = '%' . $search . '%';
 $limit = 10; // Jumlah data per halaman
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
 $offset = ($page - 1) * $limit;
 
-$where_clause = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
-if (!empty($search)) {
-    $where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
-}
+$base_where = "WHERE p.peran IN ('Guru', 'Wali Kelas', 'Kepala Madrasah', 'Admin')";
+$search_condition = " AND (p.nama LIKE ? OR g.nip LIKE ? OR p.username LIKE ?)";
 
 // Hitung total data
-$count_query = "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $where_clause";
-$count_result = mysqli_query($koneksi, $count_query);
+if (!empty($search)) {
+    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where$search_condition");
+    mysqli_stmt_bind_param($count_stmt, 'sss', $like, $like, $like);
+} else {
+    $count_stmt = mysqli_prepare($koneksi, "SELECT COUNT(*) as total FROM pengguna p LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna $base_where");
+}
+mysqli_stmt_execute($count_stmt);
+$count_result = mysqli_stmt_get_result($count_stmt);
 $total_data = mysqli_fetch_assoc($count_result)['total'];
+mysqli_stmt_close($count_stmt);
 $total_pages = ceil($total_data / $limit);
 
 // Ambil data pengguna dan guru dengan limit
-$query = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
+$main_sql = "SELECT p.id_pengguna, p.nama, p.username, p.peran, p.status, 
                  g.id_guru, g.nip, g.nama_lengkap, g.jenis_kelamin, g.tempat_lahir, g.tanggal_lahir, g.no_hp, g.alamat
           FROM pengguna p 
           LEFT JOIN guru g ON p.id_pengguna = g.id_pengguna 
-          $where_clause
-          ORDER BY p.nama ASC
-          LIMIT $limit OFFSET $offset";
-$result = mysqli_query($koneksi, $query);
+          $base_where";
+if (!empty($search)) {
+    $main_sql .= $search_condition;
+}
+$main_sql .= " ORDER BY p.nama ASC LIMIT ? OFFSET ?";
+$stmt = mysqli_prepare($koneksi, $main_sql);
+if (!empty($search)) {
+    mysqli_stmt_bind_param($stmt, 'sssii', $like, $like, $like, $limit, $offset);
+} else {
+    mysqli_stmt_bind_param($stmt, 'ii', $limit, $offset);
+}
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+mysqli_stmt_close($stmt);
 ?>
 
 <div class="p-4 sm:ml-64">
@@ -396,7 +412,14 @@ $result = mysqli_query($koneksi, $query);
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'hapus_guru.php?konfirmasi=ya&csrf_token=<?php echo generate_csrf_token(); ?>&id=' + id;
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'hapus_guru.php';
+                var fId = document.createElement('input'); fId.type='hidden'; fId.name='id'; fId.value=id; form.appendChild(fId);
+                var fKon = document.createElement('input'); fKon.type='hidden'; fKon.name='konfirmasi'; fKon.value='ya'; form.appendChild(fKon);
+                var fCsrf = document.createElement('input'); fCsrf.type='hidden'; fCsrf.name='csrf_token'; fCsrf.value='<?php echo generate_csrf_token(); ?>'; form.appendChild(fCsrf);
+                document.body.appendChild(form);
+                form.submit();
             }
         });
     }

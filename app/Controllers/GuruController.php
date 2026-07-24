@@ -233,7 +233,12 @@ class GuruController extends BaseController
         echo '      </div>';
         echo '      <p class="text-sm text-red-600 font-semibold mb-4">Tindakan ini akan membatasi akses login untuk pengguna bersangkutan.</p>';
         echo '      <div class="flex space-x-4">';
-        echo '        <a href="hapus_guru.php?id=' . $id . '&konfirmasi=ya&csrf_token=' . CsrfService::generate() . '" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700">Ya, Hapus Data</a>';
+        echo '        <form method="POST" action="hapus_guru.php" style="display:inline;">';
+        echo '          <input type="hidden" name="id" value="' . $id . '">';
+        echo '          <input type="hidden" name="konfirmasi" value="ya">';
+        echo '          <input type="hidden" name="csrf_token" value="' . CsrfService::generate() . '">';
+        echo '          <button type="submit" class="px-4 py-2 bg-red-600 text-white font-medium rounded hover:bg-red-700">Ya, Hapus Data</button>';
+        echo '        </form>';
         echo '        <a href="data_guru.php" class="px-4 py-2 bg-gray-500 text-white font-medium rounded hover:bg-gray-600">Batal</a>';
         echo '      </div>';
         echo '    </div>';
