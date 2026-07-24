@@ -1,15 +1,18 @@
 
 <?php
 // Tentukan halaman aktif untuk Bottom Navigation
-$curr = basename($_SERVER['PHP_SELF']);
+$curr = $_GET['route'] ?? basename(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH));
+$curr = str_replace('.php', '', $curr);
+if ($curr === '' || $curr === 'index') $curr = 'dashboard';
+
 $peran = $_SESSION['peran'] ?? '';
 
 // Mapping tab aktif
 $tab_active = 'dashboard';
-if (in_array($curr, ['data_santri.php', 'data_guru.php', 'data_kelas.php'])) $tab_active = 'data';
-elseif (in_array($curr, ['penilaian_mapel.php', 'data_nilai.php', 'input_nilai_massal.php'])) $tab_active = 'nilai';
-elseif (in_array($curr, ['evaluasi_wali.php', 'cetak_rapot.php', 'kenaikan_kelas.php'])) $tab_active = 'evaluasi';
-elseif ($curr == 'profil.php') $tab_active = 'profil';
+if (in_array($curr, ['data_santri', 'data_guru', 'data_kelas', 'data_arsip_santri'])) $tab_active = 'data';
+elseif (in_array($curr, ['penilaian_mapel', 'data_nilai', 'input_nilai_massal'])) $tab_active = 'nilai';
+elseif (in_array($curr, ['evaluasi_wali', 'cetak_rapot', 'kenaikan_kelas'])) $tab_active = 'evaluasi';
+elseif ($curr === 'profil') $tab_active = 'profil';
 ?>
 
 <!-- MOBILE BOTTOM NAVIGATION (MODERN PILL) -->
@@ -58,7 +61,7 @@ elseif ($curr == 'profil.php') $tab_active = 'profil';
     }
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>@3.1.2/dist/flowbite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $assetBase ?? '' ?>assets/js/main.js"></script>
 <?php if (isset($_GET['status']) && isset($_GET['message'])): ?>
