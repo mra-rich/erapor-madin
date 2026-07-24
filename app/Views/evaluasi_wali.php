@@ -162,28 +162,28 @@ include 'include/sidebar.php';
                 <td class="p-1 border-r border-slate-100">
                   <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kelakuan) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-100">
                   <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kerajinan) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-100">
                   <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kerapian) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-200">
                   <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
@@ -191,28 +191,28 @@ include 'include/sidebar.php';
                 <td class="p-1 border-r border-slate-100">
                   <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($baca_quran) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-100">
                   <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-100">
                   <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
                 <td class="p-1 border-r border-slate-200">
                   <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1 px-1.5 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
                     <?php foreach($options_kepribadian as $val => $label): ?>
-                      <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                      <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                     <?php endforeach; ?>
                   </select>
                 </td>
@@ -292,7 +292,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
                       <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -300,7 +300,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
                       <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -308,7 +308,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
                       <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -316,7 +316,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
                       <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -331,7 +331,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
                       <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -339,7 +339,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
                       <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -347,7 +347,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
                       <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -355,7 +355,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
                       <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -445,7 +445,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kelakuan</label>
                       <select name="kelakuan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kelakuan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kelakuan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -453,7 +453,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerajinan</label>
                       <select name="kerajinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerajinan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kerajinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -461,7 +461,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kerapian</label>
                       <select name="kerapian[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kerapian) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kerapian == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -469,7 +469,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kedisiplinan</label>
                       <select name="kedisiplinan[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kedisiplinan) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kedisiplinan == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -483,7 +483,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Al-Qur'an</label>
                       <select name="baca_quran[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_quran) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($baca_quran == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -491,7 +491,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Baca Kitab</label>
                       <select name="baca_kitab[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($baca_kitab) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($baca_kitab == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -499,7 +499,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Muhafadhoh</label>
                       <select name="muhafadhoh[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($muhafadhoh) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($muhafadhoh == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -507,7 +507,7 @@ include 'include/sidebar.php';
                       <label class="text-[10px] font-semibold text-slate-500 mb-1 block">Kaligrafi</label>
                       <select name="kaligrafi[<?= $id_s ?>]" class="ui-select py-1.5 px-2 text-xs eval-select <?= getColorClass($kaligrafi) ?>">
                         <?php foreach($options_kepribadian as $val => $label): ?>
-                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> <?= $label ?></option>
+                          <option value="<?= $val ?>" <?= ($kaligrafi == $val) ? 'selected' : '' ?>><?= $val ?> - <?= $label ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
