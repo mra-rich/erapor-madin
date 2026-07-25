@@ -759,6 +759,5 @@ include 'include/sidebar.php';
                     cards.forEach(card => observer.observe(card));
                 });
             </script>
-        <?php endif; ?> <!-- endif kelas asal -->
 
 <?php include 'include/footer.php'; ?>
