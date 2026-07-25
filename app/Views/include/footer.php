@@ -15,32 +15,32 @@ elseif (in_array($curr, ['evaluasi_wali', 'kenaikan_kelas'])) $tab_active = 'eva
 elseif ($curr === 'cetak_rapot') $tab_active = 'rapor';
 ?>
 
-<!-- MOBILE BOTTOM NAVIGATION (MODERN PILL WITH RAINBOW GLOW) -->
-<nav class="sm:hidden fixed bottom-4 left-4 right-4 z-50 px-2 py-2 nav-glow rounded-full flex justify-between items-center transition-all">
+<!-- MOBILE BOTTOM NAVIGATION (MODERN PILL) -->
+<nav class="sm:hidden fixed bottom-4 left-4 right-4 z-50 px-2 py-2 bg-white/90 backdrop-blur-md border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full flex justify-between items-center transition-all">
     
     <!-- Tab: Dashboard -->
-    <a href="dashboard" hx-get="dashboard" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all nav-tab <?= $tab_active == 'dashboard' ? 'is-active' : '' ?>">
+    <a href="dashboard" hx-get="dashboard" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'dashboard' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
         <i class="<?= $tab_active == 'dashboard' ? 'ri-dashboard-fill' : 'ri-dashboard-line' ?> text-xl mb-0.5"></i>
         <span class="text-[9px] font-bold tracking-wide">Home</span>
     </a>
 
     <!-- Tab: Data (Khusus Admin/Wali) -->
     <?php if (in_array($peran, ['Admin', 'Kepala Madrasah', 'Wali Kelas'])): ?>
-    <a href="data_santri" hx-get="data_santri" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all nav-tab <?= $tab_active == 'data' ? 'is-active' : '' ?>">
+    <a href="data_santri" hx-get="data_santri" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'data' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
         <i class="<?= $tab_active == 'data' ? 'ri-folder-user-fill' : 'ri-folder-user-line' ?> text-xl mb-0.5"></i>
         <span class="text-[9px] font-bold tracking-wide">Data</span>
     </a>
     <?php endif; ?>
 
     <!-- Tab: Nilai -->
-    <a href="penilaian_mapel" hx-get="penilaian_mapel" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all nav-tab <?= $tab_active == 'nilai' ? 'is-active' : '' ?>">
+    <a href="penilaian_mapel" hx-get="penilaian_mapel" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'nilai' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
         <i class="<?= $tab_active == 'nilai' ? 'ri-edit-box-fill' : 'ri-edit-box-line' ?> text-xl mb-0.5"></i>
         <span class="text-[9px] font-bold tracking-wide">Nilai</span>
     </a>
 
     <!-- Tab: Evaluasi/Rapor (Khusus Admin/Wali) -->
     <?php if (in_array($peran, ['Admin', 'Wali Kelas'])): ?>
-    <a href="evaluasi_wali" hx-get="evaluasi_wali" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all nav-tab <?= $tab_active == 'evaluasi' ? 'is-active' : '' ?>">
+    <a href="evaluasi_wali" hx-get="evaluasi_wali" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'evaluasi' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
         <i class="<?= $tab_active == 'evaluasi' ? 'ri-survey-fill' : 'ri-survey-line' ?> text-xl mb-0.5"></i>
         <span class="text-[9px] font-bold tracking-wide">Evaluasi</span>
     </a>
@@ -48,74 +48,15 @@ elseif ($curr === 'cetak_rapot') $tab_active = 'rapor';
 
     <!-- Tab: Rapor (Khusus Admin/Wali) -->
     <?php if (in_array($peran, ['Admin', 'Kepala Madrasah', 'Wali Kelas'])): ?>
-    <a href="cetak_rapot" hx-get="cetak_rapot" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all nav-tab <?= $tab_active == 'rapor' ? 'is-active' : '' ?>">
+    <a href="cetak_rapot" hx-get="cetak_rapot" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'rapor' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
         <i class="<?= $tab_active == 'rapor' ? 'ri-printer-fill' : 'ri-printer-line' ?> text-xl mb-0.5"></i>
         <span class="text-[9px] font-bold tracking-wide">Rapor</span>
     </a>
     <?php endif; ?>
 </nav>
 
-<!-- Rainbow Glow Navigation Effect -->
+<!-- Padding bottom adjustment for mobile so content doesn't hide behind floating nav -->
 <style>
-    /* Rainbow Glow Navigation */
-    .nav-glow {
-        position: relative;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-    }
-    
-    .nav-glow::before {
-        content: '';
-        position: absolute;
-        z-index: -2;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: conic-gradient(from 0deg, transparent 0%, transparent 40%, #10b981 50%, #3b82f6 60%, transparent 100%);
-        animation: border-spin 4s linear infinite;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .nav-glow:hover::before {
-        opacity: 1;
-    }
-    
-    @keyframes border-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    /* Tab Navigation Styling */
-    .nav-tab {
-        position: relative;
-        z-index: 1;
-    }
-    
-    .nav-tab.is-active {
-        color: #059669 !important;
-        background: rgba(16, 185, 129, 0.1) !important;
-        transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-    }
-    
-    .nav-tab.is-active::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 3px;
-        background: linear-gradient(90deg, #10b981, #3b82f6);
-        border-radius: 2px;
-    }
-
-    /* Padding bottom adjustment for mobile so content doesn't hide behind floating nav */
     @media (max-width: 640px) {
         body { padding-bottom: 5rem !important; }
         .page-shell { padding-bottom: 2rem !important; }
