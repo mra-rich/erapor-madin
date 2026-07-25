@@ -131,7 +131,10 @@ include 'include/sidebar.php';
     <!-- Info & Jumlah -->
     <div class="mb-3 flex items-center justify-between text-sm text-gray-500">
         <div>
-            Menampilkan <strong class="text-gray-800"><?= $total_rows == 0 ? 0 : ($offset + 1) ?></strong>–<strong class="text-gray-800"><?= min($offset + $per_page, $total_rows) ?></strong> dari <strong class="text-gray-800"><?= $total_rows ?></strong> santri
+            <!-- Desktop: rentang paginasi -->
+            <span class="hidden sm:inline">Menampilkan <strong class="text-gray-800"><?= $total_rows == 0 ? 0 : ($offset + 1) ?></strong>–<strong class="text-gray-800"><?= min($offset + $per_page, $total_rows) ?></strong> dari <strong class="text-gray-800"><?= $total_rows ?></strong> santri</span>
+            <!-- Mobile: total keseluruhan (semua kartu tampil) -->
+            <span class="sm:hidden">Total <strong class="text-gray-800"><?= $total_rows ?></strong> santri</span>
             <?php if($search !== ''): ?> — hasil pencarian: "<em><?= htmlspecialchars($search) ?></em>"<?php endif; ?>
         </div>
     </div>
@@ -140,9 +143,10 @@ include 'include/sidebar.php';
     <!-- MOBILE CARD LIST (below sm) -->
     <div class="sm:hidden flex flex-col mb-4">
       <p class="text-[10px] text-slate-400 font-bold mb-2.5 text-center flex items-center justify-center gap-1 uppercase tracking-wider"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
-      <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-1 px-1 -mx-1 hide-scrollbar">
+      <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-2 px-3 -mx-3 hide-scrollbar">
         <?php
-        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
+        // Mobile: tampilkan SEMUA santri sebagai kartu swipe (tanpa paginasi)
+        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC");
         $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
         $no_m = 1;
         while ($row_m = mysqli_fetch_assoc($result2)):
@@ -152,7 +156,7 @@ include 'include/sidebar.php';
           $ttl = trim(($row_m['tempat_lahir'] ?? '') . ', ' . ($row_m['tanggal_lahir'] ? date('d M Y', strtotime($row_m['tanggal_lahir'])) : ''));
           if (empty($ttl) || $ttl == ', ') $ttl = '-';
         ?>
-        <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card bg-slate-100/50 flex flex-col justify-between">
+        <div class="ui-card flex-none w-[84vw] snap-center border-0 p-[3px] card-glow swipe-card bg-slate-100/50 flex flex-col justify-between">
           <div class="bg-white rounded-3xl p-5 space-y-4 h-full flex flex-col justify-between">
             
             <!-- Header (Avatar + Nama + Kelas) -->
@@ -288,9 +292,9 @@ include 'include/sidebar.php';
         </div>
     </div>
 
-    <!-- PAGINASI -->
+    <!-- PAGINASI (desktop saja; mobile pakai kartu swipe semua santri) -->
     <?php if ($total_pages > 1): ?>
-    <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="mt-4 hidden sm:flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="text-sm text-gray-500">
             Halaman <strong><?= $page ?></strong> dari <strong><?= $total_pages ?></strong>
         </div>

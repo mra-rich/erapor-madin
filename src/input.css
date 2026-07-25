@@ -232,7 +232,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent 0%, transparent 40%, #10b981 50%, #3b82f6 60%, transparent 100%);
+    background: conic-gradient(from 0deg, #ff0080, #ff8c00, #ffd500, #00e676, #00b0ff, #7c4dff, #ff0080);
     animation: border-spin 4s linear infinite;
     opacity: 0;
     transition: opacity 0.3s ease;
