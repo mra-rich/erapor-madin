@@ -140,9 +140,9 @@ include 'include/sidebar.php';
     <!-- MOBILE CARD LIST (below sm) -->
     <div class="sm:hidden flex flex-col mb-4">
       <p class="text-[10px] text-slate-400 font-bold mb-2.5 text-center flex items-center justify-center gap-1 uppercase tracking-wider"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
-      <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-1 px-1 -mx-1 hide-scrollbar">
+      <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-2 px-8 -mx-8 hide-scrollbar">
         <?php
-        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
+        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC");
         $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
         $no_m = 1;
         while ($row_m = mysqli_fetch_assoc($result2)):
@@ -290,7 +290,7 @@ include 'include/sidebar.php';
 
     <!-- PAGINASI -->
     <?php if ($total_pages > 1): ?>
-    <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="mt-4 hidden sm:flex flex-row items-center justify-between gap-3">
         <div class="text-sm text-gray-500">
             Halaman <strong><?= $page ?></strong> dari <strong><?= $total_pages ?></strong>
         </div>

@@ -232,7 +232,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, transparent 0%, transparent 40%, #10b981 50%, #3b82f6 60%, transparent 100%);
+    background: conic-gradient(from 0deg, #f0fdfa 0%, #f0fdfa 40%, #10b981 50%, #3b82f6 60%, #f0fdfa 100%);
     animation: border-spin 4s linear infinite;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -247,3 +247,33 @@
   .card-glow.is-active::before {
     opacity: 1;
   }
+
+  /* ---------- Nav Glow (Bottom Tab Navigation) ---------- */
+  .nav-glow {
+    @apply relative z-0 overflow-hidden;
+  }
+  .nav-glow::before {
+    content: '';
+    position: absolute;
+    z-index: -2;
+    top: 50%;
+    left: 50%;
+    width: 150vmax;
+    height: 150vmax;
+    background: conic-gradient(from 0deg, #f0fdfa 0%, #f0fdfa 40%, #10b981 50%, #3b82f6 60%, #f0fdfa 100%);
+    animation: nav-border-spin 6s linear infinite;
+  }
+  @keyframes nav-border-spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* ---------- Hide Scrollbar utility ---------- */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
