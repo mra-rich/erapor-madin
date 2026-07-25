@@ -279,7 +279,7 @@ include 'include/sidebar.php';
               $izin = $row['izin'] ?? 0;
               $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
             ?>
-            <div class="ui-card flex-none w-[88vw] snap-center shadow-md border border-slate-200/60">
+            <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card bg-slate-100/50">
               <!-- Header Card (Nama Santri) -->
               <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
                 <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
