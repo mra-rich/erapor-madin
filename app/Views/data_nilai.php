@@ -277,7 +277,7 @@ if (isset($_GET['status'])) {
               <!-- ═══ MOBILE VIEW — Horizontal Swipe Cards (below sm) ═══ -->
               <div class="sm:hidden flex flex-col mb-4">
                 <p class="text-[10px] text-slate-400 font-bold mb-2.5 text-center flex items-center justify-center gap-1 uppercase tracking-wider"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
-                <div id="mobile-nilai-view-<?= $id_kelas ?>" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-1 px-1 -mx-1 hide-scrollbar">
+                <div id="mobile-nilai-view-<?= $id_kelas ?>" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-2 px-3 -mx-3 hide-scrollbar">
                 <?php
                 // Reset pointer & loop again for mobile cards
                 mysqli_data_seek($result, 0);
@@ -305,7 +305,7 @@ if (isset($_GET['status'])) {
                     // Kepribadian labels
                     $kepLabel = ['A' => 'Sangat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
                 ?>
-                <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card-nilai bg-slate-100/50 flex flex-col justify-between">
+                <div class="ui-card flex-none w-[84vw] snap-center border-0 p-[3px] card-glow swipe-card-nilai bg-slate-100/50 flex flex-col justify-between">
                   <div class="bg-white rounded-3xl p-4 space-y-3 h-full flex flex-col">
 
                     <!-- Card Header -->
