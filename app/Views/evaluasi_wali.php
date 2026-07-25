@@ -262,7 +262,7 @@ include 'include/sidebar.php';
 
 <div id="mobile-detail-view" class="flex flex-col">
             <p class="text-xs text-slate-400 font-semibold mb-2 text-center flex items-center justify-center gap-1"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
-            <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-4 pt-1 px-1 -mx-1 hide-scrollbar">
+            <div class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-2 px-3 -mx-3 hide-scrollbar">
             <?php 
             $no = 1;
             foreach ($siswa_list as $row): 
@@ -279,7 +279,7 @@ include 'include/sidebar.php';
               $izin = $row['izin'] ?? 0;
               $tanpa_keterangan = $row['tanpa_keterangan'] ?? 0;
             ?>
-            <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card bg-slate-100/50">
+            <div class="ui-card flex-none w-[84vw] snap-center border-0 p-[3px] card-glow swipe-card bg-slate-100/50">
               <!-- Header Card (Nama Santri) -->
               <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
                 <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold"><?= $no++ ?></div>
