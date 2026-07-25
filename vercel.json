@@ -18,9 +18,25 @@
     {
       "src": "public/uploads/**",
       "use": "@vercel/static"
+    },
+    {
+      "src": "public/manifest.json",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "public/service-worker.js",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/manifest.json",
+      "dest": "/public/manifest.json"
+    },
+    {
+      "src": "/service-worker.js",
+      "dest": "/public/service-worker.js"
+    },
     {
       "src": "/assets/(.*)",
       "dest": "/public/assets/$1"
