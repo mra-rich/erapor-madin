@@ -197,7 +197,7 @@ include 'include/sidebar.php';
         </div>
 
         <!-- Sticky Save Bar -->
-        <div class="fixed sm:relative bottom-20 sm:bottom-0 left-0 right-0 sm:bottom-auto z-20 bg-white/95 sm:bg-white backdrop-blur-sm border-t border-slate-200 px-4 py-3 sm:rounded-xl sm:mt-4 sm:shadow-sm">
+        <div class="fixed sm:relative bottom-24 sm:bottom-0 left-0 right-0 sm:bottom-auto z-20 bg-white/95 sm:bg-white backdrop-blur-sm border-t border-slate-200 px-4 py-3 sm:rounded-xl sm:mt-4 sm:shadow-sm">
           <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto flex-wrap">
             <!-- Auto-jump toggle -->
             <label class="flex items-center gap-2 cursor-pointer select-none" title="Kursor otomatis pindah ke santri berikutnya setelah Enter atau 3 digit">

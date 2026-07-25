@@ -226,7 +226,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                         </div>
 
                         <!-- Mobile Card List -->
-                        <div class="sm:hidden space-y-3 mb-24">
+                        <div class="sm:hidden space-y-3 mb-40">
                             <?php if(mysqli_num_rows($resultSiswa) > 0): mysqli_data_seek($resultSiswa, 0); $no=1; ?>
                                 <?php while ($siswa = mysqli_fetch_assoc($resultSiswa)): ?>
                                     <label for="m-checkbox-<?= $siswa['id_siswa']; ?>" class="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl shadow-sm cursor-pointer active:bg-slate-50 transition-colors relative">
@@ -255,7 +255,7 @@ if ($_SESSION['peran'] === 'Wali Kelas' && count($kelasListAsal) > 0) {
                         </div>
 
                         <!-- Actions -->
-                        <div class="fixed sm:relative bottom-20 sm:bottom-0 left-0 right-0 sm:bottom-auto z-30 bg-white/95 sm:bg-transparent backdrop-blur-sm border-t sm:border-t sm:border-slate-100 px-4 py-3 sm:px-0 sm:py-0 pt-6 mt-4 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none">
+                        <div class="fixed sm:relative bottom-24 sm:bottom-0 left-0 right-0 sm:bottom-auto z-30 bg-white/95 sm:bg-transparent backdrop-blur-sm border-t border-slate-200 sm:border-t sm:border-slate-100 px-4 py-3 sm:px-0 sm:py-0 sm:pt-6 sm:mt-4 flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.1)] sm:shadow-none">
                             <input type="hidden" name="action_type" id="action_type" value="naik">
                             
                             <button type="button" class="text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-bold rounded-xl text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-3.5 text-center inline-flex justify-center items-center transition-all w-full sm:w-auto" onclick="if(confirm('Apakah Anda yakin ingin MELULUSKAN siswa terpilih menjadi ALUMNI? Mereka tidak akan naik kelas tetapi masuk ke daftar Arsip/Alumni.')) { document.getElementById('action_type').value='lulus'; document.getElementById('formKenaikan').submit(); }">
