@@ -348,6 +348,38 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.input-nilai').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
   document.querySelectorAll('.input-nilai-mobile').forEach(function(inp) { if (inp.value) inp.dispatchEvent(new Event('input')); });
 });
+
+// ── Offline-aware submit ────────────────────────────────────────────────────
+// Jika offline: kirim via fetch (Service Worker akan menyimpan ke antrean IndexedDB),
+// tampilkan notifikasi tersimpan lokal, dan cegah browser membuka respons JSON mentah.
+(function() {
+  const form = document.getElementById('formNilai');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    if (navigator.onLine) return; // online: submit normal ke server
+    e.preventDefault();
+    const fd = new FormData(form);
+    fetch(form.getAttribute('action') || 'proses_nilai_massal', { method: 'POST', body: fd })
+      .then(function(r) { return r.json().catch(function() { return {}; }); })
+      .then(function() {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'info',
+            title: 'Tersimpan Offline',
+            text: 'Nilai disimpan di perangkat dan akan otomatis dikirim ke server saat koneksi kembali.',
+            confirmButtonColor: '#10B981',
+            confirmButtonText: 'Mengerti'
+          });
+        }
+        if (window.eraporOffline) window.eraporOffline.refresh();
+      })
+      .catch(function() {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({ icon: 'error', title: 'Gagal menyimpan', text: 'Coba lagi.', confirmButtonColor: '#10B981' });
+        }
+      });
+  });
+})();
 </script>
 
 <?php include 'include/footer.php'; ?>

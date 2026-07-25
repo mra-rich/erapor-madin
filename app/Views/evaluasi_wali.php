@@ -680,7 +680,10 @@ include 'include/sidebar.php';
         .then(response => response.json())
         .then(data => {
             const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, timerProgressBar: true });
-            if (data.status === 'success') {
+            if (data.status === 'queued' || data.offline) {
+                Toast.fire({ icon: 'info', title: 'Tersimpan offline — akan dikirim saat online' });
+                if (window.eraporOffline) window.eraporOffline.refresh();
+            } else if (data.status === 'success') {
                 Toast.fire({ icon: 'success', title: 'Perubahan tersimpan' });
             } else {
                 Toast.fire({ icon: 'error', title: 'Gagal menyimpan data' });

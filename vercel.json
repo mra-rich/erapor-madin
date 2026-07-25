@@ -26,6 +26,10 @@
     {
       "src": "public/service-worker.js",
       "use": "@vercel/static"
+    },
+    {
+      "src": "public/offline.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -36,6 +40,10 @@
     {
       "src": "/service-worker.js",
       "dest": "/public/service-worker.js"
+    },
+    {
+      "src": "/offline.html",
+      "dest": "/public/offline.html"
     },
     {
       "src": "/assets/(.*)",

@@ -66,6 +66,7 @@ elseif ($curr === 'cetak_rapot') $tab_active = 'rapor';
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="<?= $assetBase ?? '' ?>assets/js/main.js"></script>
+<script src="<?= $assetBase ?? '' ?>assets/js/offline-queue.js"></script>
 <?php if (isset($_GET['status']) && isset($_GET['message'])): ?>
 <script>
     if (typeof Swal !== 'undefined') {
