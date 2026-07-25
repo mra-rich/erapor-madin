@@ -738,4 +738,27 @@ include 'include/sidebar.php';
 })();
 </script>
 
+
+            <script>
+                // Observer to add 'is-active' class to the card currently in the center of the viewport
+                document.addEventListener('DOMContentLoaded', () => {
+                    const cards = document.querySelectorAll('.swipe-card');
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add('is-active');
+                            } else {
+                                entry.target.classList.remove('is-active');
+                            }
+                        });
+                    }, {
+                        root: document.getElementById('mobile-detail-view'),
+                        threshold: 0.6 // Trigger when 60% of card is visible
+                    });
+                    
+                    cards.forEach(card => observer.observe(card));
+                });
+            </script>
+        <?php endif; ?> <!-- endif kelas asal -->
+
 <?php include 'include/footer.php'; ?>

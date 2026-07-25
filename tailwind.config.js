@@ -8,7 +8,11 @@ module.exports = {
     "./src/**/*.{css,js}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        'border-spin': 'spin 4s linear infinite',
+      }
+    },
   },
   plugins: [],
 }
