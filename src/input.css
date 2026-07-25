@@ -248,9 +248,10 @@
     opacity: 1;
   }
 
-  /* ---------- Rainbow Border Nav ---------- */
+  /* ---------- Rainbow Border Nav (samakan dgn card-glow) ---------- */
+  /* JANGAN set position/z-index di sini: nav harus tetap fixed z-50 */
   .nav-rainbow {
-    @apply relative z-0 overflow-hidden;
+    overflow: hidden;
   }
   .nav-rainbow::before {
     content: '';
@@ -260,8 +261,8 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: conic-gradient(from 0deg, #ff0000, #ff8800, #ffff00, #00cc44, #0088ff, #8800ff, #ff0000);
-    animation: border-spin 3s linear infinite;
+    background: conic-gradient(from 0deg, transparent 0%, transparent 40%, #10b981 50%, #3b82f6 60%, transparent 100%);
+    animation: border-spin 4s linear infinite;
   }
   .nav-rainbow::after {
     content: '';
