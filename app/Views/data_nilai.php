@@ -434,7 +434,7 @@ function sweetConfirm(event, element, message) {
 }
 
 // PWA Active state observer for Swipe Cards (Nilai)
-document.addEventListener('DOMContentLoaded', () => {
+function initNilaiGlowObserver() {
     const containers = document.querySelectorAll('[id^="mobile-nilai-view-"]');
     containers.forEach(container => {
         const cards = container.querySelectorAll('.swipe-card-nilai');
@@ -454,7 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
             cards.forEach(card => observer.observe(card));
         }
     });
-});
+}
+document.addEventListener('DOMContentLoaded', initNilaiGlowObserver);
+document.body.addEventListener('htmx:afterSettle', initNilaiGlowObserver);
 </script>
 
 <?php include 'include/footer.php'; ?>

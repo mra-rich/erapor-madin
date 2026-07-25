@@ -741,23 +741,27 @@ include 'include/sidebar.php';
 
             <script>
                 // Observer to add 'is-active' class to the card currently in the center of the viewport
-                document.addEventListener('DOMContentLoaded', () => {
+                function initWaliGlowObserver() {
                     const cards = document.querySelectorAll('.swipe-card');
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
-                                entry.target.classList.add('is-active');
-                            } else {
-                                entry.target.classList.remove('is-active');
-                            }
+                    const container = document.getElementById('mobile-detail-view');
+                    if (cards.length > 0 && container) {
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    entry.target.classList.add('is-active');
+                                } else {
+                                    entry.target.classList.remove('is-active');
+                                }
+                            });
+                        }, {
+                            root: container,
+                            threshold: 0.6 // Trigger when 60% of card is visible
                         });
-                    }, {
-                        root: document.getElementById('mobile-detail-view'),
-                        threshold: 0.6 // Trigger when 60% of card is visible
-                    });
-                    
-                    cards.forEach(card => observer.observe(card));
-                });
+                        cards.forEach(card => observer.observe(card));
+                    }
+                }
+                document.addEventListener('DOMContentLoaded', initWaliGlowObserver);
+                document.body.addEventListener('htmx:afterSettle', initWaliGlowObserver);
             </script>
 
 <?php include 'include/footer.php'; ?>

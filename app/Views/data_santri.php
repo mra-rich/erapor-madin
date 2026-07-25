@@ -1116,8 +1116,9 @@ function openDetailSantri(id) {
   }
 
   // PWA Active state observer for Swipe Cards
-  document.addEventListener('DOMContentLoaded', () => {
-      const cards = document.querySelectorAll('#mobile-santri-view .swipe-card');
+  function initSantriGlowObserver() {
+      const container = document.getElementById('mobile-santri-view');
+      const cards = container ? container.querySelectorAll('.swipe-card') : [];
       if (cards.length > 0) {
           const observer = new IntersectionObserver((entries) => {
               entries.forEach(entry => {
@@ -1133,7 +1134,9 @@ function openDetailSantri(id) {
           });
           cards.forEach(card => observer.observe(card));
       }
-  });
+  }
+  document.addEventListener('DOMContentLoaded', initSantriGlowObserver);
+  document.body.addEventListener('htmx:afterSettle', initSantriGlowObserver);
 </script>
 
 <?php include 'include/footer.php'; ?>
