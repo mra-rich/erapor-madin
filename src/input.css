@@ -215,6 +215,12 @@
 }
 
   /* ---------- Animated Glow Border ---------- */
+  
+  @keyframes border-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
   .card-glow {
     @apply relative z-0 overflow-hidden;
   }
