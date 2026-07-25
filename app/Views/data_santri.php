@@ -138,51 +138,97 @@ include 'include/sidebar.php';
 
 
     <!-- MOBILE CARD LIST (below sm) -->
-    <div class="sm:hidden space-y-2 mb-4">
-      <?php
-      $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
-      $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
-      while ($row_m = mysqli_fetch_assoc($result2)):
-        $inisial = mb_strtoupper(mb_substr($row_m['nama'], 0, 1, 'UTF-8'));
-        $color = $avatar_colors[ord($inisial) % 5];
-      ?>
-      <div class="ui-card px-4 py-3 <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>cursor-pointer active:bg-slate-50<?php endif; ?>"
-           <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>onclick="openEditSantri(<?= $row_m['id_siswa'] ?>)"<?php endif; ?>>
-        <div class="flex items-center gap-3">
-          <div class="shrink-0 w-10 h-10 rounded-full <?= $color ?> flex items-center justify-center text-sm font-bold select-none">
-            <?= $inisial ?>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-slate-800 text-sm truncate"><?= htmlspecialchars($row_m['nama']) ?></p>
-            <div class="flex items-center flex-wrap gap-x-2 gap-y-0 mt-0.5">
-              <span class="text-xs text-slate-400 font-mono"><?= htmlspecialchars($row_m['nomor_santri']) ?></span>
-              <?php if (!empty($row_m['nama_kelas'])): ?>
-              <span class="text-xs text-blue-600 font-medium"><?= htmlspecialchars($row_m['nama_kelas']) ?></span>
-              <?php endif; ?>
+    <div class="sm:hidden flex flex-col mb-4">
+      <p class="text-[10px] text-slate-400 font-bold mb-2.5 text-center flex items-center justify-center gap-1 uppercase tracking-wider"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
+      <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-1 px-1 -mx-1 hide-scrollbar">
+        <?php
+        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
+        $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
+        $no_m = 1;
+        while ($row_m = mysqli_fetch_assoc($result2)):
+          $inisial = mb_strtoupper(mb_substr($row_m['nama'], 0, 1, 'UTF-8'));
+          $color = $avatar_colors[ord($inisial) % 5];
+          $id_s = $row_m['id_siswa'];
+          $ttl = trim(($row_m['tempat_lahir'] ?? '') . ', ' . ($row_m['tanggal_lahir'] ? date('d M Y', strtotime($row_m['tanggal_lahir'])) : ''));
+          if (empty($ttl) || $ttl == ', ') $ttl = '-';
+        ?>
+        <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card bg-slate-100/50 flex flex-col justify-between">
+          <div class="bg-white rounded-3xl p-5 space-y-4 h-full flex flex-col justify-between">
+            
+            <!-- Header (Avatar + Nama + Kelas) -->
+            <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+              <div class="shrink-0 w-12 h-12 rounded-2xl <?= $color ?> flex items-center justify-center text-lg font-bold select-none shadow-sm">
+                <?= $inisial ?>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-extrabold text-slate-800 text-base truncate uppercase"><?= htmlspecialchars($row_m['nama']) ?></p>
+                <div class="flex items-center flex-wrap gap-x-2 gap-y-0.5 mt-0.5">
+                  <span class="text-[10px] text-slate-400 font-mono">No. Induk: <?= htmlspecialchars($row_m['nomor_santri']) ?></span>
+                  <?php if (!empty($row_m['nama_kelas'])): ?>
+                  <span class="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-bold"><?= htmlspecialchars($row_m['nama_kelas']) ?></span>
+                  <?php endif; ?>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="shrink-0 flex items-center gap-0.5" onclick="event.stopPropagation()">
-            <button type="button" onclick="openDetailSantri(<?= $row_m['id_siswa'] ?>)"
-                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-emerald-600 hover:bg-emerald-50">
-              <i class="ri-eye-line text-base"></i>
-            </button>
-            <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-            <button type="button" onclick="openEditSantri(<?= $row_m['id_siswa'] ?>)"
-                    class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50">
-              <i class="ri-edit-line text-base"></i>
-            </button>
-            <?php endif; ?>
-            <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-            <a hx-get="hapus_santri.php?id=<?= $row_m['id_siswa'] ?>&konfirmasi=ya&csrf_token=<?= generate_csrf_token() ?>"
-               hx-target="body" hx-confirm="Hapus <?= htmlspecialchars($row_m['nama']) ?>?"
-               class="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer">
-              <i class="ri-delete-bin-line text-base"></i>
-            </a>
-            <?php endif; ?>
+
+            <!-- Detail Data (TTL, Wali, Kontak, Alamat) -->
+            <div class="space-y-3 text-xs flex-1">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">NISN</span>
+                  <span class="font-semibold text-slate-700"><?= htmlspecialchars($row_m['nisn'] ?: '-') ?></span>
+                </div>
+                <div>
+                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Nama Wali</span>
+                  <span class="font-semibold text-slate-700"><?= htmlspecialchars($row_m['nama_wali'] ?: '-') ?></span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Tempat, Tgl Lahir</span>
+                  <span class="font-semibold text-slate-700 block truncate" title="<?= htmlspecialchars($ttl) ?>"><?= htmlspecialchars($ttl) ?></span>
+                </div>
+                <div>
+                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">No. HP</span>
+                  <span class="font-semibold text-slate-700"><?= htmlspecialchars($row_m['no_handphone'] ?: '-') ?></span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Alamat</span>
+                <span class="font-semibold text-slate-700 block truncate" title="<?= htmlspecialchars($row_m['alamat'] ?? '') ?>"><?= htmlspecialchars($row_m['alamat'] ?: '-') ?></span>
+              </div>
+            </div>
+
+            <!-- Footer Action Buttons inside card -->
+            <div class="flex items-center justify-between border-t border-slate-100 pt-3 mt-1">
+              <span class="text-[10px] font-bold text-slate-400 font-mono">#<?= $no_m++ ?></span>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="openDetailSantri(<?= $id_s ?>)"
+                        class="px-3 py-1.5 bg-slate-50 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                  <i class="ri-eye-line"></i> Detail
+                </button>
+                <?php if ($_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+                <button type="button" onclick="openEditSantri(<?= $id_s ?>)"
+                        class="px-3 py-1.5 bg-slate-50 hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 hover:border-blue-200 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                  <i class="ri-edit-line"></i> Edit
+                </button>
+                <?php endif; ?>
+                <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
+                <a hx-get="hapus_santri.php?id=<?= $id_s ?>&konfirmasi=ya&csrf_token=<?= generate_csrf_token() ?>"
+                   hx-target="body" hx-confirm="Hapus <?= htmlspecialchars($row_m['nama']) ?>?"
+                   class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition-all flex items-center justify-center">
+                  <i class="ri-delete-bin-line"></i>
+                </a>
+                <?php endif; ?>
+              </div>
+            </div>
+
           </div>
         </div>
+        <?php endwhile; ?>
       </div>
-      <?php endwhile; ?>
     </div>
 
     <!-- DESKTOP TABLE (sm+) -->
@@ -1068,6 +1114,26 @@ function openDetailSantri(id) {
           btn.disabled = false;
       });
   }
+
+  // PWA Active state observer for Swipe Cards
+  document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('#mobile-santri-view .swipe-card');
+      if (cards.length > 0) {
+          const observer = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                  if (entry.isIntersecting) {
+                      entry.target.classList.add('is-active');
+                  } else {
+                      entry.target.classList.remove('is-active');
+                  }
+              });
+          }, {
+              root: document.getElementById('mobile-santri-view'),
+              threshold: 0.6
+          });
+          cards.forEach(card => observer.observe(card));
+      }
+  });
 </script>
 
 <?php include 'include/footer.php'; ?>

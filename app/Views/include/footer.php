@@ -104,5 +104,85 @@ elseif ($curr === 'cetak_rapot') $tab_active = 'rapor';
 <!-- Instant.page for just-in-time preloading on hover -->
 <script src="//instant.page/5.2.0" type="module" crossorigin="anonymous"></script>
 
+<!-- PWA & Install Prompt Logic -->
+<div id="pwa-install-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+  <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-100 flex flex-col items-center text-center">
+    <div class="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center border border-emerald-100 mb-4 shadow-sm">
+      <img src="/assets/img/logo.png" alt="Logo" class="w-10 h-10 object-contain">
+    </div>
+    <h3 class="text-lg font-bold text-slate-800">Pasang Aplikasi E-Rapor</h3>
+    <p class="text-xs text-slate-500 mt-2 leading-relaxed">Instal aplikasi untuk mempermudah akses pengisian nilai dan data santri langsung dari layar HP Anda.</p>
+    
+    <button type="button" id="btn-pwa-install" class="w-full mt-5 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2">
+      <i class="ri-download-cloud-2-line text-lg"></i> Instal Sekarang
+    </button>
+    <button type="button" id="btn-pwa-close" class="mt-2 text-xs text-slate-400 hover:text-slate-600 font-semibold py-2">
+      Nanti Saja
+    </button>
+  </div>
+</div>
+
+<script>
+    // 1. Register Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('SW Registered', reg))
+                .catch(err => console.log('SW Reg Failed', err));
+        });
+    }
+
+    // 2. Install Prompt Handler
+    (function() {
+        let deferredPrompt;
+        const modal = document.getElementById('pwa-install-modal');
+        const btnInstall = document.getElementById('btn-pwa-install');
+        const btnClose = document.getElementById('btn-pwa-close');
+
+        if (!modal || !btnInstall || !btnClose) return;
+
+        // Cek apakah user menolak/menutup modal sebelumnya dalam sesi ini
+        const isDismissed = sessionStorage.getItem('pwa_install_dismissed');
+
+        // Cek display-mode standalone (sudah di-install)
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
+        if (isStandalone) {
+            console.log('App is running in standalone mode (already installed).');
+            return;
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+
+            // Jika belum di-install dan tidak ada dismissed tag, tampilkan modal
+            if (!isDismissed) {
+                modal.classList.remove('hidden');
+            }
+        });
+
+        btnInstall.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            modal.classList.add('hidden');
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to install: ${outcome}`);
+            deferredPrompt = null;
+        });
+
+        btnClose.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            // Simpan state dismissed di sessionStorage (jika browser di-refresh tetap ingat di sesi ini, tidak mengganggu terus)
+            // Tapi jika browser ditutup lalu dibuka lagi nanti, prompt akan muncul lagi.
+            sessionStorage.setItem('pwa_install_dismissed', '1');
+        });
+    })();
+</script>
+
 </body>
 </html>

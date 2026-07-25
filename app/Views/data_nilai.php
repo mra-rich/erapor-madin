@@ -151,12 +151,14 @@ if (isset($_GET['status'])) {
         }
 
         $query = "SELECT s.id_siswa, s.nama, s.nomor_santri, r.id_kelas, t.id_transaksi, t.tahun_ajaran, t.semester,
-                         a.izin, a.sakit, a.tanpa_keterangan, k.kelakuan, k.kerajinan, k.kerapian, c.catatan
+                         a.izin, a.sakit, a.tanpa_keterangan, k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan,
+                         ex.baca_quran, ex.baca_kitab, ex.muhafadhoh, ex.kaligrafi, c.catatan
                   FROM riwayat_kelas r
                   JOIN siswa s ON r.id_siswa = s.id_siswa
                   LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.tahun_ajaran = r.tahun_ajaran
                   LEFT JOIN absensi a ON t.id_transaksi = a.id_transaksi
                   LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
+                  LEFT JOIN ekstrakurikuler ex ON t.id_transaksi = ex.id_transaksi
                   LEFT JOIN catatan_wali_kelas c ON t.id_transaksi = c.id_transaksi
                   $whereClause
                   ORDER BY s.nama ASC";
@@ -272,8 +274,10 @@ if (isset($_GET['status'])) {
                 </table>
               </div>
 
-              <!-- ═══ MOBILE VIEW (below sm) ═══ -->
-              <div class="sm:hidden space-y-3">
+              <!-- ═══ MOBILE VIEW — Horizontal Swipe Cards (below sm) ═══ -->
+              <div class="sm:hidden flex flex-col mb-4">
+                <p class="text-[10px] text-slate-400 font-bold mb-2.5 text-center flex items-center justify-center gap-1 uppercase tracking-wider"><i class="ri-arrow-left-s-line"></i> Geser kartu untuk melihat santri lain <i class="ri-arrow-right-s-line"></i></p>
+                <div id="mobile-nilai-view-<?= $id_kelas ?>" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-1 px-1 -mx-1 hide-scrollbar">
                 <?php
                 // Reset pointer & loop again for mobile cards
                 mysqli_data_seek($result, 0);
@@ -282,7 +286,7 @@ if (isset($_GET['status'])) {
                     $idSiswa = $row['id_siswa'];
                     $idTransaksi = $row['id_transaksi'];
 
-                    // fetch nilai
+                    // fetch nilai per mapel (scoped to active semester)
                     $resultNilai = mysqli_query($koneksi, "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)");
                     $nilaiMapel = [];
                     $totalNilai = 0;
@@ -297,68 +301,94 @@ if (isset($_GET['status'])) {
                     $inisial = mb_strtoupper(mb_substr($row['nama'], 0, 1, 'UTF-8'));
                     $colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
                     $color = $colors[ord($inisial) % 5];
+                    
+                    // Kepribadian labels
+                    $kepLabel = ['A' => 'Sangat Baik', 'B' => 'Baik', 'C' => 'Cukup', 'D' => 'Kurang'];
                 ?>
-                <div class="ui-card">
-                  <!-- Card Header -->
-                  <div class="flex items-center justify-between p-4 bg-slate-50 rounded-t-xl border-b border-slate-200">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded-full <?= $color ?> flex items-center justify-center text-xs font-bold"><?= $inisial ?></div>
-                      <div class="min-w-0">
-                        <p class="font-bold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
-                        <p class="text-[9px] text-slate-400 font-mono">No. Induk: <?= htmlspecialchars($row['nomor_santri']) ?></p>
+                <div class="ui-card flex-none w-[88vw] snap-center shadow-md border-0 p-[2px] card-glow swipe-card-nilai bg-slate-100/50 flex flex-col justify-between">
+                  <div class="bg-white rounded-3xl p-4 space-y-3 h-full flex flex-col">
+
+                    <!-- Card Header -->
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl <?= $color ?> flex items-center justify-center text-sm font-bold"><?= $inisial ?></div>
+                        <div class="min-w-0">
+                          <p class="font-extrabold text-slate-800 text-sm truncate uppercase"><?= htmlspecialchars($row['nama']) ?></p>
+                          <p class="text-[9px] text-slate-400 font-mono">No. Induk: <?= htmlspecialchars($row['nomor_santri']) ?></p>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-end shrink-0">
+                        <span class="badge badge-info text-[9px]">Sem. <?= $row['semester'] ?: '-' ?></span>
+                        <span class="text-sm font-extrabold text-emerald-600 mt-1"><?= round($rataRata, 1) ?></span>
+                        <span class="text-[8px] text-slate-400">Rata-rata</span>
                       </div>
                     </div>
-                    <!-- Sem. & Rata2 badge -->
-                    <div class="flex flex-col items-end shrink-0">
-                      <span class="badge badge-info text-[9px]">Sem. <?= $row['semester'] ?: '-' ?></span>
-                      <span class="text-xs font-extrabold text-emerald-600 mt-1">Rata2: <?= round($rataRata, 1) ?></span>
-                    </div>
-                  </div>
 
-                  <!-- Card Body -->
-                  <div class="p-4 space-y-3">
-                    <!-- Mapel List Grid -->
+                    <!-- 1. Nilai Pelajaran -->
                     <div>
-                      <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2">Nilai Pelajaran</p>
-                      <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        <?php foreach ($mapelList as $mapel): 
+                      <p class="text-[9px] font-bold text-indigo-500 uppercase tracking-wider mb-2 flex items-center gap-1"><i class="ri-book-open-line"></i> Nilai Pelajaran</p>
+                      <div class="grid grid-cols-2 gap-1.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                        <?php foreach ($mapelList as $mapel):
                           $valNilai = $nilaiMapel[$mapel['id_mapel']] ?? '-';
                           $valInt = (int)$valNilai;
-                          $valColor = $valNilai === '-' ? 'text-slate-400' : ($valInt >= 70 ? 'text-emerald-700' : 'text-amber-700');
+                          $valColor = $valNilai === '-' ? 'text-slate-400' : ($valInt >= 70 ? 'text-emerald-700' : 'text-amber-600');
                         ?>
-                          <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-500 truncate mr-2"><?= htmlspecialchars($mapel['nama_mapel']) ?></span>
-                            <span class="font-bold <?= $valColor ?>"><?= $valNilai ?></span>
+                          <div class="flex justify-between items-center text-[10px]">
+                            <span class="text-slate-500 truncate mr-1"><?= htmlspecialchars($mapel['nama_mapel']) ?></span>
+                            <span class="font-bold shrink-0 <?= $valColor ?>"><?= $valNilai ?></span>
                           </div>
                         <?php endforeach; ?>
                       </div>
                     </div>
 
-                    <!-- Kepribadian & Catatan -->
-                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-center">
-                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
-                        <p class="text-[9px] text-slate-400 font-medium">Kelakuan</p>
-                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kelakuan'] ?? '-') ?></p>
-                      </div>
-                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
-                        <p class="text-[9px] text-slate-400 font-medium">Kerajinan</p>
-                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kerajinan'] ?? '-') ?></p>
-                      </div>
-                      <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-100">
-                        <p class="text-[9px] text-slate-400 font-medium">Kerapian</p>
-                        <p class="font-bold text-slate-700 text-xs mt-0.5"><?= htmlspecialchars($row['kerapian'] ?? '-') ?></p>
+                    <!-- 2. Kehadiran / Absensi -->
+                    <div class="border-t border-slate-100 pt-2.5">
+                      <p class="text-[9px] font-bold text-amber-500 uppercase tracking-wider mb-2 flex items-center gap-1"><i class="ri-calendar-todo-line"></i> Kehadiran</p>
+                      <div class="grid grid-cols-3 gap-2 text-center">
+                        <?php foreach (['Sakit' => $row['sakit'] ?? '-', 'Izin' => $row['izin'] ?? '-', 'Alpha' => $row['tanpa_keterangan'] ?? '-'] as $lbl => $val): ?>
+                          <div class="bg-amber-50 p-1.5 rounded-lg border border-amber-100">
+                            <p class="text-[8px] text-amber-600 font-bold"><?= $lbl ?></p>
+                            <p class="font-extrabold text-amber-700 text-sm mt-0.5"><?= $val ?></p>
+                          </div>
+                        <?php endforeach; ?>
                       </div>
                     </div>
 
-                    <!-- Catatan display -->
-                    <div class="pt-2.5 border-t border-slate-100">
-                      <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">Catatan Wali</p>
-                      <p class="text-xs text-slate-600 italic bg-slate-50 p-2 rounded-lg border border-slate-100"><?= htmlspecialchars($row['catatan'] ?? '-') ?></p>
+                    <!-- 3. Kepribadian -->
+                    <div class="border-t border-slate-100 pt-2.5">
+                      <p class="text-[9px] font-bold text-blue-500 uppercase tracking-wider mb-2 flex items-center gap-1"><i class="ri-user-heart-line"></i> Kepribadian</p>
+                      <div class="grid grid-cols-2 gap-1.5 text-center">
+                        <?php foreach (['Kelakuan' => $row['kelakuan'] ?? '-', 'Kerajinan' => $row['kerajinan'] ?? '-', 'Kerapian' => $row['kerapian'] ?? '-', 'Kedisiplinan' => $row['kedisiplinan'] ?? '-'] as $lbl => $val): ?>
+                          <div class="bg-blue-50 p-1.5 rounded-lg border border-blue-100">
+                            <p class="text-[8px] text-blue-500 font-bold"><?= $lbl ?></p>
+                            <p class="font-extrabold text-blue-700 text-xs mt-0.5"><?= $val ? ($kepLabel[$val] ?? $val) : '-' ?></p>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
                     </div>
 
-                    <!-- Actions for Mobile (only for role != Kepala Madrasah / Wali Kelas) -->
+                    <!-- 4. Ekstrakurikuler -->
+                    <div class="border-t border-slate-100 pt-2.5">
+                      <p class="text-[9px] font-bold text-emerald-500 uppercase tracking-wider mb-2 flex items-center gap-1"><i class="ri-book-read-line"></i> Ekstrakurikuler</p>
+                      <div class="grid grid-cols-2 gap-1.5 text-center">
+                        <?php foreach (["Al-Qur'an" => $row['baca_quran'] ?? '-', 'Kitab' => $row['baca_kitab'] ?? '-', 'Muhafadhoh' => $row['muhafadhoh'] ?? '-', 'Kaligrafi' => $row['kaligrafi'] ?? '-'] as $lbl => $val): ?>
+                          <div class="bg-emerald-50 p-1.5 rounded-lg border border-emerald-100">
+                            <p class="text-[8px] text-emerald-600 font-bold"><?= $lbl ?></p>
+                            <p class="font-extrabold text-emerald-700 text-xs mt-0.5"><?= $val ? ($kepLabel[$val] ?? $val) : '-' ?></p>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+
+                    <!-- 5. Catatan Wali Kelas -->
+                    <div class="border-t border-slate-100 pt-2.5">
+                      <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1"><i class="ri-chat-1-line"></i> Catatan Wali Kelas</p>
+                      <p class="text-[10px] text-slate-600 italic bg-slate-50 p-2 rounded-lg border border-slate-100 leading-relaxed"><?= htmlspecialchars($row['catatan'] ?: '-') ?></p>
+                    </div>
+
+                    <!-- 6. Actions -->
                     <?php if ($_SESSION['peran'] !== 'Kepala Madrasah' && $_SESSION['peran'] !== 'Wali Kelas'): ?>
-                    <div class="pt-3 border-t border-slate-100 flex gap-2">
+                    <div class="border-t border-slate-100 pt-2.5 flex gap-2 mt-auto">
                       <?php if ($idTransaksi): ?>
                         <a href="edit_nilai.php?id=<?= $idTransaksi; ?>" class="btn btn-secondary btn-sm py-2 flex-1 text-xs justify-center"><i class="ri-edit-line"></i> Edit Nilai</a>
                         <a href="hapus_nilai.php?hapus=<?= (int) $idTransaksi; ?>&csrf_token=<?= generate_csrf_token(); ?>" class="btn btn-secondary btn-sm py-2 flex-1 text-xs text-red-600 border-red-200 bg-red-50 hover:bg-red-100 justify-center" onclick="return sweetConfirm(event, this, 'Hapus data nilai?');"><i class="ri-delete-bin-line"></i> Hapus</a>
@@ -371,6 +401,7 @@ if (isset($_GET['status'])) {
                   </div>
                 </div>
                 <?php endwhile; ?>
+                </div>
               </div>
 
             </div>
@@ -401,6 +432,29 @@ function sweetConfirm(event, element, message) {
     });
     return false;
 }
+
+// PWA Active state observer for Swipe Cards (Nilai)
+document.addEventListener('DOMContentLoaded', () => {
+    const containers = document.querySelectorAll('[id^="mobile-nilai-view-"]');
+    containers.forEach(container => {
+        const cards = container.querySelectorAll('.swipe-card-nilai');
+        if (cards.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-active');
+                    } else {
+                        entry.target.classList.remove('is-active');
+                    }
+                });
+            }, {
+                root: container,
+                threshold: 0.6
+            });
+            cards.forEach(card => observer.observe(card));
+        }
+    });
+});
 </script>
 
 <?php include 'include/footer.php'; ?>

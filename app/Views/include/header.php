@@ -11,6 +11,13 @@
     $assetBase = '/';
   ?>
   <link rel="icon" type="image/x-icon" href="<?= $assetBase ?>assets/img/logo.png">
+
+  <!-- PWA manifest & theme -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="E-Rapor">
   <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.2.0/remixicon.css" />
   <link href="<?= $assetBase ?>css/style.css" rel="stylesheet">
