@@ -44,7 +44,7 @@
         .login-visual { width: 41.666667%; padding: 3rem; }
         .login-panel { width: 58.333333%; padding: 5rem; }
         @media (max-width: 1023px) {
-            body.bg-majestic { background: #f8fafc !important; }
+            body.bg-majestic { background: #f0fdfa !important; }
             .login-shell { width: 100%; margin: 0; border-radius: 0; box-shadow: none; border: none; min-height: 100vh; flex-direction: column; justify-content: center; }
             .login-visual { display: none; }
             .login-panel { width: 100%; padding: 2rem; background: transparent; backdrop-filter: none; }

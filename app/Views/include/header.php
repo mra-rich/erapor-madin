@@ -42,7 +42,7 @@
   <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 </head>
 
-<body hx-boost="true" class="text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
+<body hx-boost="true" class="bg-teal-50/30 text-gray-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
 
 <!-- Custom 4-Dots Loader untuk perpindahan halaman -->
 <div id="page-loader" class="fixed inset-0 z-[10000] flex items-center justify-center bg-[#f8f9fa] opacity-0 pointer-events-none transition-opacity duration-300">
