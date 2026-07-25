@@ -16,7 +16,7 @@ elseif ($curr === 'cetak_rapot') $tab_active = 'rapor';
 ?>
 
 <!-- MOBILE BOTTOM NAVIGATION (MODERN PILL) -->
-<nav class="sm:hidden fixed bottom-4 left-4 right-4 z-50 px-2 py-2 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full flex justify-between items-center transition-all nav-rainbow">
+<nav class="sm:hidden fixed bottom-4 left-4 right-4 z-50 px-2 py-2 bg-white/90 backdrop-blur-md border border-white/50 shadow-[0_8px_30px_rgb(0,0,0,0.08)] rounded-full flex justify-between items-center transition-all">
     
     <!-- Tab: Dashboard -->
     <a href="dashboard" hx-get="dashboard" hx-target="body" hx-push-url="true" hx-indicator="#page-loader" class="flex flex-col items-center justify-center w-full py-1 rounded-full transition-all <?= $tab_active == 'dashboard' ? 'text-emerald-700 bg-emerald-50/80 scale-105 shadow-sm' : 'text-slate-400 hover:text-slate-600' ?>">
