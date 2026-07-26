@@ -221,7 +221,7 @@ if (empty($siswa_ids)) {
                 <td>8.</td>
                 <td>Alamat Santri</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['alamat_siswa'] ?? '-') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['alamat'] ?? '-') ?></td>
             </tr>
             <tr>
                 <td>9.</td>
@@ -279,18 +279,30 @@ if (empty($siswa_ids)) {
             </tr>
             <tr>
                 <td>12.</td>
+                <td>Alamat Orang Tua</td>
+                <td>:</td>
+                <td class="isian"><?= htmlspecialchars($siswa['alamat_orang_tua'] ?? '-') ?></td>
+            </tr>
+            <tr>
+                <td>13.</td>
+                <td>No. Telepon / HP</td>
+                <td>:</td>
+                <td class="isian"><?= htmlspecialchars($siswa['no_handphone'] ?? '-') ?></td>
+            </tr>
+            <tr>
+                <td>14.</td>
                 <td>Nama Wali Santri</td>
                 <td>:</td>
                 <td class="isian"><?= htmlspecialchars($siswa['nama_wali'] ?? '-') ?></td>
             </tr>
             <tr>
-                <td>13.</td>
+                <td>15.</td>
                 <td>Alamat Wali Santri</td>
                 <td>:</td>
                 <td class="isian"><?= htmlspecialchars($siswa['alamat_wali'] ?? '-') ?></td>
             </tr>
             <tr>
-                <td>14.</td>
+                <td>16.</td>
                 <td>Pekerjaan Wali Santri</td>
                 <td>:</td>
                 <td class="isian"><?= htmlspecialchars($siswa['pekerjaan_wali'] ?? '-') ?></td>
