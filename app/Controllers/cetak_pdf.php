@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__DIR__, 2) . "/vendor/autoload.php";
-$base = dirname(__DIR__);
+$base = dirname(__DIR__, 2);
 require $base . "/config/koneksi.php";
 require $base . "/app/Controllers/cek_sesi.php";
 restrict_roles(RBAC_VIEW_REPORTS);
