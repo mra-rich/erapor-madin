@@ -31,6 +31,7 @@ try {
     $kelakuan = $_POST['kelakuan'] ?? '';
     $kerajinan = $_POST['kerajinan'] ?? '';
     $kerapian = $_POST['kerapian'] ?? '';
+    $kedisiplinan = $_POST['kedisiplinan'] ?? '';
     $catatan = $_POST['catatan_wali_kelas'] ?? '';
 
     // Pastikan data utama tidak kosong
@@ -59,10 +60,10 @@ try {
     mysqli_stmt_close($stmt);
 
     // Insert kepribadian
-    $query_kepribadian = "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian) VALUES (?, ?, ?, ?)";
+    $query_kepribadian = "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($koneksi, $query_kepribadian);
     if (!$stmt) throw new Exception("Gagal menyiapkan query kepribadian.");
-    mysqli_stmt_bind_param($stmt, "isss", $id_transaksi, $kelakuan, $kerajinan, $kerapian);
+    mysqli_stmt_bind_param($stmt, "issss", $id_transaksi, $kelakuan, $kerajinan, $kerapian, $kedisiplinan);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
@@ -75,16 +76,17 @@ try {
     mysqli_stmt_close($stmt);
 
     // Insert ekstrakurikuler
-    $pramuka = $_POST['ekskul_pramuka'] ?? '';
-    $pmr = $_POST['ekskul_pmr'] ?? '';
-    $paskibra = $_POST['ekskul_paskibra'] ?? '';
+    $baca_quran = $_POST['ekskul_baca_quran'] ?? '';
+    $baca_kitab = $_POST['ekskul_baca_kitab'] ?? '';
+    $muhafadhoh = $_POST['ekskul_muhafadhoh'] ?? '';
+    $kaligrafi = $_POST['ekskul_kaligrafi'] ?? '';
     
     // Hanya insert jika ada setidaknya 1 ekskul yang diikuti
-    if ($pramuka != '' || $pmr != '' || $paskibra != '') {
-        $query_ekskul = "INSERT INTO ekstrakurikuler (id_transaksi, pramuka, pmr, paskibra) VALUES (?, ?, ?, ?)";
+    if ($baca_quran != '' || $baca_kitab != '' || $muhafadhoh != '' || $kaligrafi != '') {
+        $query_ekskul = "INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES (?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($koneksi, $query_ekskul);
         if (!$stmt) throw new Exception("Gagal menyiapkan query ekstrakurikuler.");
-        mysqli_stmt_bind_param($stmt, "isss", $id_transaksi, $pramuka, $pmr, $paskibra);
+        mysqli_stmt_bind_param($stmt, "issss", $id_transaksi, $baca_quran, $baca_kitab, $muhafadhoh, $kaligrafi);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }

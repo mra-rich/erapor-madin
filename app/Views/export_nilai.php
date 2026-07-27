@@ -48,7 +48,7 @@ $query = "SELECT
             s.id_siswa, s.nama, s.nomor_santri, k.nama_kelas,
             t.id_transaksi, t.tahun_ajaran, t.semester,
             a.sakit, a.izin, a.tanpa_keterangan,
-            kep.kelakuan, kep.kerajinan, kep.kerapian,
+            kep.kelakuan, kep.kerajinan, kep.kerapian, kep.kedisiplinan,
             c.catatan,
             COALESCE(SUM(n.nilai_angka), 0) as total_nilai,
             GROUP_CONCAT(CONCAT(n.id_mapel, ':', n.nilai_angka) SEPARATOR ',') as daftar_nilai
@@ -100,6 +100,7 @@ if (mysqli_num_rows($result) > 0) {
         $row['kelakuan'] = $row['kelakuan'] ?? '-';
         $row['kerajinan'] = $row['kerajinan'] ?? '-';
         $row['kerapian'] = $row['kerapian'] ?? '-';
+        $row['kedisiplinan'] = $row['kedisiplinan'] ?? '-';
         $row['catatan'] = $row['catatan'] ?? '-';
 
         $reportData[] = $row;

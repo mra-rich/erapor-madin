@@ -33,7 +33,7 @@ $query = "SELECT
             s.id_siswa, s.nama, s.nomor_santri,
             t.id_transaksi,
             a.izin, a.sakit, a.tanpa_keterangan,
-            k.kelakuan, k.kerajinan, k.kerapian,
+            k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan,
             COALESCE(SUM(n.nilai_angka), 0) as total_nilai,
             COALESCE(AVG(n.nilai_angka), 0) as rata_rata,
             GROUP_CONCAT(CONCAT(n.id_mapel, ':', n.nilai_angka) SEPARATOR ',') as daftar_nilai,

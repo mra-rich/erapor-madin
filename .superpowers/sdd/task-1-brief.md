@@ -1,57 +1,38 @@
-# Task 1 Brief: Fix SQL Injection in data_guru.php and export_guru.php
+# Task 1 Brief: Add layout view toggle and Tab mode in evaluasi_wali.php
 
-## Project Context
-PHP web app (e-Raport / erapor) — school report card system.
-Working directory: C:\xampp\htdocs\erapor
-Git branch: main (working tree — changes not yet committed)
-DB: MySQLi with Aiven PostgreSQL-compatible connection via config/koneksi.php
+## Context
+Wali Kelas uses `evaluasi_wali.php` to input grades/assessments (Kepribadian, Ekskul, Absensi, Catatan) for all students.
+On mobile devices (below `sm` breakpoint), the screen displays a long vertical stack of cards containing all input fields for each student. This requires heavy scrolling.
 
-## Problem
-Two files use `mysqli_real_escape_string` on `$search` then interpolate directly into LIKE clauses. This does NOT escape `%` and `_` wildcards, enabling wildcard abuse (DoS-level full-table scan) and is one step from SQLi if charset mismatch occurs.
+## Goal
+Add a View Switcher (Toggle) in Mobile View that allows users to choose between:
+1. **Mode Detail** (Original Stack layout): Full card per student.
+2. **Mode Tab Kategori** (New Tabbed layout): Displays only one category (Kepribadian, Ekskul, Absensi, OR Catatan) for all students at a time, using a horizontal tab selection bar.
 
-### File 1: app/Views/data_guru.php (around line 19)
-Current pattern (approximate):
-```php
-$search = trim($_GET['search'] ?? '');
-$search = mysqli_real_escape_string($koneksi, $search);
-// ...
-$where_clause .= " AND (p.nama LIKE '%$search%' OR g.nip LIKE '%$search%' OR p.username LIKE '%$search%')";
-```
-
-### File 2: app/Views/export_guru.php (around line 33)
-Same pattern.
-
-## Required Fix
-Replace both with parameterized prepared statements using MySQLi. Pattern:
-
-```php
-$search = trim($_GET['search'] ?? '');
-$like = '%' . $search . '%';
-// Build query string with ? placeholders instead of interpolation
-// Use mysqli_prepare + mysqli_stmt_bind_param
-// Bind $like for each LIKE ? placeholder
-```
-
-Important constraints:
-- Use MySQLi (not PDO) — matches existing codebase style
-- Do NOT change surrounding query logic, pagination, joins — only the search/LIKE part
-- Keep all existing columns, JOINs, WHERE conditions intact
-- The prepared statement must handle the case where $search is empty (LIKE '%%' returns all — acceptable)
-- Do NOT add any new features
-- Existing variable names for result sets must remain compatible with the rest of the file
+## Requirements
+- Maintain both layouts inside `evaluasi_wali.php`'s mobile viewport branch (`sm:hidden`).
+- View Switcher: Add a select dropdown or button group at the top of the mobile view to toggle between "Tampilan Detail (Card)" and "Tampilan Ringkas (Tab)".
+- The switcher choice must be persisted in `localStorage.setItem('eval_view_mode', ...)` and loaded on DOM ready.
+- Tab Layout:
+  - Add 4 tab buttons: "Kepribadian", "Ekstrakurikuler", "Absensi", "Catatan".
+  - Active tab displays the respective fields for ALL students.
+  - Inactive tabs hide their fields.
+- Auto-save feature (`input` events / debounce timer) must function identically in both layout modes.
+- Existing variable names, form structure, action targets, and PHP structures must not be modified.
+- Tailwind and standard CSS styles must match the surrounding aesthetics.
 
 ## Steps
-1. Read the current content of both files fully
-2. Identify the exact LIKE clause(s) and their surrounding query structure
-3. Refactor to prepared statements
-4. Verify no other search interpolation exists in either file
-5. Stage changes (git add) but do NOT commit yet — Task 5 will do the final commit
-6. Write report to .superpowers/sdd/task-1-report.md
+1. Read `app/Views/evaluasi_wali.php` completely.
+2. Add DOM containers for both Mobile layouts (Card Stack vs Tab Kategori).
+3. Implement the View Mode Switcher UI and logic in JavaScript at the bottom.
+4. Implement the Tab Selection UI and toggling logic.
+5. Verify both layout modes update input fields that map to the same `name` fields (e.g. `kelakuan[id_siswa]`, `sakit[id_siswa]`) so the server receives correct POST arrays.
+6. Verify auto-save triggers on input edits in both layouts.
+7. Stage changes.
 
 ## Report Contract
 Write to `.superpowers/sdd/task-1-report.md`:
 - Status: DONE | DONE_WITH_CONCERNS | NEEDS_CONTEXT | BLOCKED
-- Files changed (list)
-- What exactly was changed (before/after snippets)
-- Any concerns
-Return only status + one-line summary in your final message.
+- Brief before/after outline
+- Verification results
+Return status and one-line summary.

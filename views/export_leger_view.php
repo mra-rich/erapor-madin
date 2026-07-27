@@ -29,7 +29,7 @@
             <th colspan="<?= count($mapelList) ?>">Mata Pelajaran</th>
             <?php endif; ?>
             <th colspan="3">Absensi</th>
-            <th colspan="3">Kepribadian</th>
+            <th colspan="4">Kepribadian</th>
             <th rowspan="2">Total Nilai</th>
             <th rowspan="2">Rata-Rata</th>
             <th rowspan="2">Ranking</th>
@@ -44,6 +44,7 @@
             <th>Kel</th>
             <th>Ker</th>
             <th>Rap</th>
+            <th>Dis</th>
         </tr>
     </thead>
     <tbody>
@@ -66,6 +67,7 @@
             <td><?= htmlspecialchars($siswa['kelakuan'] ?? '-') ?></td>
             <td><?= htmlspecialchars($siswa['kerajinan'] ?? '-') ?></td>
             <td><?= htmlspecialchars($siswa['kerapian'] ?? '-') ?></td>
+            <td><?= htmlspecialchars($siswa['kedisiplinan'] ?? '-') ?></td>
             
             <td class="font-bold"><?= htmlspecialchars($siswa['total_nilai']) ?></td>
             <td class="font-bold"><?= number_format($siswa['rata_rata'], 2) ?></td>

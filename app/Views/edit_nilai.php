@@ -47,7 +47,7 @@ $resultAbsensi = mysqli_query($koneksi, $queryAbsensi);
 $absensi = mysqli_fetch_assoc($resultAbsensi);
 
 // Ambil data kepribadian
-$queryKepribadian = "SELECT kelakuan, kerajinan, kerapian FROM kepribadian WHERE id_transaksi = '$id_transaksi'";
+$queryKepribadian = "SELECT kelakuan, kerajinan, kerapian, kedisiplinan FROM kepribadian WHERE id_transaksi = '$id_transaksi'";
 $resultKepribadian = mysqli_query($koneksi, $queryKepribadian);
 $kepribadian = mysqli_fetch_assoc($resultKepribadian);
 
@@ -145,6 +145,7 @@ if (isset($_POST['update'])) {
         $kelakuan = trim($_POST['kelakuan'] ?? '');
         $kerajinan = trim($_POST['kerajinan'] ?? '');
         $kerapian = trim($_POST['kerapian'] ?? '');
+        $kedisiplinan = trim($_POST['kedisiplinan'] ?? '');
 
         $stmt_kep_chk = mysqli_prepare($koneksi, "SELECT id_kepribadian FROM kepribadian WHERE id_transaksi = ?");
         if (!$stmt_kep_chk) throw new Exception(mysqli_error($koneksi));
@@ -153,15 +154,15 @@ if (isset($_POST['update'])) {
         mysqli_stmt_store_result($stmt_kep_chk);
 
         if (mysqli_stmt_num_rows($stmt_kep_chk) > 0) {
-            $stmt_kep_upd = mysqli_prepare($koneksi, "UPDATE kepribadian SET kelakuan = ?, kerajinan = ?, kerapian = ? WHERE id_transaksi = ?");
+            $stmt_kep_upd = mysqli_prepare($koneksi, "UPDATE kepribadian SET kelakuan = ?, kerajinan = ?, kerapian = ?, kedisiplinan = ? WHERE id_transaksi = ?");
             if (!$stmt_kep_upd) throw new Exception(mysqli_error($koneksi));
-            mysqli_stmt_bind_param($stmt_kep_upd, "sssi", $kelakuan, $kerajinan, $kerapian, $id_transaksi);
+            mysqli_stmt_bind_param($stmt_kep_upd, "ssssi", $kelakuan, $kerajinan, $kerapian, $kedisiplinan, $id_transaksi);
             if (!mysqli_stmt_execute($stmt_kep_upd)) throw new Exception(mysqli_stmt_error($stmt_kep_upd));
             mysqli_stmt_close($stmt_kep_upd);
         } else {
-            $stmt_kep_ins = mysqli_prepare($koneksi, "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian) VALUES (?, ?, ?, ?)");
+            $stmt_kep_ins = mysqli_prepare($koneksi, "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)");
             if (!$stmt_kep_ins) throw new Exception(mysqli_error($koneksi));
-            mysqli_stmt_bind_param($stmt_kep_ins, "isss", $id_transaksi, $kelakuan, $kerajinan, $kerapian);
+            mysqli_stmt_bind_param($stmt_kep_ins, "issss", $id_transaksi, $kelakuan, $kerajinan, $kerapian, $kedisiplinan);
             if (!mysqli_stmt_execute($stmt_kep_ins)) throw new Exception(mysqli_stmt_error($stmt_kep_ins));
             mysqli_stmt_close($stmt_kep_ins);
         }
@@ -287,7 +288,7 @@ include 'include/sidebar.php';
 
                 <div class="mb-6">
                     <h2 class="text-lg font-semibold mb-4">Kepribadian</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label for="kelakuan" class="block text-sm font-medium text-gray-700 mb-1">Kelakuan</label>
                             <input type="text" id="kelakuan" name="kelakuan" value="<?= $kepribadian ? $kepribadian['kelakuan'] : ''; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
@@ -299,6 +300,10 @@ include 'include/sidebar.php';
                         <div>
                             <label for="kerapian" class="block text-sm font-medium text-gray-700 mb-1">Kerapian</label>
                             <input type="text" id="kerapian" name="kerapian" value="<?= $kepribadian ? $kepribadian['kerapian'] : ''; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                        </div>
+                        <div>
+                            <label for="kedisiplinan" class="block text-sm font-medium text-gray-700 mb-1">Kedisiplinan</label>
+                            <input type="text" id="kedisiplinan" name="kedisiplinan" value="<?= $kepribadian ? ($kepribadian['kedisiplinan'] ?? '') : ''; ?>" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                         </div>
                     </div>
                 </div>

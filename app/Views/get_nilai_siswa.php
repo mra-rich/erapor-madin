@@ -94,7 +94,7 @@ try {
     mysqli_stmt_close($stmt_absensi);
 
     // Query untuk mengambil data kepribadian
-    $query_kepribadian = "SELECT k.kelakuan, k.kerajinan, k.kerapian
+    $query_kepribadian = "SELECT k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan
                          FROM transaksi_raport tr
                          JOIN kepribadian k ON tr.id_transaksi = k.id_transaksi
                          WHERE tr.id_siswa = ? AND tr.semester = ?
@@ -134,7 +134,7 @@ try {
     mysqli_stmt_close($stmt);
 
     // Query untuk mengambil data ekstrakurikuler
-    $query_ekskul = "SELECT e.pramuka, e.pmr, e.paskibra
+    $query_ekskul = "SELECT e.baca_quran, e.baca_kitab, e.muhafadhoh, e.kaligrafi
                       FROM transaksi_raport tr
                       JOIN ekstrakurikuler e ON tr.id_transaksi = e.id_transaksi
                       WHERE tr.id_siswa = ? AND tr.semester = ?
@@ -159,12 +159,14 @@ try {
         'kepribadian' => [
             'kelakuan' => '-',
             'kerajinan' => '-',
-            'kerapian' => '-'
+            'kerapian' => '-',
+            'kedisiplinan' => '-'
         ],
         'ekstrakurikuler' => [
-            'pramuka' => '-',
-            'pmr' => '-',
-            'paskibra' => '-'
+            'baca_quran' => '-',
+            'baca_kitab' => '-',
+            'muhafadhoh' => '-',
+            'kaligrafi' => '-'
         ],
         'catatan' => ''
     ];
@@ -199,7 +201,8 @@ try {
             $data['kepribadian'] = [
                 'kelakuan' => cleanOutput($row['kelakuan'] ?? '-'),
                 'kerajinan' => cleanOutput($row['kerajinan'] ?? '-'),
-                'kerapian' => cleanOutput($row['kerapian'] ?? '-')
+                'kerapian' => cleanOutput($row['kerapian'] ?? '-'),
+                'kedisiplinan' => cleanOutput($row['kedisiplinan'] ?? '-')
             ];
         }
     }
@@ -215,9 +218,10 @@ try {
     if ($result_ekskul && mysqli_num_rows($result_ekskul) > 0) {
         if ($row = mysqli_fetch_assoc($result_ekskul)) {
             $data['ekstrakurikuler'] = [
-                'pramuka' => cleanOutput($row['pramuka'] ?? '-'),
-                'pmr' => cleanOutput($row['pmr'] ?? '-'),
-                'paskibra' => cleanOutput($row['paskibra'] ?? '-')
+                'baca_quran' => cleanOutput($row['baca_quran'] ?? '-'),
+                'baca_kitab' => cleanOutput($row['baca_kitab'] ?? '-'),
+                'muhafadhoh' => cleanOutput($row['muhafadhoh'] ?? '-'),
+                'kaligrafi' => cleanOutput($row['kaligrafi'] ?? '-')
             ];
         }
     }

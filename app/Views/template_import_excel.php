@@ -39,10 +39,12 @@ $headers = [
     'KELAKUAN',
     'KERAJINAN',
     'KERAPIAN',
+    'KEDISIPLINAN',
     'CATATAN',
-    'PRAMUKA',
-    'PMR',
-    'PASKIBRA'
+    'BACA_QURAN',
+    'BACA_KITAB',
+    'MUHAFADHOH',
+    'KALIGRAFI'
 ];
 
 // Gabungkan dengan header mapel
@@ -73,10 +75,12 @@ while ($siswa = mysqli_fetch_assoc($result_siswa)) {
         'A', // Kelakuan
         'A', // Kerajinan
         'A', // Kerapian
+        'A', // Kedisiplinan
         '',  // Catatan
-        '',  // Pramuka
-        '',  // PMR
-        ''   // Paskibra
+        '',  // Baca Quran
+        '',  // Baca Kitab
+        '',  // Muhafadhoh
+        ''   // Kaligrafi
     ];
     
     // Kosongkan nilai untuk mapel (agar diisi guru)

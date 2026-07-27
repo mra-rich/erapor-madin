@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Baca baris pertama (header)
                 $header = $rows[0];
                 
-                // Cari index mapel
+                // Cari index mapel (mulai setelah 15 kolom dasar: ID, NIS, Nama, Izin, Sakit, Alpa, Kelakuan, Kerajinan, Kerapian, Kedisiplinan, Catatan, Baca_Quran, Baca_Kitab, Muhafadhoh, Kaligrafi)
                 $mapel_indices = [];
-                for ($i = 13; $i < count($header); $i++) {
+                for ($i = 15; $i < count($header); $i++) {
                     if (strpos($header[$i], 'NILAI_') === 0) {
                         $parts = explode('_', $header[$i]);
                         $id_mapel = (int)$parts[1];
@@ -79,14 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $kelakuan = $data[6];
                         $kerajinan = $data[7];
                         $kerapian = $data[8];
-                        $query_kepribadian = "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian) VALUES (?, ?, ?, ?)";
+                        $kedisiplinan = $data[9];
+                        $query_kepribadian = "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)";
                         $stmt = mysqli_prepare($koneksi, $query_kepribadian);
-                        mysqli_stmt_bind_param($stmt, "isss", $id_transaksi, $kelakuan, $kerajinan, $kerapian);
+                        mysqli_stmt_bind_param($stmt, "issss", $id_transaksi, $kelakuan, $kerajinan, $kerapian, $kedisiplinan);
                         mysqli_stmt_execute($stmt);
                         mysqli_stmt_close($stmt);
 
                         // Insert catatan wali kelas
-                        $catatan = $data[9];
+                        $catatan = $data[10];
                         $query_catatan = "INSERT INTO catatan_wali_kelas (id_transaksi, catatan) VALUES (?, ?)";
                         $stmt = mysqli_prepare($koneksi, $query_catatan);
                         mysqli_stmt_bind_param($stmt, "is", $id_transaksi, $catatan);
@@ -94,13 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         mysqli_stmt_close($stmt);
 
                         // Insert ekstrakurikuler
-                        $pramuka = $data[10];
-                        $pmr = $data[11];
-                        $paskibra = $data[12];
-                        if ($pramuka != '' || $pmr != '' || $paskibra != '') {
-                            $query_ekskul = "INSERT INTO ekstrakurikuler (id_transaksi, pramuka, pmr, paskibra) VALUES (?, ?, ?, ?)";
+                        $baca_quran = $data[11];
+                        $baca_kitab = $data[12];
+                        $muhafadhoh = $data[13];
+                        $kaligrafi = $data[14];
+                        if ($baca_quran != '' || $baca_kitab != '' || $muhafadhoh != '' || $kaligrafi != '') {
+                            $query_ekskul = "INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES (?, ?, ?, ?, ?)";
                             $stmt = mysqli_prepare($koneksi, $query_ekskul);
-                            mysqli_stmt_bind_param($stmt, "isss", $id_transaksi, $pramuka, $pmr, $paskibra);
+                            mysqli_stmt_bind_param($stmt, "issss", $id_transaksi, $baca_quran, $baca_kitab, $muhafadhoh, $kaligrafi);
                             mysqli_stmt_execute($stmt);
                             mysqli_stmt_close($stmt);
                         }

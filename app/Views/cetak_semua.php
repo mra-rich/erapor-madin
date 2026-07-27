@@ -355,8 +355,8 @@ function getDeskripsiKepribadian($nilai) {
         $semua_nilai = [];
         $total_nilai = 0;
         $absensi = ['sakit' => 0, 'izin' => 0, 'tanpa_keterangan' => 0];
-        $kepribadian = ['kelakuan' => '-', 'kerajinan' => '-', 'kerapian' => '-'];
-        $ekskul = ['pramuka' => '-', 'pmr' => '-', 'paskibra' => '-'];
+        $kepribadian = ['kelakuan' => '-', 'kerajinan' => '-', 'kerapian' => '-', 'kedisiplinan' => '-'];
+        $ekskul = ['baca_quran' => '-', 'baca_kitab' => '-', 'muhafadhoh' => '-', 'kaligrafi' => '-'];
         $catatan = ['catatan' => ''];
         
         if ($id_transaksi) {
@@ -593,6 +593,7 @@ function getDeskripsiKepribadian($nilai) {
                         <tr><td>1</td><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
                         <tr><td>2</td><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
                         <tr><td>3</td><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
+                        <tr><td>4</td><td style="text-align:left;">Kedisiplinan</td><td><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td><td><?= getDeskripsiKepribadian($kepribadian['kedisiplinan']) ?></td></tr>
                     </table>
                 </div>
                 <div>
@@ -606,9 +607,10 @@ function getDeskripsiKepribadian($nilai) {
                 <div>
                     <table class="rapor-table">
                         <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
-                        <tr><td>1</td><td style="text-align:left;">Pramuka</td><td><?= htmlspecialchars($ekskul['pramuka']) ?></td><td><?= getDeskripsiKepribadian($ekskul['pramuka']) ?></td></tr>
-                        <tr><td>2</td><td style="text-align:left;">PMR</td><td><?= htmlspecialchars($ekskul['pmr']) ?></td><td><?= getDeskripsiKepribadian($ekskul['pmr']) ?></td></tr>
-                        <tr><td>3</td><td style="text-align:left;">Paskibra</td><td><?= htmlspecialchars($ekskul['paskibra']) ?></td><td><?= getDeskripsiKepribadian($ekskul['paskibra']) ?></td></tr>
+                        <tr><td>1</td><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran']) ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_quran']) ?></td></tr>
+                        <tr><td>2</td><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab']) ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_kitab']) ?></td></tr>
+                        <tr><td>3</td><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td><td><?= getDeskripsiKepribadian($ekskul['muhafadhoh']) ?></td></tr>
+                        <tr><td>4</td><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi']) ?></td><td><?= getDeskripsiKepribadian($ekskul['kaligrafi']) ?></td></tr>
                     </table>
                 </div>
             </div>

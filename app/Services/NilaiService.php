@@ -70,10 +70,11 @@ class NilaiService
         $kelakuan = trim((string) ($input['kelakuan'] ?? ''));
         $kerajinan = trim((string) ($input['kerajinan'] ?? ''));
         $kerapian = trim((string) ($input['kerapian'] ?? ''));
+        $kedisiplinan = trim((string) ($input['kedisiplinan'] ?? ''));
         $stmt = $this->db->prepare(
-            'INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian) VALUES (?, ?, ?, ?)'
+            'INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)'
         );
-        $stmt->bind_param('isss', $idTransaksi, $kelakuan, $kerajinan, $kerapian);
+        $stmt->bind_param('issss', $idTransaksi, $kelakuan, $kerajinan, $kerapian, $kedisiplinan);
         $stmt->execute();
         $stmt->close();
     }
@@ -91,17 +92,18 @@ class NilaiService
     /** @param array<int|string, mixed> $input */
     private function insertEkskul(int $idTransaksi, array $input): void
     {
-        $pramuka = trim((string) ($input['ekskul_pramuka'] ?? ''));
-        $pmr = trim((string) ($input['ekskul_pmr'] ?? ''));
-        $paskibra = trim((string) ($input['ekskul_paskibra'] ?? ''));
-        if ($pramuka === '' && $pmr === '' && $paskibra === '') {
+        $bacaQuran = trim((string) ($input['ekskul_baca_quran'] ?? ''));
+        $bacaKitab = trim((string) ($input['ekskul_baca_kitab'] ?? ''));
+        $muhafadhoh = trim((string) ($input['ekskul_muhafadhoh'] ?? ''));
+        $kaligrafi = trim((string) ($input['ekskul_kaligrafi'] ?? ''));
+        if ($bacaQuran === '' && $bacaKitab === '' && $muhafadhoh === '' && $kaligrafi === '') {
             return;
         }
 
         $stmt = $this->db->prepare(
-            'INSERT INTO ekstrakurikuler (id_transaksi, pramuka, pmr, paskibra) VALUES (?, ?, ?, ?)'
+            'INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES (?, ?, ?, ?, ?)'
         );
-        $stmt->bind_param('isss', $idTransaksi, $pramuka, $pmr, $paskibra);
+        $stmt->bind_param('issss', $idTransaksi, $bacaQuran, $bacaKitab, $muhafadhoh, $kaligrafi);
         $stmt->execute();
         $stmt->close();
     }

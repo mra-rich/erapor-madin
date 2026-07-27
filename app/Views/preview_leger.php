@@ -32,7 +32,7 @@ $query = "SELECT
             s.id_siswa, s.nama, s.nomor_santri,
             t.id_transaksi,
             a.izin, a.sakit, a.tanpa_keterangan,
-            k.kelakuan, k.kerajinan, k.kerapian
+            k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan
           FROM riwayat_kelas r
           JOIN siswa s ON r.id_siswa = s.id_siswa
           LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = '$selectedSemester' AND t.tahun_ajaran = r.tahun_ajaran
@@ -177,7 +177,7 @@ usort($siswaData, function($a, $b) {
                     <th colspan="<?= count($mapelList) ?>">Mata Pelajaran</th>
                     <?php endif; ?>
                     <th colspan="3" style="width: 6%;">Absensi</th>
-                    <th colspan="3" style="width: 6%;">Kepribadian</th>
+                    <th colspan="4" style="width: 8%;">Kepribadian</th>
                     <th rowspan="2" style="width: 5%;">Jml Nilai</th>
                     <th rowspan="2" style="width: 5%;">Rata-rata</th>
                     <th rowspan="2" style="width: 4%;">Rank</th>
@@ -192,6 +192,7 @@ usort($siswaData, function($a, $b) {
                     <th>Kel</th>
                     <th>Ker</th>
                     <th>Rap</th>
+                    <th>Dis</th>
                 </tr>
             </thead>
             <tbody>
@@ -219,6 +220,7 @@ usort($siswaData, function($a, $b) {
                     <td><?= $siswa['kelakuan'] ?? '-' ?></td>
                     <td><?= $siswa['kerajinan'] ?? '-' ?></td>
                     <td><?= $siswa['kerapian'] ?? '-' ?></td>
+                    <td><?= $siswa['kedisiplinan'] ?? '-' ?></td>
                     
                     <td style="font-weight:bold;"><?= $siswa['total_nilai'] ?></td>
                     <td style="font-weight:bold;"><?= number_format($siswa['rata_rata'], 2) ?></td>
@@ -228,7 +230,7 @@ usort($siswaData, function($a, $b) {
                 
                 <?php if (count($siswaData) == 0): ?>
                 <tr>
-                    <td colspan="<?= 9 + count($mapelList) ?>">Tidak ada data siswa aktif.</td>
+                    <td colspan="<?= 10 + count($mapelList) ?>">Tidak ada data siswa aktif.</td>
                 </tr>
                 <?php endif; ?>
             </tbody>

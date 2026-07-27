@@ -102,7 +102,7 @@ $mapel_headers = [
     "NILAI_9_ILMU PENGETAHUAN SOSIAL"
 ];
 
-$nilai_header = ['ID_SISWA', 'NOMOR_SANTRI', 'NAMA_SANTRI', 'IZIN', 'SAKIT', 'ALPA', 'KELAKUAN', 'KERAJINAN', 'KERAPIAN', 'CATATAN', 'PRAMUKA', 'PMR', 'PASKIBRA'];
+$nilai_header = ['ID_SISWA', 'NOMOR_SANTRI', 'NAMA_SANTRI', 'IZIN', 'SAKIT', 'ALPA', 'KELAKUAN', 'KERAJINAN', 'KERAPIAN', 'KEDISIPLINAN', 'CATATAN', 'BACA_QURAN', 'BACA_KITAB', 'MUHAFADHOH', 'KALIGRAFI'];
 $nilai_header = array_merge($nilai_header, $mapel_headers);
 $nilai_data = [$nilai_header];
 
@@ -118,10 +118,12 @@ for ($i = 1; $i <= 20; $i++) {
         ['A', 'B'][rand(0, 1)], // Kelakuan
         ['A', 'B'][rand(0, 1)],
         ['A', 'B'][rand(0, 1)],
+        ['A', 'B'][rand(0, 1)], // Kedisiplinan
         'Tingkatkan belajarmu!', // Catatan
-        ['A', 'B', ''][rand(0, 2)], // Pramuka
-        ['A', 'B', ''][rand(0, 2)], // PMR
-        ['A', 'B', ''][rand(0, 2)]  // Paskibra
+        ['A', 'B', ''][rand(0, 2)], // Baca Quran
+        ['A', 'B', ''][rand(0, 2)], // Baca Kitab
+        ['A', 'B', ''][rand(0, 2)], // Muhafadhoh
+        ['A', 'B', ''][rand(0, 2)]  // Kaligrafi
     ];
     
     // Fill mapel scores

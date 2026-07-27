@@ -86,11 +86,11 @@ class NilaiImportService
     private function insertAbsensi(int $id, array $d): void
     { $a=(int)($d[3]??0); $s=(int)($d[4]??0); $t=(int)($d[5]??0); $q=$this->db->prepare('INSERT INTO absensi (id_transaksi, izin, sakit, tanpa_keterangan) VALUES (?, ?, ?, ?)'); $q->bind_param('iiii',$id,$a,$s,$t);$q->execute();$q->close(); }
     private function insertPersonality(int $id, array $d): void
-    { $a=(string)($d[6]??'');$b=(string)($d[7]??'');$c=(string)($d[8]??'');$q=$this->db->prepare('INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian) VALUES (?, ?, ?, ?)');$q->bind_param('isss',$id,$a,$b,$c);$q->execute();$q->close(); }
+    { $a=(string)($d[6]??'');$b=(string)($d[7]??'');$c=(string)($d[8]??'');$d3=(string)($d[9]??'');$q=$this->db->prepare('INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)');$q->bind_param('issss',$id,$a,$b,$c,$d3);$q->execute();$q->close(); }
     private function insertNote(int $id, array $d): void
-    { $v=(string)($d[9]??'');$q=$this->db->prepare('INSERT INTO catatan_wali_kelas (id_transaksi, catatan) VALUES (?, ?)');$q->bind_param('is',$id,$v);$q->execute();$q->close(); }
+    { $v=(string)($d[10]??'');$q=$this->db->prepare('INSERT INTO catatan_wali_kelas (id_transaksi, catatan) VALUES (?, ?)');$q->bind_param('is',$id,$v);$q->execute();$q->close(); }
     private function insertEkskul(int $id, array $d): void
-    { $a=(string)($d[10]??'');$b=(string)($d[11]??'');$c=(string)($d[12]??'');if($a===''&&$b===''&&$c==='')return;$q=$this->db->prepare('INSERT INTO ekstrakurikuler (id_transaksi, pramuka, pmr, paskibra) VALUES (?, ?, ?, ?)');$q->bind_param('isss',$id,$a,$b,$c);$q->execute();$q->close(); }
+    { $a=(string)($d[11]??'');$b=(string)($d[12]??'');$c=(string)($d[13]??'');$d2=(string)($d[14]??'');if($a===''&&$b===''&&$c===''&&$d2==='')return;$q=$this->db->prepare('INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES (?, ?, ?, ?, ?)');$q->bind_param('issss',$id,$a,$b,$c,$d2);$q->execute();$q->close(); }
     private function insertGrades(int $id, array $mapel, array $d): void
     { $q=$this->db->prepare('INSERT INTO nilai (id_transaksi, id_mapel, nilai_angka) VALUES (?, ?, ?)');foreach($mapel as $index=>$mapelId){$v=(float)str_replace(',','.',(string)($d[$index]??0));$q->bind_param('iid',$id,$mapelId,$v);$q->execute();}$q->close(); }
 }

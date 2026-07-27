@@ -30,6 +30,7 @@
                 <th>Kelakuan</th>
                 <th>Kerajinan</th>
                 <th>Kerapian</th>
+                <th>Kedisiplinan</th>
                 <th>Catatan Wali Kelas</th>
             </tr>
         </thead>
@@ -57,6 +58,7 @@
             <td><?= htmlspecialchars($row['kelakuan']) ?></td>
             <td><?= htmlspecialchars($row['kerajinan']) ?></td>
             <td><?= htmlspecialchars($row['kerapian']) ?></td>
+            <td><?= htmlspecialchars($row['kedisiplinan'] ?? '-') ?></td>
             <td><?= htmlspecialchars($row['catatan']) ?></td>
         </tr>
     <?php endforeach; ?>
