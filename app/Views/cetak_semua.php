@@ -592,30 +592,30 @@ if ($id_transaksi) {
             </table>
             <?php endif; ?>
 
-            <div style="margin-top:15px; width:100%;">
-                <div style="display:flex; flex-wrap:nowrap; gap:10px;">
-                    <div style="flex:1; vertical-align:top;">
+            <table style="width:100%; border-collapse:collapse; margin-top:15px; table-layout:fixed;">
+                <tr>
+                    <td style="width:33.33%; vertical-align:top; padding-right:8px;">
                         <div style="font-weight:bold; margin-bottom:4px;">Kepribadian</div>
                         Kelakuan: <?= htmlspecialchars($kepribadian['kelakuan']) ?><br>
                         Kerajinan: <?= htmlspecialchars($kepribadian['kerajinan']) ?><br>
                         Kerapian: <?= htmlspecialchars($kepribadian['kerapian']) ?><br>
                         Kedisiplinan: <?= htmlspecialchars($kepribadian['kedisiplinan']) ?>
-                    </div>
-                    <div style="flex:1; vertical-align:top;">
+                    </td>
+                    <td style="width:33.33%; vertical-align:top; padding:0 8px;">
                         <div style="font-weight:bold; margin-bottom:4px;">Absensi</div>
                         Sakit: <?= htmlspecialchars($absensi['sakit']) ?><br>
                         Izin: <?= htmlspecialchars($absensi['izin']) ?><br>
                         Tanpa Ket.: <?= htmlspecialchars($absensi['tanpa_keterangan']) ?>
-                    </div>
-                    <div style="flex:1; vertical-align:top;">
+                    </td>
+                    <td style="width:33.33%; vertical-align:top; padding-left:8px;">
                         <div style="font-weight:bold; margin-bottom:4px;">Ekstrakurikuler</div>
                         Baca Al-Qur'an: <?= htmlspecialchars($ekskul['baca_quran']) ?><br>
                         Baca Kitab: <?= htmlspecialchars($ekskul['baca_kitab']) ?><br>
                         Muhafadhoh: <?= htmlspecialchars($ekskul['muhafadhoh']) ?><br>
                         Kaligrafi: <?= htmlspecialchars($ekskul['kaligrafi']) ?>
-                    </div>
-                </div>
-            </div>
+                    </td>
+                </tr>
+            </table>
 
 <table style="width:100%; border-collapse:collapse; margin-top:15px;">
                     <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
