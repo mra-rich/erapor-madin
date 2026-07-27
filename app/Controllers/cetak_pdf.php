@@ -95,6 +95,26 @@ $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 // Sisipkan CSS sebelum </style> terakhir
 $html = str_replace('</style>', $dompdfCss . '</style>', $html);
 
+// Konversi gambar "uploads/..." menjadi base64 data URI.
+// Ini menghindari dompdf mengambil logo via HTTP (yang sering gagal di Vercel/serverless).
+$uploadsDirs = [$base . '/public/uploads', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/') . '/uploads'];
+$html = preg_replace_callback(
+    '/(<img\b[^>]*?\bsrc=["\'])(uploads\/[^"\']+)(["\'])/i',
+    function ($m) use ($uploadsDirs) {
+        $rel = $m[2];
+        foreach ($uploadsDirs as $dir) {
+            $file = $dir . '/' . substr($rel, strlen('uploads/'));
+            if (is_file($file)) {
+                $mime = mime_content_type($file) ?: 'image/png';
+                $data = base64_encode(file_get_contents($file));
+                return $m[1] . 'data:' . $mime . ';base64,' . $data . $m[3];
+            }
+        }
+        return $m[0]; // biarkan apa adanya jika file tidak ditemukan
+    },
+    $html
+);
+
 // Options PDF
 $options = new Options();
 $options->set('isRemoteEnabled', true);
