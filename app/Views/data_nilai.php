@@ -147,7 +147,8 @@ if (isset($_GET['status'])) {
 
         $whereClause = "WHERE r.id_kelas = '$id_kelas' AND r.tahun_ajaran = '$ta_aktif'";
         if ($selectedSemester) {
-            $whereClause .= " AND t.semester = '$selectedSemester'";
+            $sem_int = (int) $selectedSemester;
+            $whereClause .= " AND t.semester = $sem_int";
         }
 
         $query = "SELECT s.id_siswa, s.nama, s.nomor_santri, r.id_kelas, t.id_transaksi, t.tahun_ajaran, t.semester,

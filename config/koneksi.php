@@ -71,6 +71,18 @@ if (!class_exists('SysSession')) {
     }
 }
 if (session_status() === PHP_SESSION_NONE) {
+    // Cookie security hardening
+    $is_secure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
+                 (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+    
+    session_set_cookie_params([
+        'lifetime' => 86400, // 24 hours
+        'path' => '/',
+        'secure' => $is_secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+
     $handler = new SysSession($koneksi);
     session_set_save_handler($handler, true);
     session_start();
