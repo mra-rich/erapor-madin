@@ -48,9 +48,16 @@ if (!class_exists('SysSession')) {
         public function write($id, $data) {
             $expires = time() + (int)ini_get('session.gc_maxlifetime');
             $stmt = $this->link->prepare("REPLACE INTO sessions (id, data, expires) VALUES (?, ?, ?)");
-            if (!$stmt) return false;
+            if (!$stmt) {
+                error_log("SysSession::write: prepare failed - " . $this->link->error);
+                return false;
+            }
             $stmt->bind_param("ssi", $id, $data, $expires);
-            return $stmt->execute();
+            $ok = $stmt->execute();
+            if (!$ok) {
+                error_log("SysSession::write: execute failed - " . $stmt->error);
+            }
+            return $ok;
         }
         #[\ReturnTypeWillChange]
         public function destroy($id) {
@@ -84,8 +91,17 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
 
     $handler = new SysSession($koneksi);
-    session_set_save_handler($handler, true);
+    session_set_save_handler($handler, false);
     session_start();
+
+    // Simpan handler di global supaya tidak kebuang garbage collector sebelum session write
+    $GLOBALS['_sys_handler'] = $handler;
+    register_shutdown_function(function () {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+        unset($GLOBALS['_sys_handler']);
+    });
 }
 
 // Inisialisasi Lightweight ORM / Query Builder (legacy)
