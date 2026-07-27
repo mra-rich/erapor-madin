@@ -592,36 +592,29 @@ if ($id_transaksi) {
             </table>
             <?php endif; ?>
 
-            <table style="width:100%; border-collapse:collapse; margin-top:15px; table-layout:fixed;">
-                <tr>
-                    <td style="width:33.33%; vertical-align:top; padding-right:8px;">
-                        <table style="width:100%; border-collapse:collapse;">
-                            <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Kepribadian</td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Kelakuan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kelakuan']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Kerajinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerajinan']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Kerapian</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerapian']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Kedisiplinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td></tr>
-                        </table>
-                    </td>
-                    <td style="width:33.33%; vertical-align:top; padding:0 8px;">
-                        <table style="width:100%; border-collapse:collapse;">
-                            <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Absensi</td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Sakit</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['sakit']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Izin</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['izin']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Tanpa Ket.</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td></tr>
-                        </table>
-                    </td>
-                    <td style="width:33.33%; vertical-align:top; padding-left:8px;">
-                        <table style="width:100%; border-collapse:collapse;">
-                            <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Ekstrakurikuler</td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_quran']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Baca Kitab</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_kitab']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Muhafadhoh</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td></tr>
-                            <tr><td style="border:1px solid black; padding:4px;">Kaligrafi</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['kaligrafi']) ?></td></tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+            <div style="margin-top:15px; width:100%;">
+                <table style="width:32%; float:left; border-collapse:collapse; margin-right:2%;">
+                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Kepribadian</td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Kelakuan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kelakuan']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Kerajinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerajinan']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Kerapian</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerapian']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Kedisiplinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td></tr>
+                </table>
+                <table style="width:32%; float:left; border-collapse:collapse; margin-right:2%;">
+                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Absensi</td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Sakit</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['sakit']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Izin</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['izin']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Tanpa Ket.</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td></tr>
+                </table>
+                <table style="width:32%; float:left; border-collapse:collapse;">
+                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Ekstrakurikuler</td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_quran']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Baca Kitab</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_kitab']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Muhafadhoh</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:4px;">Kaligrafi</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['kaligrafi']) ?></td></tr>
+                </table>
+                <div style="clear:both;"></div>
+            </div>
 
 <table style="width:100%; border-collapse:collapse; margin-top:15px;">
                     <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
