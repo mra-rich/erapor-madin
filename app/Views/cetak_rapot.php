@@ -280,22 +280,35 @@ function bukaCetak(url, idSiswa) {
 	        document.body.appendChild(iframe);
 	    }
 
-    function bukaCetakKelas(url) {
-        const selectKelas = document.querySelector('select[name="kelas"]');
-        const hiddenKelas = document.getElementById('kelas');
-        const kelas = selectKelas ? selectKelas.value : (hiddenKelas ? hiddenKelas.value : '');
-        const semester = document.getElementById('semester').value;
+function bukaCetakKelas(url) {
+	        const selectKelas = document.querySelector('select[name="kelas"]');
+	        const hiddenKelas = document.getElementById('kelas');
+	        const kelas = selectKelas ? selectKelas.value : (hiddenKelas ? hiddenKelas.value : '');
+	        const semester = document.getElementById('semester').value;
 
-        if (!kelas) {
-            alert('Silakan pilih kelas terlebih dahulu!');
-            return;
-        }
-        
-        let fileAsli = url.replace('_kelas', '');
-        let fullUrl = fileAsli + '?kelas=' + kelas;
-        if (semester) fullUrl += '&smt=' + semester;
-        window.open(fullUrl, '_blank', 'width=900,height=600');
-    }
+	        if (!kelas) {
+	            alert('Silakan pilih kelas terlebih dahulu!');
+	            return;
+	        }
+	        
+	        let fileAsli = url.replace('_kelas', '');
+	        let fullUrl = fileAsli + '?kelas=' + kelas;
+	        if (semester) fullUrl += '&smt=' + semester;
+
+	        // Print via iframe tanpa buka tab baru
+	        const iframe = document.createElement('iframe');
+	        iframe.style.position = 'fixed';
+	        iframe.style.top = '-9999px';
+	        iframe.style.left = '-9999px';
+	        iframe.style.width = '0';
+	        iframe.style.height = '0';
+	        iframe.src = fullUrl;
+	        iframe.onload = function() {
+	            iframe.contentWindow.focus();
+	            iframe.contentWindow.print();
+	        };
+	        document.body.appendChild(iframe);
+	    }
 
     // Live Search
     document.getElementById('searchInput').addEventListener('keyup', function() {
