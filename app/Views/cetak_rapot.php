@@ -264,7 +264,7 @@ function bukaCetak(url, idSiswa) {
 	        const semester = document.getElementById('semester').value;
 	        let fullUrl = url + '?id=' + idSiswa;
 	        if (semester) fullUrl += '&smt=' + semester;
-	        window.location.href = fullUrl;
+	        window.open(fullUrl, '_blank');
 	    }
 
 	    function bukaCetakKelas(url) {
@@ -281,7 +281,7 @@ function bukaCetak(url, idSiswa) {
 	        let fileAsli = url.replace('_kelas', '');
 	        let fullUrl = fileAsli + '?kelas=' + kelas;
 	        if (semester) fullUrl += '&smt=' + semester;
-	        window.location.href = fullUrl;
+	        window.open(fullUrl, '_blank');
 	    }
 
     // Live Search
