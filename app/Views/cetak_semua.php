@@ -625,27 +625,28 @@ if ($id_transaksi) {
                 <?php
                 $nama_ortu = !empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-');
                 ?>
-                <div style="display:grid; grid-template-columns: 1fr 1fr <?= $semester == 2 ? '1fr' : '' ?>; gap:10px; margin-top:25px; text-align:center; font-size:12px;">
-                    <div>
+                <div style="margin-top:25px; width:100%; text-align:center; font-size:12px;">
+                    <div style="width:<?= $semester == 2 ? '33%' : '50%' ?>; float:left; text-align:center;">
                         <p style="margin-bottom:40px;">Mengetahui,<br>Orang Tua / Wali</p>
                         <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                             <?= htmlspecialchars($nama_ortu) ?>
                         </p>
                     </div>
                     <?php if ($semester == 2): ?>
-                    <div>
+                    <div style="width:33%; float:left; text-align:center;">
                         <p style="margin-bottom:40px;">Mengetahui,<br>Kepala Madrasah</p>
                         <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                             <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
                         </p>
                     </div>
                     <?php endif; ?>
-                    <div>
+                    <div style="width:<?= $semester == 2 ? '33%' : '50%' ?>; float:left; text-align:center;">
                         <p style="margin-bottom:40px;"><?= date('d F Y') ?><br>Wali Kelas</p>
                         <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                             <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
                         </p>
                     </div>
+                    <div style="clear:both;"></div>
                 </div>
 	        </div>
 	    </div>
