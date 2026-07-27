@@ -108,8 +108,9 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                             </td>
                             <td>
                                 <?php if ($is_admin): ?>
-                                <div class="relative">
-                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Tulis nama kitab..." class="ui-input py-1.5 px-3" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                                <div class="space-y-1">
+                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Nama kitab..." class="ui-input py-1.5 px-3" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                                    <input type="text" id="nama_kitab_arab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab_arab'] ?? ''); ?>" placeholder="اسم الكتاب..." class="ui-input py-1.5 px-3 text-right font-arabic" style="font-family:'Traditional Arabic',Arial,sans-serif;" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                 </div>
                                 <?php else: ?>
                                     <div class="font-medium text-blue-700">
@@ -251,19 +252,22 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
     }
 
     // Auto Save Mapel Settings via AJAX
-    function autoSaveMapel(mapelId) {
-        const idKelas = document.getElementById('id_kelas_active').value;
-        const status = document.getElementById('status_mapel_' + mapelId).value;
-        const idGuru = document.getElementById('guru_select_' + mapelId).value;
-        const namaKitabInput = document.getElementById('nama_kitab_' + mapelId);
-        const namaKitab = namaKitabInput ? namaKitabInput.value : '';
+function autoSaveMapel(mapelId) {
+	        const idKelas = document.getElementById('id_kelas_active').value;
+	        const status = document.getElementById('status_mapel_' + mapelId).value;
+	        const idGuru = document.getElementById('guru_select_' + mapelId).value;
+	        const namaKitabInput = document.getElementById('nama_kitab_' + mapelId);
+	        const namaKitab = namaKitabInput ? namaKitabInput.value : '';
+	        const namaKitabArabInput = document.getElementById('nama_kitab_arab_' + mapelId);
+	        const namaKitabArab = namaKitabArabInput ? namaKitabArabInput.value : '';
 
-        const formData = new URLSearchParams();
-        formData.append('id_kelas', idKelas);
-        formData.append('id_mapel', mapelId);
-        formData.append('status', status);
-        formData.append('id_guru', idGuru);
-        formData.append('nama_kitab', namaKitab);
+	        const formData = new URLSearchParams();
+	        formData.append('id_kelas', idKelas);
+	        formData.append('id_mapel', mapelId);
+	        formData.append('status', status);
+	        formData.append('id_guru', idGuru);
+	        formData.append('nama_kitab', namaKitab);
+	        formData.append('nama_kitab_arab', namaKitabArab);
 
         fetch('api_simpan_mapel_kelas.php', {
             method: 'POST',
