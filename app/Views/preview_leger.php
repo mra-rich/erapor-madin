@@ -43,6 +43,9 @@ $query = "SELECT
           ORDER BY s.nama ASC";
 
 $result = mysqli_query($koneksi, $query);
+if (!$result) {
+    die("Query Error: " . mysqli_error($koneksi) . " | Query: " . $query);
+}
 while ($row = mysqli_fetch_assoc($result)) {
     $id_transaksi = $row['id_transaksi'];
     $nilaiMapel = [];
