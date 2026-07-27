@@ -66,8 +66,10 @@ $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 
 // Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
 	$dompdfCss = '
+	    /* Margin halaman 1 cm di semua sisi */
+	    @page { margin: 1cm !important; }
 	    /* Hilangkan box-shadow, transform, background abu-abu */
-	    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
+	    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
 	    body { background: white !important; }
 	    .no-print { display: none !important; }
 	    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
