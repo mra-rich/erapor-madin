@@ -366,13 +366,13 @@ $query_siswa = mysqli_query($koneksi, "SELECT s.*,
 	        $total_nilai = 0;
 	        if ($id_kelas_cetak) {
 $query_nilai = mysqli_query($koneksi, "
-		                SELECT mp.id_mapel, mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka, pm.nama_kitab
+		                SELECT mp.id_mapel, mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka, pm.nama_kitab_arab
 		                FROM pengampu_mapel pm
 		                JOIN mata_pelajaran mp ON pm.id_mapel = mp.id_mapel
-	                LEFT JOIN nilai n ON n.id_mapel = mp.id_mapel AND n.id_transaksi = $id_transaksi
-	                WHERE pm.id_kelas = $id_kelas_cetak AND pm.status = 'Aktif'
-	                ORDER BY mp.id_mapel ASC
-	            ");
+		                LEFT JOIN nilai n ON n.id_mapel = mp.id_mapel AND n.id_transaksi = $id_transaksi
+		                WHERE pm.id_kelas = $id_kelas_cetak AND pm.status = 'Aktif'
+		                ORDER BY mp.id_mapel ASC
+		            ");
 	        
 	            while ($row = mysqli_fetch_assoc($query_nilai)) {
 	                if ($row['nilai_angka'] !== null) {
@@ -556,7 +556,7 @@ if ($id_transaksi) {
 	                <tr>
 	                    <td><?= $no++ ?></td>
 	                    <td style="text-align:left;"><?= htmlspecialchars($n['nama_mapel'] ?? '') ?></td>
-	                    <td style="text-align:right; font-family: 'Traditional Arabic', Arial, sans-serif;"><?= htmlspecialchars($n['nama_kitab'] ?? '') ?></td>
+	                    <td style="text-align:right; font-family: 'Traditional Arabic', Arial, sans-serif;"><?= htmlspecialchars($n['nama_kitab_arab'] ?? '') ?></td>
 	                    <td><?= htmlspecialchars($n['kkm'] ?? '65') ?></td>
 	                    <td><?= $angka !== null ? $angka : '-' ?></td>
 	                    <td style="font-weight:bold;"><?= $angka !== null ? getPredikat($angka) : '-' ?></td>
