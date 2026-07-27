@@ -486,8 +486,11 @@ if ($id_transaksi) {
 	    <?php endforeach; ?>
     </div>
 
-    <script>
-        function adjustPreviewScale() {
+<script>
+	        window.onload = function() { setTimeout(function() { window.print(); }, 500); };
+	        window.onafterprint = function() { window.close(); };
+	
+	        function adjustPreviewScale() {
             if (window.matchMedia('(max-width: 21.5cm)').matches) {
                 const wrapper = document.querySelector('.preview-wrapper');
                 const pages = document.querySelectorAll('.page');
