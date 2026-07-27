@@ -55,7 +55,7 @@ $html = preg_replace('/<script>window\.print\(\);<\/script>/', '', $html);
 // Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
 $dompdfCss = '
     /* Hilangkan box-shadow, transform, background abu-abu */
-    .page { box-shadow: none !important; transform: none !important; background: white !important; width: auto !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
+    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
     body { background: white !important; }
     .no-print { display: none !important; }
     .preview-wrapper { padding: 0 !important; overflow: visible !important; }
