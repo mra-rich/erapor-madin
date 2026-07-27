@@ -8,6 +8,7 @@
     ],
     "require": {
         "shuchkin/simplexlsx": "^1.1",
-        "shuchkin/simplexlsxgen": "^1.5"
+        "shuchkin/simplexlsxgen": "^1.5",
+        "dompdf/dompdf": "^3.1"
     }
 }

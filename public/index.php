@@ -94,8 +94,8 @@ $legacyWhitelist = [
     'proses_import_mapel.php', 'proses_import_siswa.php',
 'proses_input_siswa.php',
 	    'proses_nilai_massal.php', 'proses_pengampu.php', 'proses_simpan_pengaturan_mapel.php',
-	    'proses_tambah_kelas.php', 'proses_tambah_mapel.php',
-	    'isi_kitab_arab.php',
+'proses_tambah_kelas.php', 'proses_tambah_mapel.php',
+		    'isi_kitab_arab.php', 'cetak_pdf.php',
 
     // Views — halaman
     'index.php', 'dashboard_content.php',

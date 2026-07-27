@@ -92,7 +92,7 @@ include 'include/sidebar.php';
           <button onclick="bukaCetakKelas('cetak_biodata_kelas.php')" class="btn btn-secondary btn-sm text-amber-600 border-amber-100 bg-amber-50 hover:bg-amber-100" title="Cetak Semua Identitas">
             <i class="ri-user-line"></i> Identitas
           </button>
-          <button onclick="bukaCetakKelas('preview_rapot_kelas.php')" class="btn btn-secondary btn-sm text-emerald-600 border-emerald-100 bg-emerald-50 hover:bg-emerald-100" title="Cetak Semua Rapor">
+          <button onclick="bukaCetakKelas('cetak_pdf_kelas.php')" class="btn btn-secondary btn-sm text-emerald-600 border-emerald-100 bg-emerald-50 hover:bg-emerald-100" title="Cetak Semua Rapor">
             <i class="ri-file-text-line"></i> Rapor
           </button>
           <button onclick="bukaCetakKelas('preview_leger.php')" class="btn btn-secondary btn-sm" title="Preview Leger Nilai">
@@ -204,7 +204,7 @@ include 'include/sidebar.php';
                                 <button onclick="bukaCetak('cetak_biodata.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100">
                                     <i class="ri-user-line"></i> Identitas
                                 </button>
-                                <button onclick="bukaCetak('preview_rapot.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+                                <button onclick="bukaCetak('cetak_pdf.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm px-2.5 py-1.5 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
                                     <i class="ri-file-text-line"></i> Rapor
                                 </button>
                                 <button onclick="bukaCetak('cetak_semua.php', ${siswa.id_siswa})" class="btn btn-primary btn-sm px-3 py-1.5 text-xs">
@@ -243,7 +243,7 @@ include 'include/sidebar.php';
                         <div class="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2">
                             <button onclick="bukaCetak('cetak_sampul.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs flex justify-center"><i class="ri-book-line"></i> Sampul</button>
                             <button onclick="bukaCetak('cetak_biodata.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100 flex justify-center"><i class="ri-user-line"></i> Identitas</button>
-                            <button onclick="bukaCetak('preview_rapot.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 flex justify-center"><i class="ri-file-text-line"></i> Rapor</button>
+                            <button onclick="bukaCetak('cetak_pdf.php', ${siswa.id_siswa})" class="btn btn-secondary btn-sm py-2 text-xs text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 flex justify-center"><i class="ri-file-text-line"></i> Rapor</button>
                             <button onclick="bukaCetak('cetak_semua.php', ${siswa.id_siswa})" class="btn btn-primary btn-sm py-2 text-xs flex justify-center"><i class="ri-printer-line"></i> Semua</button>
                         </div>
                     `;
