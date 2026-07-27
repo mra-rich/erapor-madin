@@ -189,9 +189,15 @@ $identitas = mysqli_fetch_assoc($query_identitas);
             <h2>LAPORAN HASIL BELAJAR SANTRI</h2>
             <h2>MADRASAH DINIYAH TAKMILIYAH</h2>
             
-            <div class="logo-placeholder">
-                <!-- <img src="logo.png" alt="Logo" style="max-width: 100%;"> -->
-                Logo Madrasah
+            <div style="margin: 20px auto; text-align:center;">
+                <?php if (!empty($identitas['logo'])): 
+                    $logoPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+                    if (!file_exists($logoPath)) $logoPath = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+                ?>
+                    <img src="<?= $logoPath ?>" alt="Logo" style="max-width:150px; max-height:150px;">
+                <?php else: ?>
+                    <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:flex; align-items:center; justify-content:center; color:#999;">Logo</div>
+                <?php endif; ?>
             </div>
 
             <h1><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH SALAFIYAH AL FALAHIYAH') ?></h1>
