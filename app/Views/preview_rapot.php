@@ -106,98 +106,101 @@ function getDeskripsiKepribadian($nilai) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Rapor</title>
 <style>
-	        @page {
-	            margin: 1cm;
-	            size: A4;
-	        }
+		@page {
+		    margin: 0.5cm;
+		    size: A4;
+		}
 
-	        body {
-	            font-family: Arial, sans-serif;
-	            font-size: 13px;
-	            margin: 0;
-	            padding: 0;
-	        }
+		body {
+		    font-family: Arial, sans-serif;
+		    font-size: 9px;
+		    margin: 0;
+		    padding: 0;
+		}
 
-	        .page {
-	            background: white;
-	            padding: 0;
-	            page-break-after: always;
-	        }
+		.page {
+		    background: white;
+		    padding: 0;
+		    page-break-after: always;
+		}
 
-	        @media print {
-	            body { margin: 0; padding: 0; }
-	        }
+		@media print {
+		    body { margin: 0; padding: 0; }
+		}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 20px;
-            text-decoration: underline;
-            font-weight: bold;
-        }
+	h1 {
+	    text-align: center;
+	    margin: 2px 0 1px 0;
+	    font-size: 13px;
+	    text-decoration: underline;
+	    font-weight: bold;
+	    letter-spacing: 2px;
+	}
 
-        .header-info {
-            border: 1px solid black;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
+	.header-info {
+	    border: 1px solid black;
+	    padding: 3px;
+	    margin-bottom: 3px;
+	}
 
-        .info-table {
+	.info-table {
+	    width: 100%;
+	    border-collapse: collapse;
+	}
+
+	.info-table td {
+	    padding: 1px 2px;
+	    vertical-align: middle;
+	    text-align: left;
+	    border: none;
+	    font-size: 9px;
+	}
+
+	.info-label {
+	    font-weight: bold;
+	    white-space: nowrap;
+	    width: 80px;
+	}
+
+	table {
+	    width: 100%;
+	    border-collapse: collapse;
+	    margin-bottom: 3px;
+	}
+
+	th, td {
+	    border: 1px solid black;
+	    padding: 1.5px 2px;
+	    text-align: center;
+	    font-size: 9px;
+	}
+
+	th {
+	    background-color: #f2f2f2;
+	}
+
+	.section-header {
+	    font-weight: bold;
+	    background-color: #f2f2f2;
+	}
+
+	.arabic {
+	    font-family: "Traditional Arabic", Arial, sans-serif;
+	    direction: rtl;
+	    font-size: 12px;
+	}
+
+.footer {
             width: 100%;
-            border-collapse: collapse;
+            margin-top: 2px;
         }
-
-        .info-table td {
-            padding: 3px;
-            vertical-align: middle;
-            text-align: left;
-            border: none;
-        }
-
-        .info-label {
-            font-weight: bold;
-            white-space: nowrap;
-            width: 120px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 5px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .section-header {
-            font-weight: bold;
-            background-color: #f2f2f2;
-        }
-
-        .arabic {
-            font-family: "Traditional Arabic", Arial, sans-serif;
-            direction: rtl;
-            font-size: 16px;
-        }
-
-        .footer {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
+        .footer table { width: 33%; float: left; border-collapse:collapse; }
+        .footer table + table { border-left: none; }
 
 @media print {
-	            body { background: white; margin: 0; padding: 0; }
-	            .page { margin: 0; padding: 0; }
-	        }
+		    body { background: white; margin: 0; padding: 0; }
+		    .page { margin: 0; padding: 0; }
+		}
 	</style>
 	</head>
 	<body>
@@ -270,31 +273,31 @@ if ($id_transaksi) {
 	
 <?php if ($id_kelas_cetak): ?>
 		    <div class="page" id="laporan-container">
-	        <!-- Kop Surat -->
-	        <div style="text-align: center; margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
-	            <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
-	            <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
-	            <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
-	        </div>
-	
-	        <h1>LAPORAN HASIL BELAJAR</h1>
-	
-	        <div class="header-info">
-	            <table class="info-table">
-	                <tr>
-	                    <td class="info-label">Nama Santri</td>
+<!-- Kop Surat (Compact) -->
+		<div style="text-align: center; margin-bottom: 3px; border-bottom: 2px solid black; padding-bottom: 2px;">
+		    <h2 style="margin: 0; font-size: 15px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
+		    <p style="margin: 1px 0; font-size: 8px;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
+		    <p style="margin: 1px 0; font-size: 8px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
+		</div>
+
+		<h1>LAPORAN HASIL BELAJAR</h1>
+
+		<div class="header-info">
+		    <table class="info-table">
+		        <tr>
+		            <td class="info-label">Nama Santri</td>
 <td class="info-value">: <?= htmlspecialchars($siswa['nama'] ?? '') ?></td>
-                    <td class="info-label">Kelas</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['nama_kelas'] ?? '') ?></td>
-	                </tr>
-	                <tr>
-	                    <td class="info-label">Nomor Induk</td>
+	                    <td class="info-label">Kelas</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['nama_kelas'] ?? '') ?></td>
+		                </tr>
+		                <tr>
+		                    <td class="info-label">Nomor Induk</td>
 <td class="info-value">: <?= htmlspecialchars($siswa['nomor_santri'] ?? '') ?></td>
-                    <td class="info-label">Tahun Pelajaran</td>
-                    <td class="info-value">: <?= htmlspecialchars($siswa['tahun_ajaran'] ?? '') ?></td>
-	                </tr>
-	            </table>
-	        </div>
+	                    <td class="info-label">Tahun Pelajaran</td>
+	                    <td class="info-value">: <?= htmlspecialchars($siswa['tahun_ajaran'] ?? '') ?></td>
+		                </tr>
+		            </table>
+		        </div>
 	
 <table>
 		            <tr>
@@ -342,76 +345,71 @@ if ($id_transaksi) {
 		            </tr>
 		        </table>
 	
-	        <?php if ($semester == 2): ?>
-	        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
-	            <tr>
-	                <td style="border:1px solid #000; padding:10px;">
-	                    <strong>Keputusan:</strong><br>
-	                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
-	                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
-	                </td>
-	            </tr>
-	        </table>
-	        <?php endif; ?>
+<?php if ($semester == 2): ?>
+		        <table style="width: 100%; border-collapse: collapse; margin: 2px 0;">
+		            <tr>
+		                <td style="border:1px solid #000; padding:3px; font-size:9px;">
+		                    <strong>Keputusan:</strong> Berdasarkan hasil pencapaian di atas, santri ditetapkan:
+		                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
+		                </td>
+		            </tr>
+		        </table>
+		        <?php endif; ?>
 	
-	        <div class="footer">
-	            <div>
-<table>
-                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
-                    <tr><td>1</td><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
-                    <tr><td>4</td><td style="text-align:left;">Kedisiplinan</td><td><?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kedisiplinan']) ?></td></tr>
-                </table>
-	            </div>
-	            <div>
-<table>
-		                    <tr><td colspan="3" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td></tr>
-		                    <tr><td>1</td><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit'] ?? '') ?></td></tr>
-	                    <tr><td>2</td><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin'] ?? '') ?></td></tr>
-	                    <tr><td>3</td><td style="text-align:left;">Tanpa Keterangan</td><td><?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '') ?></td></tr>
-		                </table>
-	            </div>
-	            <div>
-	                <table>
-	                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
-<tr><td>1</td><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_quran']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_kitab']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['muhafadhoh']) ?></td></tr>
-                    <tr><td>4</td><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['kaligrafi']) ?></td></tr>
-	                </table>
-	            </div>
-	        </div>
-	
-<table style="width:100%; border-collapse:collapse; margin-top:15px;">
-                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
-                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-style:italic;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
+<div class="footer">
+                    <table style="width:33%; border-collapse:collapse; float:left;">
+                        <tr><th colspan="4" style="border:1px solid black; padding:2px; text-align:center; font-weight:bold; background-color:#f2f2f2; font-size:9px;">Kepribadian</th></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; width:1%; font-size:8px;">1</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Kelakuan</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($kepribadian['kelakuan'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">2</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Kerajinan</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($kepribadian['kerajinan'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">3</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Kerapian</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($kepribadian['kerapian'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">4</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Kedisiplinan</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($kepribadian['kedisiplinan']) ?></td></tr>
+                    </table>
+                    <table style="width:33%; border-collapse:collapse; float:left;">
+                        <tr><th colspan="3" style="border:1px solid black; padding:2px; text-align:center; font-weight:bold; background-color:#f2f2f2; font-size:9px;">Absensi</th></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; width:1%; font-size:8px;">1</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Sakit</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($absensi['sakit'] ?? '') ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">2</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Izin</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($absensi['izin'] ?? '') ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">3</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Tanpa Keterangan</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '') ?></td></tr>
+                    </table>
+                    <table style="width:33%; border-collapse:collapse; float:left;">
+                        <tr><th colspan="4" style="border:1px solid black; padding:2px; text-align:center; font-weight:bold; background-color:#f2f2f2; font-size:9px;">Ekstrakurikuler</th></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; width:1%; font-size:8px;">1</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($ekskul['baca_quran'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($ekskul['baca_quran']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">2</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Baca Kitab</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($ekskul['baca_kitab'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($ekskul['baca_kitab']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">3</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Muhafadhoh</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($ekskul['muhafadhoh'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($ekskul['muhafadhoh']) ?></td></tr>
+                        <tr><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;">4</td><td style="border:1px solid black; padding:2px; text-align:left; font-size:8px;">Kaligrafi</td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= htmlspecialchars($ekskul['kaligrafi'] ?? '') ?></td><td style="border:1px solid black; padding:2px; text-align:center; font-size:8px;"><?= getDeskripsiKepribadian($ekskul['kaligrafi']) ?></td></tr>
+                    </table>
+                    <div style="clear:both;"></div>
+                </div>
+
+                <table style="width:100%; border-collapse:collapse; margin-top:2px;">
+                    <tr><td colspan="4" style="border:1px solid black; padding:3px; font-weight:bold; background-color:#f2f2f2; font-size:9px;">Catatan Wali Kelas</td></tr>
+                    <tr><td colspan="4" style="border:1px solid black; padding:3px; font-style:italic; font-size:9px;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
                 </table>
 
-		        <!-- Tanda Tangan -->
-		        <div style="display:grid; grid-template-columns: 1fr 1fr <?= $semester == 2 ? '1fr' : '' ?>; gap:10px; margin-top:25px; text-align:center; font-size:12px;">
-		            <div>
-		                <p style="margin-bottom:40px;">Mengetahui,<br>
-		                <?= $semester == 2 ? 'Orang Tua / Wali' : 'Orang Tua / Wali' ?></p>
-		                <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-		                    <?= htmlspecialchars(!empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-')) ?>
-		                </p>
-		            </div>
-		            <?php if ($semester == 2): ?>
-		            <div>
-		                <p style="margin-bottom:40px;">Mengetahui,<br>Kepala Madrasah</p>
-		                <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-		                    <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
-		                </p>
-		            </div>
-		            <?php endif; ?>
-		            <div>
-		                <p style="margin-bottom:40px;"><?= date('d F Y') ?><br>Wali Kelas</p>
-		                <p style="font-weight:bold; padding-top:15px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-		                    <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
-		                </p>
-		            </div>
-		        </div>
+                <!-- Tanda Tangan (Compact) -->
+                <table style="width:100%; border-collapse:collapse; margin-top:3px; font-size:9px;">
+                    <tr>
+                        <td style="width:33%; text-align:center; vertical-align:top; padding:2px;">
+                            <p style="margin:0 0 15px 0;">Mengetahui,<br>Orang Tua / Wali</p>
+                            <p style="font-weight:bold; margin:0; border-bottom:1px solid black; display:inline-block; padding-bottom:1px;">
+                                <?= htmlspecialchars(!empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-')) ?>
+                            </p>
+                        </td>
+                        <?php if ($semester == 2): ?>
+                        <td style="width:33%; text-align:center; vertical-align:top; padding:2px;">
+                            <p style="margin:0 0 15px 0;">Mengetahui,<br>Kepala Madrasah</p>
+                            <p style="font-weight:bold; margin:0; border-bottom:1px solid black; display:inline-block; padding-bottom:1px;">
+                                <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
+                            </p>
+                        </td>
+                        <?php endif; ?>
+                        <td style="width:<?= $semester == 2 ? '33%' : '67%' ?>; text-align:center; vertical-align:top; padding:2px;">
+                            <p style="margin:0 0 15px 0;"><?= date('d F Y') ?><br>Wali Kelas</p>
+                            <p style="font-weight:bold; margin:0; border-bottom:1px solid black; display:inline-block; padding-bottom:1px;">
+                                <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
 		    </div>
 <?php else: ?>
 		    <div class="page" style="display:flex; justify-content:center; align-items:center; height:100vh;">
