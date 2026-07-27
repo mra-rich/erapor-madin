@@ -111,7 +111,7 @@ function getDeskripsiKepribadian($nilai) {
         /* Global & Print Settings */
         @page {
             size: A4;
-            margin: 2cm;
+            margin: 1cm;
         }
         body {
             font-family: 'Times New Roman', Arial, sans-serif;

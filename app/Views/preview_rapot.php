@@ -107,7 +107,7 @@ function getDeskripsiKepribadian($nilai) {
     <title>Cetak Rapor</title>
     <style>
         @page {
-            margin: 0;
+            margin: 1cm;
             size: A4;
         }
 
