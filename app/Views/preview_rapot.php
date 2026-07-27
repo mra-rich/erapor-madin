@@ -445,10 +445,10 @@ if ($id_transaksi) {
 	            </div>
 	        </div>
 	
-	        <div class="catatan">
-	            <p style="margin-bottom:2px; font-weight:bold;">Catatan Wali Kelas:</p>
-	            <p style="margin-top:0;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></p>
-	        </div>
+<table style="width:100%; border-collapse:collapse; margin-top:15px;">
+                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
+                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-style:italic;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
+                </table>
 	    </div>
 <?php else: ?>
 		    <div class="page" style="display:flex; justify-content:center; align-items:center; height:100vh;">
