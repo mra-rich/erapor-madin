@@ -364,9 +364,12 @@ $query_siswa = mysqli_query($koneksi, "SELECT s.*,
 	        // 3. AMBIL DATA NILAI (semua mapel kelas, tampil meski belum ada nilai)
 	        $semua_nilai = [];
 	        $total_nilai = 0;
-	        if ($id_kelas_cetak) {
-$query_nilai = mysqli_query($koneksi, "
-		                SELECT mp.id_mapel, mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka, pm.nama_kitab_arab
+if ($id_kelas_cetak) {
+	            // Cek apakah kolom nama_kitab_arab sudah ada (kompatibel DB lama/baru)
+	            $cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM pengampu_mapel LIKE 'nama_kitab_arab'");
+	            $arab_col = (mysqli_num_rows($cek_kolom) > 0) ? 'pm.nama_kitab_arab' : 'pm.nama_kitab';
+	            $query_nilai = mysqli_query($koneksi, "
+		                SELECT mp.id_mapel, mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka, {$arab_col} as nama_kitab_arab
 		                FROM pengampu_mapel pm
 		                JOIN mata_pelajaran mp ON pm.id_mapel = mp.id_mapel
 		                LEFT JOIN nilai n ON n.id_mapel = mp.id_mapel AND n.id_transaksi = $id_transaksi
