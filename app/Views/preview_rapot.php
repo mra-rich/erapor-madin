@@ -362,7 +362,6 @@ if ($id_transaksi) {
 		            <tr>
 		                <th rowspan="2">No</th>
 		                <th rowspan="2">Mata Pelajaran</th>
-		                <th rowspan="2">Bahasa Arab</th>
 		                <th rowspan="2">Kitab</th>
 		                <th rowspan="2">KKM</th>
 		                <th colspan="3">Hasil Tes</th>
@@ -374,7 +373,7 @@ if ($id_transaksi) {
 		            </tr>
 		            
 		            <tr class="section-header">
-		                <td colspan="8" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
+		                <td colspan="7" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
 		            </tr>
 		            <?php 
 		            $no = 1;
@@ -384,8 +383,7 @@ if ($id_transaksi) {
 		            <tr>
 		                <td><?= $no++ ?></td>
 		                <td style="text-align:left;"><?= htmlspecialchars($n['nama_mapel'] ?? '') ?></td>
-		                <td style="text-align:center;"><?= htmlspecialchars($n['nama_mapel_arab'] ?? '') ?></td>
-		                <td style="text-align:left;"><?= htmlspecialchars($n['nama_kitab'] ?? '') ?></td>
+		                <td style="text-align:right; font-family: 'Traditional Arabic', Arial, sans-serif;"><?= htmlspecialchars($n['nama_kitab'] ?? '') ?></td>
 		                <td><?= htmlspecialchars($n['kkm'] ?? '65') ?></td>
 		                <td><?= $angka !== null ? $angka : '-' ?></td>
 		                <td style="font-weight:bold;"><?= $angka !== null ? getPredikat($angka) : '-' ?></td>
@@ -396,14 +394,13 @@ if ($id_transaksi) {
 		            <tr style="font-weight:bold; background-color:#f9f9f9;">
 		                <td colspan="2">JUMLAH</td>
 		                <td colspan="2"></td>
-		                <td></td>
 		                <td><?= $total_nilai ?></td>
 		                <td></td>
 		                <td><?= konversiNilaiKeHuruf($total_nilai) ?></td>
 		            </tr>
 		            <tr style="font-weight:bold; background-color:#f9f9f9;">
 		                <td colspan="2">RANGKING</td>
-		                <td colspan="6"></td>
+		                <td colspan="5"></td>
 		            </tr>
 		        </table>
 	
