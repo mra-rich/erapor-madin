@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (in_array($file_ext, $allowed_exts) && in_array($mime_type, $allowed_mimes)) {
             $new_file_name = 'logo_madrasah_' . time() . '.' . $file_ext;
-            $upload_dir = __DIR__ . '/../public/uploads/';
+            $upload_dir = __DIR__ . '/../../public/uploads/';
             
             if (!is_dir($upload_dir)) {
                 mkdir($upload_dir, 0777, true);
