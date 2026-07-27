@@ -1,6 +1,6 @@
 <?php
-require 'koneksi.php';
-require 'cek_sesi.php';
+require_once 'koneksi.php';
+require_once 'cek_sesi.php';
 restrict_roles(RBAC_VIEW_REPORTS);
 
 $is_wali = ($_SESSION['peran'] === 'Wali Kelas');

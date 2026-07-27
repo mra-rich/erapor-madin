@@ -1,6 +1,6 @@
 <?php
-require 'koneksi.php';
-require 'cek_sesi.php';
+require_once 'koneksi.php';
+require_once 'cek_sesi.php';
 restrict_roles(RBAC_VIEW_REPORTS);
 
 $selectedKelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
