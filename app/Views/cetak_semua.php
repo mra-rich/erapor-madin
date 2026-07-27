@@ -592,32 +592,28 @@ if ($id_transaksi) {
             </table>
             <?php endif; ?>
 
-            <div class="rapor-footer">
-                <div>
-                    <table class="rapor-table">
-                        <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
-                        <tr><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan']) ?></td></tr>
-                        <tr><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan']) ?></td></tr>
-                        <tr><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian']) ?></td></tr>
-                        <tr><td style="text-align:left;">Kedisiplinan</td><td><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td></tr>
-                    </table>
-                </div>
-                <div>
-                    <table class="rapor-table">
-                        <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td></tr>
-                        <tr><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit']) ?></td></tr>
-                        <tr><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin']) ?></td></tr>
-                        <tr><td style="text-align:left;">Tanpa Ket.</td><td><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td></tr>
-                    </table>
-                </div>
-                <div>
-                    <table class="rapor-table">
-                        <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
-                        <tr><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran']) ?></td></tr>
-                        <tr><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab']) ?></td></tr>
-                        <tr><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td></tr>
-                        <tr><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi']) ?></td></tr>
-                    </table>
+            <div style="margin-top:15px; width:100%;">
+                <div style="display:flex; flex-wrap:nowrap; gap:10px;">
+                    <div style="flex:1; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:4px;">Kepribadian</div>
+                        Kelakuan: <?= htmlspecialchars($kepribadian['kelakuan']) ?><br>
+                        Kerajinan: <?= htmlspecialchars($kepribadian['kerajinan']) ?><br>
+                        Kerapian: <?= htmlspecialchars($kepribadian['kerapian']) ?><br>
+                        Kedisiplinan: <?= htmlspecialchars($kepribadian['kedisiplinan']) ?>
+                    </div>
+                    <div style="flex:1; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:4px;">Absensi</div>
+                        Sakit: <?= htmlspecialchars($absensi['sakit']) ?><br>
+                        Izin: <?= htmlspecialchars($absensi['izin']) ?><br>
+                        Tanpa Ket.: <?= htmlspecialchars($absensi['tanpa_keterangan']) ?>
+                    </div>
+                    <div style="flex:1; vertical-align:top;">
+                        <div style="font-weight:bold; margin-bottom:4px;">Ekstrakurikuler</div>
+                        Baca Al-Qur'an: <?= htmlspecialchars($ekskul['baca_quran']) ?><br>
+                        Baca Kitab: <?= htmlspecialchars($ekskul['baca_kitab']) ?><br>
+                        Muhafadhoh: <?= htmlspecialchars($ekskul['muhafadhoh']) ?><br>
+                        Kaligrafi: <?= htmlspecialchars($ekskul['kaligrafi']) ?>
+                    </div>
                 </div>
             </div>
 
