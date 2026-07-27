@@ -53,22 +53,32 @@ $html = ob_get_clean();
 $html = preg_replace('/<script>window\.print\(\);<\/script>/', '', $html);
 
 // Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
-$dompdfCss = '
-    /* Hilangkan box-shadow, transform, background abu-abu */
-    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
-    body { background: white !important; }
-    .no-print { display: none !important; }
-    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
-    /* Fix flexbox centering sampul */
-    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
-    .sampul-identitas-siswa { display: inline-block !important; text-align: left !important; }
-    /* Fix biodata layout */
-    .photo-box { float: left !important; margin-bottom: 20px !important; }
-    .signature-box { float: right !important; }
-    .clearfix::after { content: "" !important; clear: both !important; display: table !important; }
-    /* Fix font arabic */
-    .arabic { font-family: "DejaVu Sans", Arial, sans-serif !important; }
-';
+	$dompdfCss = '
+	    /* Hilangkan box-shadow, transform, background abu-abu */
+	    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
+	    body { background: white !important; }
+	    .no-print { display: none !important; }
+	    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
+	    /* Fix flexbox centering sampul */
+	    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
+	    .sampul-identitas-siswa { display: inline-block !important; text-align: left !important; }
+	    /* Fix biodata layout */
+	    .table-biodata { width: 100% !important; }
+	    .table-biodata td { padding: 6px 4px !important; vertical-align: top !important; }
+	    .isian { font-weight: bold !important; }
+	    .photo-box { float: left !important; margin-bottom: 20px !important; margin-top: 20px !important; }
+	    .signature-box { float: right !important; margin-top: 20px !important; }
+	    .clearfix::after { content: "" !important; clear: both !important; display: table !important; }
+	    .ttd-section { margin-top: 30px !important; }
+	    /* Fix rapor table */
+	    .rapor-table td, .rapor-table th { padding: 4px !important; }
+	    .header-info { padding: 8px !important; }
+	    .info-table td { padding: 2px !important; }
+	    /* Fix font arabic */
+	    .arabic { font-family: "DejaVu Sans", Arial, sans-serif !important; }
+	    /* Fix leger */
+	    th[style*="writing-mode"] { writing-mode: horizontal-tb !important; transform: none !important; height: auto !important; }
+	';
 
 // Sisipkan CSS sebelum </style> terakhir
 $html = str_replace('</style>', $dompdfCss . '</style>', $html);
