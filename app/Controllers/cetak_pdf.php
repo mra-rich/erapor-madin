@@ -52,6 +52,27 @@ $html = ob_get_clean();
 // Hapus script window.print() dari HTML karena akan mengganggu PDF
 $html = preg_replace('/<script>window\.print\(\);<\/script>/', '', $html);
 
+// Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
+$dompdfCss = '
+    /* Hilangkan box-shadow, transform, background abu-abu */
+    .page { box-shadow: none !important; transform: none !important; background: white !important; width: auto !important; min-height: auto !important; margin: 0 !important; padding: 1cm !important; }
+    body { background: white !important; }
+    .no-print { display: none !important; }
+    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
+    /* Fix flexbox centering sampul */
+    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
+    .sampul-identitas-siswa { display: inline-block !important; text-align: left !important; }
+    /* Fix biodata layout */
+    .photo-box { float: left !important; margin-bottom: 20px !important; }
+    .signature-box { float: right !important; }
+    .clearfix::after { content: "" !important; clear: both !important; display: table !important; }
+    /* Fix font arabic */
+    .arabic { font-family: "DejaVu Sans", Arial, sans-serif !important; }
+';
+
+// Sisipkan CSS sebelum </style> terakhir
+$html = str_replace('</style>', $dompdfCss . '</style>', $html);
+
 // Options PDF
 $options = new Options();
 $options->set('isRemoteEnabled', true);
