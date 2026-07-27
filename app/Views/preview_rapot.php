@@ -270,12 +270,23 @@ if ($id_transaksi) {
 	
 <?php if ($id_kelas_cetak): ?>
 		    <div class="page" id="laporan-container">
-	        <!-- Kop Surat -->
-	        <div style="text-align: center; margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
-	            <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
-	            <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
-	            <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
-	        </div>
+<!-- Kop Surat dengan Logo -->
+		        <div style="margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
+		            <?php if (!empty($identitas['logo'])): 
+		                $logoPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+		                if (!file_exists($logoPath)) $logoPath = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+		            ?>
+		            <div style="float:left; width:80px;">
+		                <img src="<?= $logoPath ?>" alt="Logo" style="max-width:80px; max-height:80px;">
+		            </div>
+		            <?php endif; ?>
+		            <div style="text-align: center;">
+		                <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
+		                <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
+		                <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
+		            </div>
+		            <div style="clear:both;"></div>
+		        </div>
 	
 	        <h1>LAPORAN HASIL BELAJAR</h1>
 	
