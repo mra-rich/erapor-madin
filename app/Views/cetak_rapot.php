@@ -260,12 +260,25 @@ include 'include/sidebar.php';
         }
     }
 
-    function bukaCetak(url, idSiswa) {
-        const semester = document.getElementById('semester').value;
-        let fullUrl = url + '?id=' + idSiswa;
-        if (semester) fullUrl += '&smt=' + semester;
-        window.open(fullUrl, '_blank', 'width=900,height=600');
-    }
+function bukaCetak(url, idSiswa) {
+	        const semester = document.getElementById('semester').value;
+	        let fullUrl = url + '?id=' + idSiswa;
+	        if (semester) fullUrl += '&smt=' + semester;
+
+	        // Buat iframe tersembunyi, print langsung tanpa buka tab baru
+	        const iframe = document.createElement('iframe');
+	        iframe.style.position = 'fixed';
+	        iframe.style.top = '-9999px';
+	        iframe.style.left = '-9999px';
+	        iframe.style.width = '0';
+	        iframe.style.height = '0';
+	        iframe.src = fullUrl;
+	        iframe.onload = function() {
+	            iframe.contentWindow.focus();
+	            iframe.contentWindow.print();
+	        };
+	        document.body.appendChild(iframe);
+	    }
 
     function bukaCetakKelas(url) {
         const selectKelas = document.querySelector('select[name="kelas"]');

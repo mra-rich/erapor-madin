@@ -422,9 +422,6 @@ if ($id_transaksi) {
     </div>
 
 <script>
-	        window.onload = function() { setTimeout(function() { window.print(); }, 500); };
-	        window.onafterprint = function() { window.close(); };
-	
 </script>
 	</body>
 	</html>
