@@ -357,24 +357,30 @@ if ($id_transaksi) {
 <table style="width:100%; border-collapse:collapse; margin-top:15px; table-layout:fixed;">
     <tr>
         <td style="width:33.33%; vertical-align:top; padding-right:8px;">
-            <div style="font-weight:bold; margin-bottom:4px;">Kepribadian</div>
-            Kelakuan: <?= htmlspecialchars($kepribadian['kelakuan'] ?? '-') ?><br>
-            Kerajinan: <?= htmlspecialchars($kepribadian['kerajinan'] ?? '-') ?><br>
-            Kerapian: <?= htmlspecialchars($kepribadian['kerapian'] ?? '-') ?><br>
-            Kedisiplinan: <?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '-') ?>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Kepribadian</td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Kelakuan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kelakuan'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Kerajinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerajinan'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Kerapian</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerapian'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Kedisiplinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '-') ?></td></tr>
+            </table>
         </td>
         <td style="width:33.33%; vertical-align:top; padding:0 8px;">
-            <div style="font-weight:bold; margin-bottom:4px;">Absensi</div>
-            Sakit: <?= htmlspecialchars($absensi['sakit'] ?? '0') ?><br>
-            Izin: <?= htmlspecialchars($absensi['izin'] ?? '0') ?><br>
-            Tanpa Keterangan: <?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '0') ?>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Absensi</td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Sakit</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['sakit'] ?? '0') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Izin</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['izin'] ?? '0') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Tanpa Keterangan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '0') ?></td></tr>
+            </table>
         </td>
         <td style="width:33.33%; vertical-align:top; padding-left:8px;">
-            <div style="font-weight:bold; margin-bottom:4px;">Ekstrakurikuler</div>
-            Baca Al-Qur'an: <?= htmlspecialchars($ekskul['baca_quran'] ?? '-') ?><br>
-            Baca Kitab: <?= htmlspecialchars($ekskul['baca_kitab'] ?? '-') ?><br>
-            Muhafadhoh: <?= htmlspecialchars($ekskul['muhafadhoh'] ?? '-') ?><br>
-            Kaligrafi: <?= htmlspecialchars($ekskul['kaligrafi'] ?? '-') ?>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Ekstrakurikuler</td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_quran'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Baca Kitab</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_kitab'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Muhafadhoh</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['muhafadhoh'] ?? '-') ?></td></tr>
+                <tr><td style="border:1px solid black; padding:4px;">Kaligrafi</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['kaligrafi'] ?? '-') ?></td></tr>
+            </table>
         </td>
     </tr>
 </table>
