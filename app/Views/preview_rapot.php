@@ -358,63 +358,49 @@ if ($id_transaksi) {
 	            </table>
 	        </div>
 	
-	        <table>
-	            <tr>
-	                <th rowspan="2">No</th>
-	                <th rowspan="2">Mata Pelajaran</th>
-	                <th rowspan="2">KKM</th>
-	                <th colspan="3">Hasil Tes</th>
-	                <th colspan="2" class="arabic"> نتائج التمرين الأول </th>
-	                <th class="arabic" rowspan="2">الفنون</th>
-	                <th class="arabic" rowspan="2">الرقم</th>
-	            </tr>
-	            <tr>
-	                <th>Angka</th>
-	                <th>Predikat</th>
-	                <th>Huruf</th>
-	                <th class="arabic">اللفظ</th>
-	                <th class="arabic">الرقم</th>
-	            </tr>
-	            
-	            <tr class="section-header">
-	                <td colspan="10" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
-	            </tr>
-<?php 
+<table>
+		            <tr>
+		                <th rowspan="2">No</th>
+		                <th rowspan="2">Mata Pelajaran</th>
+		                <th rowspan="2">KKM</th>
+		                <th colspan="3">Hasil Tes</th>
+		            </tr>
+		            <tr>
+		                <th>Angka</th>
+		                <th>Predikat</th>
+		                <th>Huruf</th>
+		            </tr>
+		            
+		            <tr class="section-header">
+		                <td colspan="6" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
+		            </tr>
+		            <?php 
 		            $no = 1;
 		            foreach ($semua_nilai as $n) { 
 		                $angka = $n['nilai_angka'] !== null ? (int)$n['nilai_angka'] : null;
 		            ?>
 		            <tr>
-		                <td><?= $no ?></td>
+		                <td><?= $no++ ?></td>
 		                <td style="text-align:left;"><?= htmlspecialchars($n['nama_mapel'] ?? '') ?></td>
 		                <td><?= htmlspecialchars($n['kkm'] ?? '65') ?></td>
 		                <td><?= $angka !== null ? $angka : '-' ?></td>
 		                <td style="font-weight:bold;"><?= $angka !== null ? getPredikat($angka) : '-' ?></td>
 		                <td><?= $angka !== null ? konversiNilaiKeHuruf($angka) : '-' ?></td>
-		                <td class="arabic"><?= $angka !== null ? angkaKeHurufArab($angka) : '-' ?></td>
-		                <td class="arabic"><?= $angka !== null ? angkaKeArab($angka) : '-' ?></td>
-		                <td class="arabic"><?= htmlspecialchars($n['nama_mapel_arab'] ?? '') ?></td>
-		                <td class="arabic"><?= angkaKeArab($no++) ?></td>
 		            </tr>
 		            <?php } ?>
-	
-	            <tr style="font-weight:bold; background-color:#f9f9f9;">
-	                <td colspan="2">JUMLAH</td>
-	                <td></td>
-	                <td><?= $total_nilai ?></td>
-	                <td></td>
-	                <td><?= konversiNilaiKeHuruf($total_nilai) ?></td>
-	                <td class="arabic"><?= angkaKeHurufArab($total_nilai) ?></td>
-	                <td class="arabic"><?= angkaKeArab($total_nilai) ?></td>
-	                <td class="arabic"></td>
-	                <td colspan="2" class="arabic">الجملة</td>
-	            </tr>
-	            <tr style="font-weight:bold; background-color:#f9f9f9;">
-	                <td colspan="2">RANGKING</td>
-	                <td></td><td></td><td></td><td></td><td></td><td></td>
-	                <td colspan="2" class="arabic">المقام/ة</td>
-	            </tr>
-	        </table>
+		
+		            <tr style="font-weight:bold; background-color:#f9f9f9;">
+		                <td colspan="2">JUMLAH</td>
+		                <td></td>
+		                <td><?= $total_nilai ?></td>
+		                <td></td>
+		                <td><?= konversiNilaiKeHuruf($total_nilai) ?></td>
+		            </tr>
+		            <tr style="font-weight:bold; background-color:#f9f9f9;">
+		                <td colspan="2">RANGKING</td>
+		                <td colspan="4"></td>
+		            </tr>
+		        </table>
 	
 	        <?php if ($semester == 2): ?>
 	        <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
