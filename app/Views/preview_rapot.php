@@ -431,12 +431,12 @@ function getDeskripsiKepribadian($nilai) {
                 </table>
 	            </div>
 	            <div>
-	                <table>
-	                    <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td><td colspan="2" class="arabic" style="background-color:#f2f2f2;">الغياب</td></tr>
-<tr><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit'] ?? '') ?></td><td class="arabic"><?= angkaKeArab($absensi['sakit']) ?></td><td class="arabic">مريض</td></tr>
-                    <tr><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin'] ?? '') ?></td><td class="arabic"><?= angkaKeArab($absensi['izin']) ?></td><td class="arabic">إذن</td></tr>
-                    <tr><td style="text-align:left;">Tanpa Keterangan</td><td><?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '') ?></td><td class="arabic"><?= angkaKeArab($absensi['tanpa_keterangan']) ?></td><td class="arabic">غائب</td></tr>
-	                </table>
+<table>
+		                    <tr><td colspan="3" style="font-weight:bold; background-color:#f2f2f2;">Absensi</td></tr>
+		                    <tr><td>1</td><td style="text-align:left;">Sakit</td><td><?= htmlspecialchars($absensi['sakit'] ?? '') ?></td></tr>
+	                    <tr><td>2</td><td style="text-align:left;">Izin</td><td><?= htmlspecialchars($absensi['izin'] ?? '') ?></td></tr>
+	                    <tr><td>3</td><td style="text-align:left;">Tanpa Keterangan</td><td><?= htmlspecialchars($absensi['tanpa_keterangan'] ?? '') ?></td></tr>
+		                </table>
 	            </div>
 	            <div>
 	                <table>
