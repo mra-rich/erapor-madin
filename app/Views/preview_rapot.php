@@ -357,11 +357,11 @@ if ($id_transaksi) {
 	        <div class="footer">
 	            <div>
 <table>
-                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
-                    <tr><td>1</td><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kelakuan']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerajinan']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kerapian']) ?></td></tr>
-                    <tr><td>4</td><td style="text-align:left;">Kedisiplinan</td><td><?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '') ?></td><td><?= getDeskripsiKepribadian($kepribadian['kedisiplinan']) ?></td></tr>
+                    <tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Kepribadian</td></tr>
+                    <tr><td style="text-align:left;">Kelakuan</td><td><?= htmlspecialchars($kepribadian['kelakuan'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Kerajinan</td><td><?= htmlspecialchars($kepribadian['kerajinan'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Kerapian</td><td><?= htmlspecialchars($kepribadian['kerapian'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Kedisiplinan</td><td><?= htmlspecialchars($kepribadian['kedisiplinan'] ?? '') ?></td></tr>
                 </table>
 	            </div>
 	            <div>
@@ -374,11 +374,11 @@ if ($id_transaksi) {
 	            </div>
 	            <div>
 	                <table>
-	                    <tr><td colspan="4" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
-<tr><td>1</td><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_quran']) ?></td></tr>
-                    <tr><td>2</td><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['baca_kitab']) ?></td></tr>
-                    <tr><td>3</td><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['muhafadhoh']) ?></td></tr>
-                    <tr><td>4</td><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi'] ?? '') ?></td><td><?= getDeskripsiKepribadian($ekskul['kaligrafi']) ?></td></tr>
+<tr><td colspan="2" style="font-weight:bold; background-color:#f2f2f2;">Ekstrakurikuler</td></tr>
+                    <tr><td style="text-align:left;">Baca Al-Qur'an</td><td><?= htmlspecialchars($ekskul['baca_quran'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Baca Kitab</td><td><?= htmlspecialchars($ekskul['baca_kitab'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Muhafadhoh</td><td><?= htmlspecialchars($ekskul['muhafadhoh'] ?? '') ?></td></tr>
+                    <tr><td style="text-align:left;">Kaligrafi</td><td><?= htmlspecialchars($ekskul['kaligrafi'] ?? '') ?></td></tr>
 	                </table>
 	            </div>
 	        </div>
