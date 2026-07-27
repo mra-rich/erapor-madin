@@ -52,7 +52,7 @@ $pengaturan = mysqli_fetch_assoc($q_peng);
                     <div class="md:col-span-2 flex flex-col md:flex-row gap-6 items-start">
                         <!-- Preview Logo -->
                         <div class="w-32 h-32 flex-shrink-0 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50">
-                            <?php if (!empty($identitas['logo']) && file_exists('uploads/' . $identitas['logo'])): ?>
+                            <?php if (!empty($identitas['logo']) && file_exists(__DIR__ . '/../../public/uploads/' . $identitas['logo'])): ?>
                                 <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo Madrasah" class="w-full h-full object-contain">
                             <?php else: ?>
                                 <i class="ri-image-add-line text-4xl text-gray-400"></i>
