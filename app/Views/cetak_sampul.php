@@ -191,15 +191,16 @@ $identitas = mysqli_fetch_assoc($query_identitas);
             
             <div style="margin: 20px auto; text-align:center;">
                 <?php 
-                    $logoExists = false;
+                    $logoExists = false; $logoSrc = '';
                     if (!empty($identitas['logo'])) {
+                        $logoSrc = 'uploads/' . htmlspecialchars($identitas['logo']);
                         $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
                         $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
                         $logoExists = file_exists($f1) || file_exists($f2);
                     }
                 ?>
                 <?php if ($logoExists): ?>
-                    <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:150px; max-height:150px;">
+                    <img src="<?= $logoSrc ?>" alt="Logo" style="max-width:150px; max-height:150px;">
                 <?php else: ?>
                     <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:flex; align-items:center; justify-content:center; color:#999;">Logo</div>
                 <?php endif; ?>

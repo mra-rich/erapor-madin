@@ -49,6 +49,13 @@ chdir($viewsPath);
 include $viewsPath . $viewFile;
 $html = ob_get_clean();
 
+// Inject base URL supaya Dompdf bisa resolve relative path (uploads/logo...)
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME'] ?? '/'), '/\\');
+$baseUrl = "$scheme://$host$basePath/";
+$html = preg_replace('/<head>/i', '<head><base href="' . $baseUrl . '">' . "\n", $html, 1);
+
 // Hapus script dan CSS dari CDN yang bermasalah (font, icon) karena server read-only
 $html = preg_replace('/<script>window\.print\(\);<\/script>/', '', $html);
 $html = preg_replace('/@import\s+url\(.*?remixicon.*?\);/i', '', $html);
