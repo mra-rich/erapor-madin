@@ -109,7 +109,7 @@ while ($row = mysqli_fetch_assoc($guru_query)) {
                             <td>
                                 <?php if ($is_admin): ?>
                                 <div class="space-y-1">
-                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Nama kitab..." class="ui-input py-1.5 px-3" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
+                                    <input type="text" id="nama_kitab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab'] ?? ''); ?>" placeholder="Nama kitab..." class="ui-input py-1.5 px-3" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> oninput="latinToArab(this, <?= $row['id_mapel']; ?>)" onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                     <input type="text" id="nama_kitab_arab_<?= $row['id_mapel']; ?>" value="<?= htmlspecialchars($row['nama_kitab_arab'] ?? ''); ?>" placeholder="اسم الكتاب..." class="ui-input py-1.5 px-3 text-right font-arabic" style="font-family:'Traditional Arabic',Arial,sans-serif;" <?= !$is_aktif_kelas ? 'disabled' : ''; ?> onchange="autoSaveMapel(<?= $row['id_mapel']; ?>)">
                                 </div>
                                 <?php else: ?>
@@ -286,6 +286,68 @@ function autoSaveMapel(mapelId) {
         .catch(() => {
             Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 }).fire({ icon: 'error', title: 'Terjadi kesalahan jaringan' });
         });
+    }
+
+    /** Transliterasi Latin → Arab untuk nama kitab */
+    function latinToArab(input, mapelId) {
+        const arabInput = document.getElementById('nama_kitab_arab_' + mapelId);
+        if (!arabInput || arabInput.value !== '') return; // Hanya isi otomatis jika kolom Arab masih kosong
+
+        const map = {
+            'a': 'ا', 'b': 'ب', 't': 'ت', 'th': 'ث', 'j': 'ج',
+            'h': 'ح', 'kh': 'خ', 'd': 'د', 'dh': 'ذ', 'r': 'ر',
+            'z': 'ز', 's': 'س', 'sh': 'ش', 'sy': 'ش', 'S': 'ص',
+            'D': 'ض', 'T': 'ط', 'Zh': 'ظ', 'Z': 'ظ', "'": 'ع',
+            'gh': 'غ', 'f': 'ف', 'q': 'ق', 'k': 'ك', 'l': 'ل',
+            'm': 'م', 'n': 'ن', 'w': 'و', 'u': 'و', 'y': 'ي',
+            'i': 'ي', 'A': 'آ',
+            'Lil': 'لـل', 'Al': 'ال', 'al': 'ال', 'Banin': 'بنين',
+            'Banat': 'بنات', 'Kitab': 'كتاب', 'Faidhul': 'فيض',
+            'Khobir': 'خبير', 'Arbain': 'الأربعون', 'Nawawi': 'النووية',
+            'Targhib': 'الترغيب', 'Wat': 'وال', 'Tahdzib': 'التهذيب',
+            'Akhlak': 'الأخلاق', 'Lilbanin': 'للبنين', 'Lilbanat': 'للبنات',
+            'Ta\'lim': 'تعليم', 'Muta\'allim': 'المتعلم',
+            'Fathul': 'فتح', 'Qarib': 'القريب', 'Mujib': 'المجيب',
+            'Safinatun': 'سفينة', 'Naja': 'النجا',
+            'Mabadi\'': 'مبادئ', 'Fiqih': 'الفقه',
+            'Aqidatul': 'العقيدة', 'Awam': 'العوام',
+            'Imrithi': 'الإمريطي', 'Nahwu': 'النحو',
+            'Shorof': 'الصرف', 'Jurumiyah': 'الآجرومية',
+            'Kailani': 'الكيلاني', 'Bana': 'بناء',
+            'Matan': 'متن', 'Jazariyah': 'الجزري',
+            'Tijan': 'تيجان', 'Darori': 'الدراري',
+            'Hidayatul': 'هداية', 'Mustafid': 'المستفيد',
+            'Taqrib': 'التقريب',
+            ' ': ' '
+        };
+
+        let val = input.value.trim();
+        if (!val) { arabInput.value = ''; return; }
+
+        // Coba word-by-word matching dulu untuk nama kitab yang dikenal
+        let words = val.split(/\s+/);
+        let result = words.map(w => {
+            // Coba kata utuh dulu
+            for (let key in map) {
+                if (w === key) return map[key];
+            }
+            // Fallback: transliterasi huruf per huruf
+            let arab = '';
+            for (let i = 0; i < w.length; i++) {
+                let char = w[i];
+                let next = w[i + 1] || '';
+                let digraph = char + next;
+                // Cek digraph 2 huruf dulu
+                if (map[digraph]) { arab += map[digraph]; i++; }
+                else if (map[char]) { arab += map[char]; }
+                else { arab += char; }
+            }
+            return arab;
+        });
+
+        arabInput.value = result.join(' ');
+        // Auto-save Arab
+        autoSaveMapel(mapelId);
     }
 
     // Toggle Offcanvas UI
