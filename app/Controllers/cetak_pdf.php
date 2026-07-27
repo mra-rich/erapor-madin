@@ -49,8 +49,13 @@ chdir($viewsPath);
 include $viewsPath . $viewFile;
 $html = ob_get_clean();
 
-// Hapus script window.print() dari HTML karena akan mengganggu PDF
+// Hapus script dan CSS dari CDN yang bermasalah (font, icon) karena server read-only
 $html = preg_replace('/<script>window\.print\(\);<\/script>/', '', $html);
+$html = preg_replace('/@import\s+url\(.*?remixicon.*?\);/i', '', $html);
+$html = preg_replace('/<link[^>]*href=["\'].*?remixicon.*?["\'][^>]*>/i', '', $html);
+$html = preg_replace('/<link[^>]*href=["\']https:\/\/cdn\.jsdelivr\.net[^>]*>/i', '', $html);
+$html = preg_replace('/@font-face\s*\{[^}]*remixicon[^}]*\}/si', '', $html);
+$html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 
 // Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
 	$dompdfCss = '
@@ -87,6 +92,10 @@ $html = str_replace('</style>', $dompdfCss . '</style>', $html);
 $options = new Options();
 $options->set('isRemoteEnabled', true);
 $options->set('isHtml5ParserEnabled', true);
+$options->set('isFontSubsettingEnabled', true);
+$options->set('fontDir', '/tmp');
+$options->set('fontCache', '/tmp');
+$options->set('tempDir', '/tmp');
 $options->set('defaultFont', 'Arial');
 
 $dompdf = new Dompdf($options);
