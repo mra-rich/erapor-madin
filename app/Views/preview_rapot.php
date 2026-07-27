@@ -458,21 +458,21 @@ if ($id_transaksi) {
 		            <div>
 		                <p style="margin-bottom:40px;">Mengetahui,<br>
 		                <?= $semester == 2 ? 'Orang Tua / Wali' : 'Orang Tua / Wali' ?></p>
-		                <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+		                <p style="font-weight:bold; padding-top:15px; border-bottom:1px solid black; padding-bottom:5px;">
 		                    <?= htmlspecialchars(!empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-')) ?>
 		                </p>
 		            </div>
 		            <?php if ($semester == 2): ?>
 		            <div>
 		                <p style="margin-bottom:40px;">Mengetahui,<br>Kepala Madrasah</p>
-		                <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+		                <p style="font-weight:bold; padding-top:15px; border-bottom:1px solid black; padding-bottom:5px;">
 		                    <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
 		                </p>
 		            </div>
 		            <?php endif; ?>
 		            <div>
 		                <p style="margin-bottom:40px;"><?= date('d F Y') ?><br>Wali Kelas</p>
-		                <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+		                <p style="font-weight:bold; padding-top:15px; border-bottom:1px solid black; padding-bottom:5px;">
 		                    <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
 		                </p>
 		            </div>
