@@ -236,5 +236,6 @@ usort($siswaData, function($a, $b) {
             </tbody>
         </table>
     </div>
+	<script>window.print();</script>
 </body>
 </html>

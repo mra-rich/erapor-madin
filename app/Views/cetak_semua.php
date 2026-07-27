@@ -661,5 +661,6 @@ if ($id_transaksi) {
     <?php endif; ?>
 
     <?php endforeach; ?>
+    <script>window.print();</script>
 </body>
 </html>

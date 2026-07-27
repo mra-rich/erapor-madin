@@ -264,23 +264,10 @@ function bukaCetak(url, idSiswa) {
 	        const semester = document.getElementById('semester').value;
 	        let fullUrl = url + '?id=' + idSiswa;
 	        if (semester) fullUrl += '&smt=' + semester;
-
-	        // Buat iframe tersembunyi, print langsung tanpa buka tab baru
-	        const iframe = document.createElement('iframe');
-	        iframe.style.position = 'fixed';
-	        iframe.style.top = '-9999px';
-	        iframe.style.left = '-9999px';
-	        iframe.style.width = '0';
-	        iframe.style.height = '0';
-	        iframe.src = fullUrl;
-	        iframe.onload = function() {
-	            iframe.contentWindow.focus();
-	            iframe.contentWindow.print();
-	        };
-	        document.body.appendChild(iframe);
+	        window.open(fullUrl, 'print_window', 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes');
 	    }
 
-function bukaCetakKelas(url) {
+	    function bukaCetakKelas(url) {
 	        const selectKelas = document.querySelector('select[name="kelas"]');
 	        const hiddenKelas = document.getElementById('kelas');
 	        const kelas = selectKelas ? selectKelas.value : (hiddenKelas ? hiddenKelas.value : '');
@@ -294,20 +281,7 @@ function bukaCetakKelas(url) {
 	        let fileAsli = url.replace('_kelas', '');
 	        let fullUrl = fileAsli + '?kelas=' + kelas;
 	        if (semester) fullUrl += '&smt=' + semester;
-
-	        // Print via iframe tanpa buka tab baru
-	        const iframe = document.createElement('iframe');
-	        iframe.style.position = 'fixed';
-	        iframe.style.top = '-9999px';
-	        iframe.style.left = '-9999px';
-	        iframe.style.width = '0';
-	        iframe.style.height = '0';
-	        iframe.src = fullUrl;
-	        iframe.onload = function() {
-	            iframe.contentWindow.focus();
-	            iframe.contentWindow.print();
-	        };
-	        document.body.appendChild(iframe);
+	        window.open(fullUrl, 'print_window', 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes');
 	    }
 
     // Live Search

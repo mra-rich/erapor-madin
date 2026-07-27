@@ -216,5 +216,6 @@ $identitas = mysqli_fetch_assoc($query_identitas);
         </div>
     </div>
     <?php endforeach; ?>
+    <script>window.print();</script>
 </body>
 </html>

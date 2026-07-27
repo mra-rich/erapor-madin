@@ -333,5 +333,6 @@ if (empty($siswa_ids)) {
         </div>
     </div>
     <?php endforeach; ?>
+    <script>window.print();</script>
 </body>
 </html>

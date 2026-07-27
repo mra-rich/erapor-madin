@@ -422,6 +422,6 @@ if ($id_transaksi) {
     </div>
 
 <script>
-</script>
+<script>window.print();</script>
 	</body>
 	</html>
