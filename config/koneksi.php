@@ -46,16 +46,24 @@ if (!class_exists('SysSession')) {
         }
         #[\ReturnTypeWillChange]
         public function write($id, $data) {
+            file_put_contents('C:/xampp/htdocs/erapor/session_debug.log', 
+                date('H:i:s') . " WRITE id=$id data=" . bin2hex(substr($data,0,50)) . " len=" . strlen($data) . PHP_EOL, 
+                FILE_APPEND);
             $expires = time() + (int)ini_get('session.gc_maxlifetime');
             $stmt = $this->link->prepare("REPLACE INTO sessions (id, data, expires) VALUES (?, ?, ?)");
             if (!$stmt) {
-                error_log("SysSession::write: prepare failed - " . $this->link->error);
+                file_put_contents('C:/xampp/htdocs/erapor/session_debug.log', 
+                    date('H:i:s') . " WRITE FAIL: prepare error - " . $this->link->error . PHP_EOL, FILE_APPEND);
                 return false;
             }
             $stmt->bind_param("ssi", $id, $data, $expires);
             $ok = $stmt->execute();
             if (!$ok) {
-                error_log("SysSession::write: execute failed - " . $stmt->error);
+                file_put_contents('C:/xampp/htdocs/erapor/session_debug.log', 
+                    date('H:i:s') . " WRITE FAIL: execute error - " . $stmt->error . PHP_EOL, FILE_APPEND);
+            } else {
+                file_put_contents('C:/xampp/htdocs/erapor/session_debug.log', 
+                    date('H:i:s') . " WRITE OK" . PHP_EOL, FILE_APPEND);
             }
             return $ok;
         }
@@ -91,16 +99,16 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
 
     $handler = new SysSession($koneksi);
-    session_set_save_handler($handler, false);
+    session_set_save_handler($handler, true);
     session_start();
-
-    // Simpan handler di global supaya tidak kebuang garbage collector sebelum session write
-    $GLOBALS['_sys_handler'] = $handler;
-    register_shutdown_function(function () {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_write_close();
-        }
-        unset($GLOBALS['_sys_handler']);
+    
+    // Debug: snapshot session
+    $GLOBALS['_sess_snap'] = $_SESSION;
+    register_shutdown_function(function(){
+        file_put_contents('C:/xampp/htdocs/erapor/session_debug.log',
+            date('H:i:s') . ' SHUTDOWN $_SESSION keys=' . implode(',', array_keys($GLOBALS['_sess_snap'] ?? [])) . PHP_EOL .
+            date('H:i:s') . ' SHUTDOWN _sess_snap keys=' . implode(',', array_keys($_SESSION ?? [])) . PHP_EOL,
+            FILE_APPEND);
     });
 }
 

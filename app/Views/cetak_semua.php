@@ -413,11 +413,16 @@ if ($id_transaksi) {
                 <h2>MADRASAH DINIYAH TAKMILIYAH</h2>
                 
                 <div style="margin: 20px auto; text-align:center;">
-                <?php if (!empty($identitas['logo'])): 
-                    $logoPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
-                    if (!file_exists($logoPath)) $logoPath = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+                <?php 
+                    $logoExists = false;
+                    if (!empty($identitas['logo'])) {
+                        $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+                        $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+                        $logoExists = file_exists($f1) || file_exists($f2);
+                    }
                 ?>
-                    <img src="<?= $logoPath ?>" alt="Logo" style="max-width:150px; max-height:150px;">
+                <?php if ($logoExists): ?>
+                    <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:150px; max-height:150px;">
                 <?php else: ?>
                     <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:flex; align-items:center; justify-content:center; color:#999;">Logo</div>
                 <?php endif; ?>
@@ -517,14 +522,19 @@ if ($id_transaksi) {
 	        <div class="rapor-container">
 <!-- Kop Surat Rapor -->
 	            <div style="margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
-	                <?php if (!empty($identitas['logo'])): 
-	                    $logoPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
-	                    if (!file_exists($logoPath)) $logoPath = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
-	                ?>
-	                <div style="float:left; width:80px;">
-	                    <img src="<?= $logoPath ?>" alt="Logo" style="max-width:80px; max-height:80px;">
-	                </div>
-	                <?php endif; ?>
+		                <?php 
+		                    $logoExists = false;
+		                    if (!empty($identitas['logo'])) {
+		                        $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+		                        $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+		                        $logoExists = file_exists($f1) || file_exists($f2);
+		                    }
+		                ?>
+		                <?php if ($logoExists): ?>
+		                <div style="float:left; width:80px;">
+		                    <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:80px; max-height:80px;">
+		                </div>
+		                <?php endif; ?>
 	                <div style="text-align: left;">
 	                    <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
 	                    <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
