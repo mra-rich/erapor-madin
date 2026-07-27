@@ -1,7 +1,23 @@
 <?php
 require 'koneksi.php';
+
+// Endpoint AJAX: sebelum cek_sesi (yang me-redirect HTML saat sesi habis),
+// kembalikan JSON error agar fetch/response.json() tidak gagal parse.
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+if (!isset($_SESSION['id_pengguna'])) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'error' => 'Sesi berakhir. Silakan login kembali.']);
+    exit;
+}
+
 require 'cek_sesi.php';
 restrict_roles(RBAC_VIEW_ALL);
+
+// Pastikan respons murni JSON: jangan tampilkan warning/notice PHP ke output,
+// dan buang output apa pun yang mungkin sudah tercetak sebelumnya.
+ini_set('display_errors', '0');
+if (ob_get_length()) { ob_clean(); }
 
 // Set header JSON
 header('Content-Type: application/json');
