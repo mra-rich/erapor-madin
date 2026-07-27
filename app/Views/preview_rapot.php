@@ -280,7 +280,7 @@ if ($id_transaksi) {
 		                <img src="<?= $logoPath ?>" alt="Logo" style="max-width:80px; max-height:80px;">
 		            </div>
 		            <?php endif; ?>
-		            <div style="text-align: center;">
+		            <div style="text-align: left;">
 		                <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
 		                <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
 		                <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
