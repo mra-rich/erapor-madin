@@ -169,10 +169,11 @@ $identitas = mysqli_fetch_assoc($query_identitas);
         $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
 
         foreach ($siswa_ids as $id_siswa): 
-        $query_siswa = mysqli_query($koneksi, "SELECT s.*, k.nama_kelas 
+        $query_siswa = mysqli_query($koneksi, "SELECT s.*, COALESCE(k.nama_kelas, k2.nama_kelas) as nama_kelas 
                                                FROM siswa s 
                                                LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = '$ta_aktif'
                                                LEFT JOIN kelas k ON r.id_kelas = k.id_kelas 
+                                               LEFT JOIN kelas k2 ON s.id_kelas = k2.id_kelas 
                                                WHERE s.id_siswa = $id_siswa");
         $siswa = mysqli_fetch_assoc($query_siswa);
         if (!$siswa) continue;

@@ -341,11 +341,12 @@ function getDeskripsiKepribadian($nilai) {
         
         foreach ($siswa_ids as $id_siswa): 
         // 1. AMBIL DATA SISWA, KELAS, TRANSAKSI
-        $query_siswa = mysqli_query($koneksi, "SELECT s.*, k.nama_kelas, COALESCE(t.tahun_ajaran, '$ta_aktif') as tahun_ajaran, t.id_transaksi, r.status_kenaikan as status_kenaikan_riwayat 
+        $query_siswa = mysqli_query($koneksi, "SELECT s.*, COALESCE(k.nama_kelas, k2.nama_kelas) as nama_kelas, COALESCE(t.tahun_ajaran, '$ta_aktif') as tahun_ajaran, t.id_transaksi, r.status_kenaikan as status_kenaikan_riwayat 
                         FROM siswa s 
                         LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = $semester
                         LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = COALESCE(t.tahun_ajaran, '$ta_aktif')
                         LEFT JOIN kelas k ON r.id_kelas = k.id_kelas 
+                        LEFT JOIN kelas k2 ON s.id_kelas = k2.id_kelas 
                         WHERE s.id_siswa = $id_siswa");
         $siswa = mysqli_fetch_assoc($query_siswa);
         if (!$siswa) continue;
