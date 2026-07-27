@@ -29,24 +29,24 @@ while ($mapel = mysqli_fetch_assoc($resultMapel)) {
 }
 
 // Ambil data siswa, nilai (via GROUP_CONCAT), agregasi (SUM, AVG), dan ranking (RANK)
-$query = "SELECT 
-            s.id_siswa, s.nama, s.nomor_santri,
-            t.id_transaksi,
-            a.izin, a.sakit, a.tanpa_keterangan,
-            k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan,
-            COALESCE(SUM(n.nilai_angka), 0) as total_nilai,
-            COALESCE(AVG(n.nilai_angka), 0) as rata_rata,
-            GROUP_CONCAT(CONCAT(n.id_mapel, ':', n.nilai_angka) SEPARATOR ',') as daftar_nilai,
-            RANK() OVER (ORDER BY COALESCE(SUM(n.nilai_angka), 0) DESC) as ranking
-          FROM riwayat_kelas r
-          JOIN siswa s ON r.id_siswa = s.id_siswa
-          LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = '$selectedSemester' AND t.tahun_ajaran = r.tahun_ajaran
-          LEFT JOIN absensi a ON t.id_transaksi = a.id_transaksi
-          LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
-          LEFT JOIN nilai n ON t.id_transaksi = n.id_transaksi
-          WHERE r.id_kelas = '$selectedKelas' AND r.tahun_ajaran = '$tahun_ajaran' AND s.status = 'Aktif'
-          GROUP BY s.id_siswa
-          ORDER BY s.nama ASC";
+	$query = "SELECT 
+	            s.id_siswa, s.nama, s.nomor_santri,
+	            MAX(t.id_transaksi) as id_transaksi,
+	            MAX(a.izin) as izin, MAX(a.sakit) as sakit, MAX(a.tanpa_keterangan) as tanpa_keterangan,
+	            MAX(k.kelakuan) as kelakuan, MAX(k.kerajinan) as kerajinan, MAX(k.kerapian) as kerapian, MAX(k.kedisiplinan) as kedisiplinan,
+	            COALESCE(SUM(n.nilai_angka), 0) as total_nilai,
+	            COALESCE(AVG(n.nilai_angka), 0) as rata_rata,
+	            GROUP_CONCAT(CONCAT(n.id_mapel, ':', n.nilai_angka) SEPARATOR ',') as daftar_nilai,
+	            RANK() OVER (ORDER BY COALESCE(SUM(n.nilai_angka), 0) DESC) as ranking
+	          FROM riwayat_kelas r
+	          JOIN siswa s ON r.id_siswa = s.id_siswa
+	          LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = '$selectedSemester' AND t.tahun_ajaran = r.tahun_ajaran
+	          LEFT JOIN absensi a ON t.id_transaksi = a.id_transaksi
+	          LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
+	          LEFT JOIN nilai n ON t.id_transaksi = n.id_transaksi
+	          WHERE r.id_kelas = '$selectedKelas' AND r.tahun_ajaran = '$tahun_ajaran' AND s.status = 'Aktif'
+	          GROUP BY s.id_siswa
+	          ORDER BY s.nama ASC";
 
 $result = mysqli_query($koneksi, $query);
 while ($row = mysqli_fetch_assoc($result)) {
