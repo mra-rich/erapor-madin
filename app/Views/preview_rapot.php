@@ -105,58 +105,28 @@ function getDeskripsiKepribadian($nilai) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Rapor</title>
-    <style>
-        @page {
-            margin: 1cm;
-            size: A4;
-        }
+<style>
+	        @page {
+	            margin: 1cm;
+	            size: A4;
+	        }
 
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 13px;
-            margin: 0;
-            padding: 0;
-            background-color: #525659;
-        }
+	        body {
+	            font-family: Arial, sans-serif;
+	            font-size: 13px;
+	            margin: 0;
+	            padding: 0;
+	        }
 
-        .page {
-            background: white;
-            width: 21cm;
-            min-height: 29.7cm;
-            display: block;
-            margin: 0 auto;
-            margin-bottom: 0.5cm;
-            padding: 2cm;
-            box-sizing: border-box;
-            box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
-            page-break-after: always;
-            position: relative;
-            transform-origin: top left;
-        }
+	        .page {
+	            background: white;
+	            padding: 0;
+	            page-break-after: always;
+	        }
 
-        /* Responsive Viewport Wrapper untuk Layar Kecil (Mobile/Tablet) */
-        .preview-wrapper {
-            width: 100%;
-            overflow-x: hidden;
-            padding: 15px;
-            box-sizing: border-box;
-            display: block;
-            position: relative;
-        }
-
-        @media (max-width: 21.5cm) {
-            body {
-                background-color: #f1f5f9;
-            }
-            .preview-wrapper {
-                padding: 10px;
-            }
-            .page {
-                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-                margin-left: 0;
-                margin-right: 0;
-            }
-        }
+	        @media print {
+	            body { margin: 0; padding: 0; }
+	        }
 
         h1 {
             text-align: center;
@@ -224,50 +194,15 @@ function getDeskripsiKepribadian($nilai) {
             margin-top: 15px;
         }
 
-        .catatan {
-            margin-top: 15px;
-            font-style: italic;
-        }
+@media print {
+	            body { background: white; margin: 0; padding: 0; }
+	            .page { margin: 0; padding: 0; }
+	        }
+	</style>
+	</head>
+	<body>
 
-        .no-print {
-            text-align: center;
-            padding: 15px;
-            background-color: #333;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .no-print button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        @media print {
-            body { background: white; margin: 0; padding: 0; }
-            .no-print { display: none; }
-            .page { 
-                margin: 0; 
-                box-shadow: none; 
-                padding: 0; 
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="no-print">
-        <button onclick="window.print()">🖨️ Cetak Rapor</button>
-        <p style="margin-top:5px; font-size:12px; font-weight:normal;">Tekan tombol di atas untuk mencetak dokumen.</p>
-    </div>
-
-    <div class="preview-wrapper">
+	    <div class="preview-wrapper">
     <?php 
         $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
         $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
@@ -490,40 +425,6 @@ if ($id_transaksi) {
 	        window.onload = function() { setTimeout(function() { window.print(); }, 500); };
 	        window.onafterprint = function() { window.close(); };
 	
-	        function adjustPreviewScale() {
-            if (window.matchMedia('(max-width: 21.5cm)').matches) {
-                const wrapper = document.querySelector('.preview-wrapper');
-                const pages = document.querySelectorAll('.page');
-                if (!wrapper || pages.length === 0) return;
-
-                const wrapperWidth = wrapper.clientWidth - 20; // clientWidth excludes scrollbar
-                const originalWidth = 794; // Standard A4 width pixel estimation
-                const scale = wrapperWidth / originalWidth;
-                
-                // Calculate left margin to center the scaled page
-                const leftMargin = Math.max(0, (wrapper.clientWidth - (originalWidth * scale)) / 2);
-
-                pages.forEach(page => {
-                    page.style.transform = `scale(${scale})`;
-                    page.style.marginLeft = `${leftMargin}px`;
-                    
-                    const scaledHeight = page.offsetHeight * scale;
-                    const gap = page.offsetHeight - scaledHeight;
-                    page.style.marginBottom = `-${gap - 15}px`;
-                });
-            } else {
-                document.querySelectorAll('.page').forEach(page => {
-                    page.style.transform = '';
-                    page.style.marginLeft = '';
-                    page.style.marginBottom = '';
-                });
-            }
-        }
-
-        window.addEventListener('resize', adjustPreviewScale);
-        window.addEventListener('load', adjustPreviewScale);
-        // Jalankan berkala untuk memastikan HTMX load juga ter-scale
-        setTimeout(adjustPreviewScale, 500);
-    </script>
-</body>
-</html>
+</script>
+	</body>
+	</html>
