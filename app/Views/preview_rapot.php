@@ -283,6 +283,9 @@ if ($id_transaksi) {
 			            </div>
 			            <?php endif; endif; ?>
 		            <div style="text-align: left;">
+		                <?php if (!empty($identitas['nama_yayasan'])): ?>
+		                <p style="margin: 0; font-size: 13px;"><?= htmlspecialchars($identitas['nama_yayasan']) ?></p>
+		                <?php endif; ?>
 		                <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
 		                <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
 		                <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>

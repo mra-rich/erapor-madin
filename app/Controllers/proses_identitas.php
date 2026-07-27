@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $nama_madrasah = mysqli_real_escape_string($koneksi, trim($_POST['nama_madrasah']));
+    $nama_yayasan = mysqli_real_escape_string($koneksi, trim($_POST['nama_yayasan'] ?? ''));
     $nsmd = mysqli_real_escape_string($koneksi, trim($_POST['nsmd']));
     $npsn = mysqli_real_escape_string($koneksi, trim($_POST['npsn']));
     $alamat = mysqli_real_escape_string($koneksi, trim($_POST['alamat']));
@@ -70,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "UPDATE identitas_madrasah SET 
                 $logo_sql
                 nama_madrasah = '$nama_madrasah',
+                nama_yayasan = '$nama_yayasan',
                 nsmd = '$nsmd',
                 npsn = '$npsn',
                 alamat = '$alamat',

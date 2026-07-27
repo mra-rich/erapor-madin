@@ -69,6 +69,11 @@ $pengaturan = mysqli_fetch_assoc($q_peng);
                         <input type="text" name="nama_madrasah" value="<?= htmlspecialchars($identitas['nama_madrasah'] ?? '') ?>" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Nama Yayasan</label>
+                        <input type="text" name="nama_yayasan" value="<?= htmlspecialchars($identitas['nama_yayasan'] ?? '') ?>" placeholder="Contoh: Yayasan Pondok Pesantren Darul Fiqhi" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
+                        <p class="mt-1 text-xs text-gray-500">Ditampilkan di atas nama madrasah pada kop surat rapor.</p>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">NSMD (No Statistik)</label>
                         <input type="text" name="nsmd" value="<?= htmlspecialchars($identitas['nsmd'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
                     </div>
