@@ -2,15 +2,19 @@
 /**
  * Script satu kali: Isi otomatis nama_kitab_arab dari nama_kitab (Latin → Arab)
  * Hanya mengisi yang masih kosong.
- * Jalan: php scripts/isi_nama_kitab_arab.php
- * atau buka di browser setelah login.
+ * Cara jalan:
+ *   php scripts/isi_nama_kitab_arab.php
+ * Atau buka di browser setelah login Admin.
  */
 
 require __DIR__ . '/../config/koneksi.php';
-require __DIR__ . '/../app/Controllers/cek_sesi.php';
 
-if ($_SESSION['peran'] !== 'Admin') {
-    die('Hanya Admin');
+// Jika di browser, butuh login Admin
+if (php_sapi_name() !== 'cli') {
+    require __DIR__ . '/../app/Controllers/cek_sesi.php';
+    if ($_SESSION['peran'] !== 'Admin') {
+        die('Hanya Admin');
+    }
 }
 
 // Cek apakah kolom sudah ada

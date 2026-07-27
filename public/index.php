@@ -92,9 +92,10 @@ $legacyWhitelist = [
     'proses_edit_siswa.php', 'proses_evaluasi_wali.php', 'proses_hapus_mapel.php',
     'proses_identitas.php', 'proses_import_guru.php', 'proses_import_kelas.php',
     'proses_import_mapel.php', 'proses_import_siswa.php',
-    'proses_input_siswa.php',
-    'proses_nilai_massal.php', 'proses_pengampu.php', 'proses_simpan_pengaturan_mapel.php',
-    'proses_tambah_kelas.php', 'proses_tambah_mapel.php',
+'proses_input_siswa.php',
+	    'proses_nilai_massal.php', 'proses_pengampu.php', 'proses_simpan_pengaturan_mapel.php',
+	    'proses_tambah_kelas.php', 'proses_tambah_mapel.php',
+	    'isi_kitab_arab.php',
 
     // Views — halaman
     'index.php', 'dashboard_content.php',
