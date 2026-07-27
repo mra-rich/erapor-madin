@@ -347,14 +347,17 @@ $query_siswa = mysqli_query($koneksi, "SELECT s.*,
 	                            CONCAT(k2.nama_kelas, COALESCE(k2.nama_rombel, ''), ' ', tk2.nama_tingkat)
 	                        ) as nama_kelas, 
 	                        COALESCE(r.id_kelas, s.id_kelas) as id_kelas_cetak,
+	                        COALESCE(w.nama, w2.nama) as nama_wali_kelas,
 	                        COALESCE(t.tahun_ajaran, '$ta_aktif') as tahun_ajaran, t.id_transaksi, r.status_kenaikan as status_kenaikan_riwayat 
 	                        FROM siswa s 
 	                        LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = $semester
 	                        LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = COALESCE(t.tahun_ajaran, '$ta_aktif')
 	                        LEFT JOIN kelas k ON r.id_kelas = k.id_kelas 
 	                        LEFT JOIN tingkat_kelas tk ON k.id_tingkat = tk.id_tingkat
+	                        LEFT JOIN pengguna w ON k.id_wali_kelas = w.id_pengguna
 	                        LEFT JOIN kelas k2 ON s.id_kelas = k2.id_kelas 
 	                        LEFT JOIN tingkat_kelas tk2 ON k2.id_tingkat = tk2.id_tingkat
+	                        LEFT JOIN pengguna w2 ON k2.id_wali_kelas = w2.id_pengguna
 	                        WHERE s.id_siswa = $id_siswa");
 	        $siswa = mysqli_fetch_assoc($query_siswa);
 	        if (!$siswa) continue;
@@ -618,12 +621,39 @@ if ($id_transaksi) {
                 </div>
             </div>
 
-            <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+<table style="width:100%; border-collapse:collapse; margin-top:15px;">
                     <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
                     <tr><td colspan="4" style="border:1px solid black; padding:8px; font-style:italic;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
                 </table>
-        </div>
-    </div>
+
+                <!-- Tanda Tangan -->
+                <?php
+                $nama_ortu = !empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-');
+                ?>
+                <div style="display:grid; grid-template-columns: 1fr 1fr <?= $semester == 2 ? '1fr' : '' ?>; gap:10px; margin-top:25px; text-align:center; font-size:12px;">
+                    <div>
+                        <p style="margin-bottom:40px;">Mengetahui,<br>Orang Tua / Wali</p>
+                        <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+                            <?= htmlspecialchars($nama_ortu) ?>
+                        </p>
+                    </div>
+                    <?php if ($semester == 2): ?>
+                    <div>
+                        <p style="margin-bottom:40px;">Mengetahui,<br>Kepala Madrasah</p>
+                        <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+                            <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
+                        </p>
+                    </div>
+                    <?php endif; ?>
+                    <div>
+                        <p style="margin-bottom:40px;"><?= date('d F Y') ?><br>Wali Kelas</p>
+                        <p style="font-weight:bold; text-decoration:overline; padding-top:5px;">
+                            <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
+                        </p>
+                    </div>
+                </div>
+	        </div>
+	    </div>
 <?php else: ?>
 	    <div class="page" style="display:flex; justify-content:center; align-items:center;">
 	        <h3 style="color:red;">Tidak ada data kelas untuk siswa ini.</h3>
