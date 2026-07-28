@@ -279,7 +279,7 @@ if ($id_transaksi) {
 			                $logoExists = file_exists($logoFile);
 			            ?>
 			            <?php if ($logoExists): ?>
-			            <div style="float:left; width:80px;">
+			            <div style="float:left; width:80px; margin-right:18px;">
 			                <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:80px; max-height:80px;">
 			            </div>
 			            <?php endif; endif; ?>
