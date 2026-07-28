@@ -411,7 +411,7 @@ if ($id_transaksi) {
             </p>
         </div>
         <?php if ($semester == 2): ?>
-        <div style="width:33%; float:left; text-align:center;">
+        <div style="width:33%; float:left; text-align:center; margin-top:14px;">
             <p style="margin-bottom:28px;">Mengetahui,<br>Kepala Madrasah</p>
             <p style="font-weight:bold; padding-top:8px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                 <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
