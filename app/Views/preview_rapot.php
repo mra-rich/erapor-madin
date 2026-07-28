@@ -358,18 +358,8 @@ if ($id_transaksi) {
 		                <td colspan="5"></td>
 		            </tr>
 		        </table>
-	
-	        <?php if ($semester == 2): ?>
-	        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px;">
-            <tr>
-                <td style="border:1px solid #000; padding:6px 8px;">
-                    <strong>Keputusan:</strong><br>
-                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
-                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
-                </td>
-            </tr>
-        </table>
-        <?php endif; ?>
+
+<!-- Keputusan dipindah ke bawah Catatan Wali Kelas -->
 
 <div style="margin-top:8px; width:100%;">
             <table style="width:32%; float:left; border-collapse:collapse; margin-right:2%;">
@@ -399,6 +389,18 @@ if ($id_transaksi) {
                     <tr><td colspan="4" style="border:1px solid black; padding:5px 8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
                     <tr><td colspan="4" style="border:1px solid black; padding:5px 8px; font-style:italic;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
                 </table>
+
+        <?php if ($semester == 2): ?>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px;">
+            <tr>
+                <td style="border:1px solid #000; padding:6px 8px;">
+                    <strong>Keputusan:</strong><br>
+                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
+                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
+                </td>
+            </tr>
+        </table>
+        <?php endif; ?>
 
 		        <!-- Tanda Tangan -->
     <div style="margin-top:12px; width:100%; text-align:center; font-size:12px;">
