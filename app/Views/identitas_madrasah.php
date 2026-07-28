@@ -81,6 +81,16 @@ $pengaturan = mysqli_fetch_assoc($q_peng);
                         <label class="block text-sm font-medium text-gray-700 mb-2">NPSN</label>
                         <input type="text" name="npsn" value="<?= htmlspecialchars($identitas['npsn'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
                     </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Rapor Semester Ganjil</label>
+                        <input type="date" name="tanggal_rapor_ganjil" value="<?= htmlspecialchars($identitas['tanggal_rapor_ganjil'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
+                        <p class="mt-1 text-xs text-gray-500">Dicetak di tanda tangan rapor ganjil. Kosongkan untuk pakai tanggal hari ini.</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Rapor Semester Genap</label>
+                        <input type="date" name="tanggal_rapor_genap" value="<?= htmlspecialchars($identitas['tanggal_rapor_genap'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
+                        <p class="mt-1 text-xs text-gray-500">Dicetak di tanda tangan rapor genap. Kosongkan untuk pakai tanggal hari ini.</p>
+                    </div>
                 </div>
 
                 <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">Kepala Madrasah</h3>
