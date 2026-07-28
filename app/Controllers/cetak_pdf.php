@@ -66,8 +66,8 @@ $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 
 // Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
 	$dompdfCss = '
-	    /* Margin halaman 1 cm di semua sisi */
-	    @page { margin: 1cm !important; }
+	    /* Margin halaman: atas/bawah 1 cm, kiri/kanan 1,5 cm */
+	    @page { margin: 1cm 1.5cm !important; }
 	    /* Hilangkan box-shadow, transform, background abu-abu */
 	    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
 	    /* Pisah halaman hanya antar-siswa; halaman terakhir tidak memaksa break (agar 1 rapor = pas 1 halaman) */
