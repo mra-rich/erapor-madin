@@ -294,7 +294,7 @@ if ($id_transaksi) {
 		            <div style="clear:both;"></div>
 		        </div>
 	
-	        <h1>LAPORAN HASIL BELAJAR</h1>
+	        <h1>LAPORAN HASIL BELAJAR SEMESTER <?= ($semester == 2) ? 'GENAP' : 'GANJIL' ?></h1>
 	
 	        <div class="header-info">
 	            <table class="info-table">
@@ -307,7 +307,7 @@ if ($id_transaksi) {
 	                <tr>
 	                    <td class="info-label">Nomor Induk</td>
 <td class="info-value">: <?= htmlspecialchars($siswa['nomor_santri'] ?? '') ?></td>
-                    <td class="info-label">Tahun Pelajaran</td>
+                    <td class="info-label">Tahun Ajaran</td>
                     <td class="info-value">: <?= htmlspecialchars($siswa['tahun_ajaran'] ?? '') ?></td>
 	                </tr>
 	            </table>
