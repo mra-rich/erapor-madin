@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $tahun_ajaran = mysqli_real_escape_string($koneksi, trim($_POST['tahun_ajaran']));
     $tanggal_rapor_ganjil = !empty($_POST['tanggal_rapor_ganjil']) ? mysqli_real_escape_string($koneksi, trim($_POST['tanggal_rapor_ganjil'])) : null;
     $tanggal_rapor_genap = !empty($_POST['tanggal_rapor_genap']) ? mysqli_real_escape_string($koneksi, trim($_POST['tanggal_rapor_genap'])) : null;
+    $tempat_rapor = mysqli_real_escape_string($koneksi, trim($_POST['tempat_rapor'] ?? ''));
     $semester = intval($_POST['semester']);
 
     $logo_sql = "";
@@ -87,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 nama_kepala = '$nama_kepala',
                 nip_kepala = '$nip_kepala',
                 tanggal_rapor_ganjil = " . ($tanggal_rapor_ganjil === null ? "NULL" : "'$tanggal_rapor_ganjil'") . ",
-                tanggal_rapor_genap = " . ($tanggal_rapor_genap === null ? "NULL" : "'$tanggal_rapor_genap'") . "
+                tanggal_rapor_genap = " . ($tanggal_rapor_genap === null ? "NULL" : "'$tanggal_rapor_genap'") . ",
+                tempat_rapor = '$tempat_rapor'
               WHERE id = 1";
 
     if (mysqli_query($koneksi, $query)) {

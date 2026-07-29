@@ -99,12 +99,15 @@ function getDeskripsiKepribadian($nilai) {
 }
 
 // Format tanggal Indonesia, mis. "20 Juni 2026"
-function tanggalIndonesia($tgl) {
+function tanggalIndonesia($tgl, $tempat = '') {
     if (empty($tgl) || $tgl === '0000-00-00') { $tgl = date('Y-m-d'); }
     $ts = strtotime($tgl);
     if ($ts === false) { $ts = time(); }
     $bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    return date('j', $ts) . ' ' . $bulan[(int)date('n', $ts) - 1] . ' ' . date('Y', $ts);
+    $hasil = date('j', $ts) . ' ' . $bulan[(int)date('n', $ts) - 1] . ' ' . date('Y', $ts);
+    $tempat = trim($tempat);
+    // Tempat berasal dari input admin, escape di sini karena hasil fungsi dicetak mentah
+    return $tempat !== '' ? htmlspecialchars($tempat) . ', ' . $hasil : $hasil;
 }
 
 ?>
@@ -428,7 +431,7 @@ if ($id_transaksi) {
         </div>
         <?php endif; ?>
         <div style="width:<?= $semester == 2 ? '33%' : '50%' ?>; float:left; text-align:center;">
-            <p style="margin-bottom:28px;"><?= tanggalIndonesia($semester == 2 ? ($identitas['tanggal_rapor_genap'] ?? null) : ($identitas['tanggal_rapor_ganjil'] ?? null)) ?><br>Wali Kelas</p>
+            <p style="margin-bottom:28px;"><?= tanggalIndonesia($semester == 2 ? ($identitas['tanggal_rapor_genap'] ?? null) : ($identitas['tanggal_rapor_ganjil'] ?? null), $identitas['tempat_rapor'] ?? '') ?><br>Wali Kelas</p>
             <p style="font-weight:bold; padding-top:8px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                 <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
             </p>

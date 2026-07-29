@@ -82,6 +82,11 @@ $pengaturan = mysqli_fetch_assoc($q_peng);
                         <input type="text" name="npsn" value="<?= htmlspecialchars($identitas['npsn'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tempat Penerbitan Rapor</label>
+                        <input type="text" name="tempat_rapor" value="<?= htmlspecialchars($identitas['tempat_rapor'] ?? '') ?>" placeholder="Contoh: Lamongan" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
+                        <p class="mt-1 text-xs text-gray-500">Dicetak sebelum tanggal pada tanda tangan rapor, contoh: <em>Lamongan, 10 Juni 2026</em>. Kosongkan untuk mencetak tanggal saja.</p>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Rapor Semester Ganjil</label>
                         <input type="date" name="tanggal_rapor_ganjil" value="<?= htmlspecialchars($identitas['tanggal_rapor_ganjil'] ?? '') ?>" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-4 py-2 border">
                         <p class="mt-1 text-xs text-gray-500">Dicetak di tanda tangan rapor ganjil. Kosongkan untuk pakai tanggal hari ini.</p>
