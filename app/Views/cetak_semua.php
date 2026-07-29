@@ -107,7 +107,8 @@ function tanggalIndonesia($tgl, $tempat = '') {
     if ($ts === false) { $ts = time(); }
     $bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     $hasil = date('j', $ts) . ' ' . $bulan[(int)date('n', $ts) - 1] . ' ' . date('Y', $ts);
-    $tempat = trim($tempat);
+    // Kolom tempat_rapor bisa NULL, jadi cast dulu agar tidak deprecated di PHP 8.2
+    $tempat = trim((string)$tempat);
     // Tempat berasal dari input admin, escape di sini karena hasil fungsi dicetak mentah
     return $tempat !== '' ? htmlspecialchars($tempat) . ', ' . $hasil : $hasil;
 }
