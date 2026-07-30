@@ -171,13 +171,11 @@ function tanggalIndonesia($tgl, $tempat = '') {
         /* ---------------------------------------------------
            STYLE HALAMAN 1 : SAMPUL
            --------------------------------------------------- */
+        /* Jangan pakai flexbox: dompdf mendegradasi display:flex jadi block,
+           jadi justify-content/align-items diabaikan. Centering pakai text-align. */
         .sampul-container {
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
+            display: block;
             padding-top: 50px;
         }
         .sampul-container h1, .sampul-container h2, .sampul-container h3 {
@@ -188,9 +186,9 @@ function tanggalIndonesia($tgl, $tempat = '') {
             height: 150px;
             margin: 40px auto;
             border: 2px dashed #ccc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
+            text-align: center;
+            line-height: 150px;
             color: #999;
             font-style: italic;
         }
@@ -240,9 +238,8 @@ function tanggalIndonesia($tgl, $tempat = '') {
             width: 113px; /* 3cm */
             height: 151px; /* 4cm */
             border: 1px solid #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
+            line-height: 151px;
             margin-top: 40px;
             font-size: 12px;
             color: #666;
@@ -437,7 +434,7 @@ if ($id_transaksi) {
                 <?php if ($logoExists): ?>
                     <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:150px; max-height:150px;">
                 <?php else: ?>
-                    <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:flex; align-items:center; justify-content:center; color:#999;">Logo</div>
+                    <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:block; line-height:120px; text-align:center; color:#999;">Logo</div>
                 <?php endif; ?>
             </div>
 
@@ -692,7 +689,7 @@ if ($id_transaksi) {
 	        </div>
 	    </div>
 <?php else: ?>
-	    <div class="page" style="display:flex; justify-content:center; align-items:center;">
+	    <div class="page" style="text-align:center; padding-top:5cm;">
 	        <h3 style="color:red;">Tidak ada data kelas untuk siswa ini.</h3>
 	    </div>
     <?php endif; ?>

@@ -1,14 +1,22 @@
 # SDD Progress Ledger
-Branch: main
-Session start: 2026-07-24
+Branch: fix/security-critical
+Session start: 2026-07-30
 
-## Tasks
-- [ ] Task 1: Fix SQL injection in data_guru.php (+ export_guru.php)
-- [ ] Task 2: Fix DB error credential leak in config/koneksi.php
-- [ ] Task 3: Fix CSRF token in GET URL for hapus guru
-- [ ] Task 4: Add dummy_data_gen/ to .gitignore; verify .env not tracked
-- [ ] Task 5: Cleanup — commit all pending changes
-Task 1: complete (staged changes in data_guru.php + export_guru.php, review clean)
-Task 2: complete (config/koneksi.php connect_error handler, review clean)
-Task 3: complete (hapus_guru.php + GuruController.php + data_guru.php, CSRF GET→POST, review clean)
-Task 4: complete (.gitignore updated, dummy_data_gen/ untracked, .env not tracked, review clean)
+## Previous Session (completed)
+Task 1: complete — SQL injection data_guru.php
+Task 2: complete — DB error leak koneksi.php
+Task 3: complete — CSRF GET→POST hapus guru
+Task 4: complete — .gitignore, .env
+
+## Current Session Tasks (ALL COMPLETE)
+Task 5: complete — Dompdf tempDir /tmp → sys_get_temp_dir()
+Task 6: complete — Default DB credentials removed, env vars required
+Task 7: complete — Session idle timeout 30 menit
+Task 8: complete — SQL injection data_nilai.php (prepared statements)
+Task 9: complete — SQL injection data_santri.php (prepared statements)
+Task 10: complete — SQL injection penilaian_mapel.php (prepared statements)
+Task 11: complete — SQL injection preview_rapot.php (prepared statements)
+Task 12: complete — SQL injection proses_evaluasi_wali.php (prepared statements)
+Task 13: complete — SQL injection proses_import_siswa.php (prepared statements)
+Task 14: complete — Root folder cleaned, .gitignore updated
+Task 15: complete — Final code review: all 11 files syntax OK

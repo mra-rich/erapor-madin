@@ -218,30 +218,31 @@ function tanggalIndonesia($tgl, $tempat = '') {
 
 	    <div class="preview-wrapper">
     <?php 
-        $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
-        $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
+        $q_ta = db_query("SELECT tahun_ajaran FROM pengaturan LIMIT 1");
+        $ta_aktif = $q_ta ? mysqli_fetch_assoc($q_ta)['tahun_ajaran'] : '';
         
         foreach ($siswa_ids as $id_siswa): 
 // Ambil data siswa
-	        $query_siswa = mysqli_query($koneksi, "SELECT s.*, 
+	        $query_siswa = db_query("SELECT s.*, 
 	                        COALESCE(
 	                            CONCAT(k.nama_kelas, COALESCE(k.nama_rombel, ''), ' ', tk.nama_tingkat),
 	                            CONCAT(k2.nama_kelas, COALESCE(k2.nama_rombel, ''), ' ', tk2.nama_tingkat)
 	                        ) as nama_kelas, 
 	                        COALESCE(r.id_kelas, s.id_kelas) as id_kelas_cetak,
 	                        COALESCE(w.nama, w2.nama) as nama_wali_kelas,
-	                        COALESCE(t.tahun_ajaran, '$ta_aktif') as tahun_ajaran, t.id_transaksi, r.status_kenaikan as status_kenaikan_riwayat 
+	                        COALESCE(t.tahun_ajaran, ?) as tahun_ajaran, t.id_transaksi, r.status_kenaikan as status_kenaikan_riwayat 
 	                        FROM siswa s 
-	                        LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = $semester
-	                        LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = COALESCE(t.tahun_ajaran, '$ta_aktif')
+	                        LEFT JOIN transaksi_raport t ON s.id_siswa = t.id_siswa AND t.semester = ?
+	                        LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = COALESCE(t.tahun_ajaran, ?)
 	                        LEFT JOIN kelas k ON r.id_kelas = k.id_kelas 
 	                        LEFT JOIN tingkat_kelas tk ON k.id_tingkat = tk.id_tingkat
 	                        LEFT JOIN pengguna w ON k.id_wali_kelas = w.id_pengguna
 	                        LEFT JOIN kelas k2 ON s.id_kelas = k2.id_kelas 
 	                        LEFT JOIN tingkat_kelas tk2 ON k2.id_tingkat = tk2.id_tingkat
 	                        LEFT JOIN pengguna w2 ON k2.id_wali_kelas = w2.id_pengguna
-	                        WHERE s.id_siswa = $id_siswa");
-	        $siswa = mysqli_fetch_assoc($query_siswa);
+	                        WHERE s.id_siswa = ?",
+	                        [$ta_aktif, $semester, $ta_aktif, $id_siswa]);
+	        $siswa = $query_siswa ? mysqli_fetch_assoc($query_siswa) : null;
 	        if (!$siswa) continue;
 	        $id_transaksi = $siswa['id_transaksi'] ?? null;
 	        $id_kelas_cetak = $siswa['id_kelas_cetak'] ?? 0;
@@ -249,36 +250,38 @@ function tanggalIndonesia($tgl, $tempat = '') {
 	        // Ambil semua mapel untuk kelas ini (tampil semua meski belum ada nilai)
 	        $semua_nilai = [];
 	        $total_nilai = 0;
-if ($id_kelas_cetak) {
-	            $query_nilai = mysqli_query($koneksi, "
+	if ($id_kelas_cetak) {
+	            $query_nilai = db_query("
 		                SELECT mp.id_mapel, mp.nama_mapel, mp.nama_mapel_arab, mp.kkm, n.nilai_angka, pm.nama_kitab as nama_kitab_arab
 		                FROM pengampu_mapel pm
 		                JOIN mata_pelajaran mp ON pm.id_mapel = mp.id_mapel
-		                LEFT JOIN nilai n ON n.id_mapel = mp.id_mapel AND n.id_transaksi = $id_transaksi
-		                WHERE pm.id_kelas = $id_kelas_cetak AND pm.status = 'Aktif'
-		                ORDER BY mp.id_mapel ASC
-		            ");
-	            while ($row = mysqli_fetch_assoc($query_nilai)) {
-	                if ($row['nilai_angka'] !== null) {
-	                    $total_nilai += (int)$row['nilai_angka'];
-	                }
-	                $semua_nilai[] = $row;
-	            }
+		                LEFT JOIN nilai n ON n.id_mapel = mp.id_mapel AND n.id_transaksi = ?
+		                WHERE pm.id_kelas = ? AND pm.status = 'Aktif'
+		                ORDER BY mp.id_mapel ASC",
+		                [$id_transaksi ?: 0, $id_kelas_cetak]);
+	            if ($query_nilai) {
+		            while ($row = mysqli_fetch_assoc($query_nilai)) {
+		                if ($row['nilai_angka'] !== null) {
+		                    $total_nilai += (int)$row['nilai_angka'];
+		                }
+		                $semua_nilai[] = $row;
+		            }
+		        }
 	        }
 	        $absensi = ['sakit' => 0, 'izin' => 0, 'tanpa_keterangan' => 0];
         $kepribadian = ['kelakuan' => '-', 'kerajinan' => '-', 'kerapian' => '-', 'kedisiplinan' => '-'];
         $ekskul = ['baca_quran' => '-', 'baca_kitab' => '-', 'muhafadhoh' => '-', 'kaligrafi' => '-'];
         $catatan = ['catatan' => ''];
         
-if ($id_transaksi) {
-	            $query_abs = mysqli_query($koneksi, "SELECT * FROM absensi WHERE id_transaksi = $id_transaksi LIMIT 1");
-            if ($a = mysqli_fetch_assoc($query_abs)) $absensi = $a;
-            $query_kep = mysqli_query($koneksi, "SELECT * FROM kepribadian WHERE id_transaksi = $id_transaksi LIMIT 1");
-            if ($k = mysqli_fetch_assoc($query_kep)) $kepribadian = $k;
-            $query_eks = mysqli_query($koneksi, "SELECT * FROM ekstrakurikuler WHERE id_transaksi = $id_transaksi LIMIT 1");
-            if ($e = mysqli_fetch_assoc($query_eks)) $ekskul = $e;
-            $query_cat = mysqli_query($koneksi, "SELECT * FROM catatan_wali_kelas WHERE id_transaksi = $id_transaksi LIMIT 1");
-            if ($c = mysqli_fetch_assoc($query_cat)) $catatan = $c;
+	if ($id_transaksi) {
+	            $res_abs = db_query("SELECT * FROM absensi WHERE id_transaksi = ? LIMIT 1", [$id_transaksi]);
+            if ($res_abs) $absensi = mysqli_fetch_assoc($res_abs) ?: $absensi;
+            $res_kep = db_query("SELECT * FROM kepribadian WHERE id_transaksi = ? LIMIT 1", [$id_transaksi]);
+            if ($res_kep) $kepribadian = mysqli_fetch_assoc($res_kep) ?: $kepribadian;
+            $res_eks = db_query("SELECT * FROM ekstrakurikuler WHERE id_transaksi = ? LIMIT 1", [$id_transaksi]);
+            if ($res_eks) $ekskul = mysqli_fetch_assoc($res_eks) ?: $ekskul;
+            $res_cat = db_query("SELECT * FROM catatan_wali_kelas WHERE id_transaksi = ? LIMIT 1", [$id_transaksi]);
+            if ($res_cat) $catatan = mysqli_fetch_assoc($res_cat) ?: $catatan;
         }
     ?>
 	
@@ -441,7 +444,7 @@ if ($id_transaksi) {
     </div>
 		    </div>
 <?php else: ?>
-		    <div class="page" style="display:flex; justify-content:center; align-items:center; height:100vh;">
+		    <div class="page" style="text-align:center; padding-top:5cm;">
 		        <h3 style="color:red;">Tidak ada data kelas untuk siswa ini.</h3>
 		    </div>
 	    <?php endif; ?>

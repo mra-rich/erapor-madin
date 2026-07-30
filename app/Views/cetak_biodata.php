@@ -117,9 +117,8 @@ if (empty($siswa_ids)) {
             width: 113px; /* 3cm */
             height: 151px; /* 4cm */
             border: 1px solid #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
+            line-height: 151px;
             margin-top: 40px;
             font-size: 12px;
             color: #666;

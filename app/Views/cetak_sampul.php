@@ -61,13 +61,12 @@ $identitas = mysqli_fetch_assoc($query_identitas);
             background: white;
             width: 21cm;
             min-height: 29.7cm;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: block;
+            text-align: center;
             margin: 0 auto;
             margin-bottom: 0.5cm;
             padding: 2cm;
+            padding-top: 3cm;
             box-sizing: border-box;
             box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
             page-break-after: always;
@@ -104,9 +103,8 @@ $identitas = mysqli_fetch_assoc($query_identitas);
             height: 150px;
             margin: 40px auto;
             border: 2px dashed #ccc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
+            line-height: 150px;
             color: #999;
             font-style: italic;
         }
@@ -151,9 +149,8 @@ $identitas = mysqli_fetch_assoc($query_identitas);
             .no-print { display: none; }
             .page { 
                 margin: 0; 
-                box-shadow: none; 
-                padding: 0; 
-                justify-content: flex-start;
+                box-shadow: none;
+                padding: 0;
                 padding-top: 100px;
             }
         }
@@ -202,7 +199,7 @@ $identitas = mysqli_fetch_assoc($query_identitas);
                 <?php if ($logoExists): ?>
                     <img src="<?= $logoSrc ?>" alt="Logo" style="max-width:150px; max-height:150px;">
                 <?php else: ?>
-                    <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:flex; align-items:center; justify-content:center; color:#999;">Logo</div>
+                    <div style="width:120px; height:120px; border:1px dashed #999; margin:0 auto; display:block; line-height:120px; text-align:center; color:#999;">Logo</div>
                 <?php endif; ?>
             </div>
 
