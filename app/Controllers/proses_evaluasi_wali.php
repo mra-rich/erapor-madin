@@ -41,82 +41,98 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     $catatan = $_POST['catatan'] ?? [];
 
-    $q_pengaturan = mysqli_query($koneksi, "SELECT * FROM pengaturan LIMIT 1");
-    $data_pengaturan = mysqli_fetch_assoc($q_pengaturan);
-    $tahun_aktif = mysqli_real_escape_string($koneksi, $data_pengaturan['tahun_ajaran']);
-    $semester_aktif = (int)$data_pengaturan['semester'];
+    $q_pengaturan = db_query("SELECT * FROM pengaturan LIMIT 1");
+    $data_pengaturan = $q_pengaturan ? mysqli_fetch_assoc($q_pengaturan) : [];
+    $tahun_aktif = $data_pengaturan['tahun_ajaran'] ?? '';
+    $semester_aktif = (int)($data_pengaturan['semester'] ?? 1);
 
     mysqli_begin_transaction($koneksi);
     try {
         foreach ($id_siswa_arr as $id_siswa) {
             $id_siswa = (int)$id_siswa;
             // 1. Dapatkan atau Buat transaksi_raport
-            $q_cek_tr = mysqli_query($koneksi, "SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $id_siswa AND tahun_ajaran = '$tahun_aktif' AND semester = $semester_aktif");
+            $res_tr = db_query(
+                "SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = ? AND tahun_ajaran = ? AND semester = ?",
+                [$id_siswa, $tahun_aktif, $semester_aktif]
+            );
             
-            if (mysqli_num_rows($q_cek_tr) > 0) {
-                $tr = mysqli_fetch_assoc($q_cek_tr);
+            if ($res_tr && mysqli_num_rows($res_tr) > 0) {
+                $tr = mysqli_fetch_assoc($res_tr);
                 $id_transaksi = $tr['id_transaksi'];
             } else {
                 // Buat transaksi raport baru
-                mysqli_query($koneksi, "INSERT INTO transaksi_raport (id_siswa, id_pengguna, tahun_ajaran, semester) VALUES ($id_siswa, $id_pengguna, '$tahun_aktif', $semester_aktif)");
+                db_execute(
+                    "INSERT INTO transaksi_raport (id_siswa, id_pengguna, tahun_ajaran, semester) VALUES (?, ?, ?, ?)",
+                    [$id_siswa, $id_pengguna, $tahun_aktif, $semester_aktif]
+                );
                 $id_transaksi = mysqli_insert_id($koneksi);
             }
 
             // Data untuk diinsert
-            $v_kelakuan = mysqli_real_escape_string($koneksi, $kelakuan[$id_siswa] ?? '');
-            $v_kerajinan = mysqli_real_escape_string($koneksi, $kerajinan[$id_siswa] ?? '');
-            $v_kerapian = mysqli_real_escape_string($koneksi, $kerapian[$id_siswa] ?? '');
-            $v_kedisiplinan = mysqli_real_escape_string($koneksi, $kedisiplinan[$id_siswa] ?? '');
+            $v_kelakuan = $kelakuan[$id_siswa] ?? '';
+            $v_kerajinan = $kerajinan[$id_siswa] ?? '';
+            $v_kerapian = $kerapian[$id_siswa] ?? '';
+            $v_kedisiplinan = $kedisiplinan[$id_siswa] ?? '';
             
-            $v_baca_quran = mysqli_real_escape_string($koneksi, $baca_quran[$id_siswa] ?? '');
-            $v_baca_kitab = mysqli_real_escape_string($koneksi, $baca_kitab[$id_siswa] ?? '');
-            $v_muhafadhoh = mysqli_real_escape_string($koneksi, $muhafadhoh[$id_siswa] ?? '');
-            $v_kaligrafi = mysqli_real_escape_string($koneksi, $kaligrafi[$id_siswa] ?? '');
+            $v_baca_quran = $baca_quran[$id_siswa] ?? '';
+            $v_baca_kitab = $baca_kitab[$id_siswa] ?? '';
+            $v_muhafadhoh = $muhafadhoh[$id_siswa] ?? '';
+            $v_kaligrafi = $kaligrafi[$id_siswa] ?? '';
             
             $v_sakit = (int)($sakit_arr[$id_siswa] ?? 0);
             $v_izin = (int)($izin_arr[$id_siswa] ?? 0);
             $v_alpha = (int)($alpha_arr[$id_siswa] ?? 0);
             
-            $v_catatan = mysqli_real_escape_string($koneksi, $catatan[$id_siswa] ?? '');
+            $v_catatan = $catatan[$id_siswa] ?? '';
 
             // 2. Kepribadian (Upsert)
-            $q_cek_kp = mysqli_query($koneksi, "SELECT id_kepribadian FROM kepribadian WHERE id_transaksi = $id_transaksi");
-            if (mysqli_num_rows($q_cek_kp) > 0) {
-                mysqli_query($koneksi, "UPDATE kepribadian SET kelakuan = '$v_kelakuan', kerajinan = '$v_kerajinan', kerapian = '$v_kerapian', kedisiplinan = '$v_kedisiplinan' WHERE id_transaksi = $id_transaksi");
+            $res_kp = db_query("SELECT id_kepribadian FROM kepribadian WHERE id_transaksi = ?", [$id_transaksi]);
+            if ($res_kp && mysqli_num_rows($res_kp) > 0) {
+                db_execute("UPDATE kepribadian SET kelakuan = ?, kerajinan = ?, kerapian = ?, kedisiplinan = ? WHERE id_transaksi = ?",
+                    [$v_kelakuan, $v_kerajinan, $v_kerapian, $v_kedisiplinan, $id_transaksi]);
             } else {
-                mysqli_query($koneksi, "INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES ($id_transaksi, '$v_kelakuan', '$v_kerajinan', '$v_kerapian', '$v_kedisiplinan')");
+                db_execute("INSERT INTO kepribadian (id_transaksi, kelakuan, kerajinan, kerapian, kedisiplinan) VALUES (?, ?, ?, ?, ?)",
+                    [$id_transaksi, $v_kelakuan, $v_kerajinan, $v_kerapian, $v_kedisiplinan]);
             }
 
             // 3. Ekstrakurikuler (Upsert)
-            $q_cek_ex = mysqli_query($koneksi, "SELECT id_ekstrakurikuler FROM ekstrakurikuler WHERE id_transaksi = $id_transaksi");
-            if (mysqli_num_rows($q_cek_ex) > 0) {
-                mysqli_query($koneksi, "UPDATE ekstrakurikuler SET baca_quran = '$v_baca_quran', baca_kitab = '$v_baca_kitab', muhafadhoh = '$v_muhafadhoh', kaligrafi = '$v_kaligrafi' WHERE id_transaksi = $id_transaksi");
+            $res_ex = db_query("SELECT id_ekstrakurikuler FROM ekstrakurikuler WHERE id_transaksi = ?", [$id_transaksi]);
+            if ($res_ex && mysqli_num_rows($res_ex) > 0) {
+                db_execute("UPDATE ekstrakurikuler SET baca_quran = ?, baca_kitab = ?, muhafadhoh = ?, kaligrafi = ? WHERE id_transaksi = ?",
+                    [$v_baca_quran, $v_baca_kitab, $v_muhafadhoh, $v_kaligrafi, $id_transaksi]);
             } else {
-                mysqli_query($koneksi, "INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES ($id_transaksi, '$v_baca_quran', '$v_baca_kitab', '$v_muhafadhoh', '$v_kaligrafi')");
+                db_execute("INSERT INTO ekstrakurikuler (id_transaksi, baca_quran, baca_kitab, muhafadhoh, kaligrafi) VALUES (?, ?, ?, ?, ?)",
+                    [$id_transaksi, $v_baca_quran, $v_baca_kitab, $v_muhafadhoh, $v_kaligrafi]);
             }
 
             // 4. Catatan Wali Kelas (Upsert)
-            $q_cek_cw = mysqli_query($koneksi, "SELECT id_catatan FROM catatan_wali_kelas WHERE id_transaksi = $id_transaksi");
-            if (mysqli_num_rows($q_cek_cw) > 0) {
-                mysqli_query($koneksi, "UPDATE catatan_wali_kelas SET catatan = '$v_catatan' WHERE id_transaksi = $id_transaksi");
+            $res_cw = db_query("SELECT id_catatan FROM catatan_wali_kelas WHERE id_transaksi = ?", [$id_transaksi]);
+            if ($res_cw && mysqli_num_rows($res_cw) > 0) {
+                db_execute("UPDATE catatan_wali_kelas SET catatan = ? WHERE id_transaksi = ?",
+                    [$v_catatan, $id_transaksi]);
             } else {
-                mysqli_query($koneksi, "INSERT INTO catatan_wali_kelas (id_transaksi, catatan) VALUES ($id_transaksi, '$v_catatan')");
+                db_execute("INSERT INTO catatan_wali_kelas (id_transaksi, catatan) VALUES (?, ?)",
+                    [$id_transaksi, $v_catatan]);
             }
 
             // 5. Absensi (Upsert)
-            $q_cek_ab = mysqli_query($koneksi, "SELECT id_absensi FROM absensi WHERE id_transaksi = $id_transaksi");
-            if (mysqli_num_rows($q_cek_ab) > 0) {
-                mysqli_query($koneksi, "UPDATE absensi SET sakit = $v_sakit, izin = $v_izin, tanpa_keterangan = $v_alpha WHERE id_transaksi = $id_transaksi");
+            $res_ab = db_query("SELECT id_absensi FROM absensi WHERE id_transaksi = ?", [$id_transaksi]);
+            if ($res_ab && mysqli_num_rows($res_ab) > 0) {
+                db_execute("UPDATE absensi SET sakit = ?, izin = ?, tanpa_keterangan = ? WHERE id_transaksi = ?",
+                    [$v_sakit, $v_izin, $v_alpha, $id_transaksi]);
             } else {
-                mysqli_query($koneksi, "INSERT INTO absensi (id_transaksi, sakit, izin, tanpa_keterangan) VALUES ($id_transaksi, $v_sakit, $v_izin, $v_alpha)");
+                db_execute("INSERT INTO absensi (id_transaksi, sakit, izin, tanpa_keterangan) VALUES (?, ?, ?, ?)",
+                    [$id_transaksi, $v_sakit, $v_izin, $v_alpha]);
             }
         }
         
         mysqli_commit($koneksi);
         
         // Catat aktivitas
-        $query_log = "INSERT INTO log_aktivitas (id_pengguna, aktivitas, tabel_terkait, waktu) VALUES ('$id_pengguna', 'Menyimpan evaluasi kelas binaan (ID Kelas: $id_kelas)', 'kepribadian, ekstrakurikuler, catatan_wali_kelas', NOW())";
-        mysqli_query($koneksi, $query_log);
+        db_execute(
+            "INSERT INTO log_aktivitas (id_pengguna, aktivitas, tabel_terkait, waktu) VALUES (?, ?, ?, NOW())",
+            [$id_pengguna, 'Menyimpan evaluasi kelas binaan (ID Kelas: ' . $id_kelas . ')', 'kepribadian, ekstrakurikuler, catatan_wali_kelas']
+        );
 
         if (isset($_GET['ajax']) || isset($_POST['ajax'])) {
             header('Content-Type: application/json');

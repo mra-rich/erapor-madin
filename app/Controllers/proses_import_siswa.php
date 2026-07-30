@@ -32,40 +32,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error_count = 0;
 
     foreach ($data['import_data'] as $row) {
-        $nisn = mysqli_real_escape_string($koneksi, $row['nisn'] ?? '');
-        $nomor_santri = mysqli_real_escape_string($koneksi, $row['nomor_santri'] ?? '');
-        $nama = mysqli_real_escape_string($koneksi, $row['nama'] ?? '');
-        $tempat_lahir = mysqli_real_escape_string($koneksi, $row['tempat_lahir'] ?? '');
+        $nisn = $row['nisn'] ?? '';
+        $nomor_santri = $row['nomor_santri'] ?? '';
+        $nama = $row['nama'] ?? '';
+        $tempat_lahir = $row['tempat_lahir'] ?? '';
+        $tanggal_lahir = !empty($row['tanggal_lahir']) ? $row['tanggal_lahir'] : null;
+        $jenis_kelamin = $row['jenis_kelamin'] ?? 'L';
+        $status_dalam_keluarga = $row['status_dalam_keluarga'] ?? '';
+        $anak_ke = !empty($row['anak_ke']) ? (int)$row['anak_ke'] : null;
+        $alamat = $row['alamat'] ?? '';
+        $sekolah_asal = $row['sekolah_asal'] ?? '';
+        $diterima_di_kelas = $row['diterima_di_kelas'] ?? '';
+        $diterima_pada_tanggal = !empty($row['diterima_pada_tanggal']) ? $row['diterima_pada_tanggal'] : null;
+        $id_kelas_import = !empty($row['id_kelas']) ? (int)$row['id_kelas'] : null;
+        $tahun_ajaran = $row['tahun_ajaran'] ?? '';
+        $nama_ayah = $row['nama_ayah'] ?? '';
+        $nama_ibu = $row['nama_ibu'] ?? '';
+        $pekerjaan_ayah = $row['pekerjaan_ayah'] ?? '';
+        $pekerjaan_ibu = $row['pekerjaan_ibu'] ?? '';
+        $alamat_orang_tua = $row['alamat_orang_tua'] ?? '';
+        $nama_wali = $row['nama_wali'] ?? '';
+        $pekerjaan_wali = $row['pekerjaan_wali'] ?? '';
+        $no_handphone = $row['no_handphone'] ?? '';
         
-        $tanggal_lahir = !empty($row['tanggal_lahir']) ? "'" . mysqli_real_escape_string($koneksi, $row['tanggal_lahir']) . "'" : "NULL";
-        $jenis_kelamin = mysqli_real_escape_string($koneksi, $row['jenis_kelamin'] ?? 'L');
-        $status_dalam_keluarga = mysqli_real_escape_string($koneksi, $row['status_dalam_keluarga'] ?? '');
-        $anak_ke = !empty($row['anak_ke']) ? intval($row['anak_ke']) : "NULL";
-        $alamat = mysqli_real_escape_string($koneksi, $row['alamat'] ?? '');
-        $sekolah_asal = mysqli_real_escape_string($koneksi, $row['sekolah_asal'] ?? '');
-        $diterima_di_kelas = mysqli_real_escape_string($koneksi, $row['diterima_di_kelas'] ?? '');
-        $diterima_pada_tanggal = !empty($row['diterima_pada_tanggal']) ? "'" . mysqli_real_escape_string($koneksi, $row['diterima_pada_tanggal']) . "'" : "NULL";
-        $id_kelas = !empty($row['id_kelas']) ? intval($row['id_kelas']) : "NULL";
-        $tahun_ajaran = mysqli_real_escape_string($koneksi, $row['tahun_ajaran'] ?? '');
-        $nama_ayah = mysqli_real_escape_string($koneksi, $row['nama_ayah'] ?? '');
-        $nama_ibu = mysqli_real_escape_string($koneksi, $row['nama_ibu'] ?? '');
-        $pekerjaan_ayah = mysqli_real_escape_string($koneksi, $row['pekerjaan_ayah'] ?? '');
-        $pekerjaan_ibu = mysqli_real_escape_string($koneksi, $row['pekerjaan_ibu'] ?? '');
-        $alamat_orang_tua = mysqli_real_escape_string($koneksi, $row['alamat_orang_tua'] ?? '');
-        $nama_wali = mysqli_real_escape_string($koneksi, $row['nama_wali'] ?? '');
-        $pekerjaan_wali = mysqli_real_escape_string($koneksi, $row['pekerjaan_wali'] ?? '');
-        $no_handphone = mysqli_real_escape_string($koneksi, $row['no_handphone'] ?? '');
+        // Cek duplikat (nisn atau nomor_santri)
+        $cek = db_query(
+            "SELECT id_siswa FROM siswa WHERE (nisn = ? AND nisn != '') OR (nomor_santri = ? AND nomor_santri != '')",
+            [$nisn, $nomor_santri]
+        );
         
-        // Cek ganda hanya untuk memastikan (meski sudah dicek di preview)
-        $cek = mysqli_query($koneksi, "SELECT id_siswa FROM siswa WHERE (nisn = '$nisn' AND nisn != '') OR (nomor_santri = '$nomor_santri' AND nomor_santri != '')");
-        if (mysqli_num_rows($cek) == 0 && !empty($nama) && !empty($nomor_santri)) {
-            $query = "INSERT INTO siswa (nisn, nama, tempat_lahir, tanggal_lahir, jenis_kelamin, status_dalam_keluarga, anak_ke, nomor_santri, id_kelas, tahun_ajaran, alamat, sekolah_asal, diterima_di_kelas, diterima_pada_tanggal, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, alamat_orang_tua, nama_wali, pekerjaan_wali, no_handphone, status) 
-                      VALUES ('$nisn', '$nama', '$tempat_lahir', $tanggal_lahir, '$jenis_kelamin', '$status_dalam_keluarga', $anak_ke, '$nomor_santri', $id_kelas, '$tahun_ajaran', '$alamat', '$sekolah_asal', '$diterima_di_kelas', $diterima_pada_tanggal, '$nama_ayah', '$nama_ibu', '$pekerjaan_ayah', '$pekerjaan_ibu', '$alamat_orang_tua', '$nama_wali', '$pekerjaan_wali', '$no_handphone', 'Aktif')";
-            if (mysqli_query($koneksi, $query)) {
+        if ($cek && mysqli_num_rows($cek) == 0 && !empty($nama) && !empty($nomor_santri)) {
+            $inserted = db_execute(
+                "INSERT INTO siswa (nisn, nama, tempat_lahir, tanggal_lahir, jenis_kelamin, status_dalam_keluarga, anak_ke, nomor_santri, id_kelas, tahun_ajaran, alamat, sekolah_asal, diterima_di_kelas, diterima_pada_tanggal, nama_ayah, nama_ibu, pekerjaan_ayah, pekerjaan_ibu, alamat_orang_tua, nama_wali, pekerjaan_wali, no_handphone, status) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Aktif')",
+                [$nisn, $nama, $tempat_lahir, $tanggal_lahir, $jenis_kelamin, $status_dalam_keluarga, $anak_ke, $nomor_santri, $id_kelas_import, $tahun_ajaran, $alamat, $sekolah_asal, $diterima_di_kelas, $diterima_pada_tanggal, $nama_ayah, $nama_ibu, $pekerjaan_ayah, $pekerjaan_ibu, $alamat_orang_tua, $nama_wali, $pekerjaan_wali, $no_handphone]
+            );
+            if ($inserted) {
                 $success_count++;
             } else {
                 $error_count++;
-                file_put_contents('import_error.log', "MySQL Error: " . mysqli_error($koneksi) . "\nQuery: " . $query . "\n\n", FILE_APPEND);
+                file_put_contents('import_error.log', "MySQL Error saat insert siswa: $nama ($nomor_santri)\n", FILE_APPEND);
             }
         } else {
             $error_count++;
