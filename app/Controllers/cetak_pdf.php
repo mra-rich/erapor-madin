@@ -68,17 +68,25 @@ $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 	$dompdfCss = '
 	    /* Margin halaman: atas/bawah 1 cm, kiri/kanan 1,5 cm */
 	    @page { margin: 1cm 1.5cm !important; }
-	    /* Hilangkan box-shadow, transform, background abu-abu */
-	    .page { box-shadow: none !important; transform: none !important; background: white !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
+	    /* Hilangkan box-shadow, transform, background abu-abu.
+	       width:auto penting: .page dipatok 21cm (lebar A4 penuh), padahal area
+	       cetak hanya 18cm setelah margin kiri/kanan 1,5cm. Tanpa ini isi halaman
+	       ter-center pada 21cm lalu meleset 1,5cm ke kanan. */
+	    .page { box-shadow: none !important; transform: none !important; background: white !important; width: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
 	    /* Pisah halaman hanya antar-siswa; halaman terakhir tidak memaksa break (agar 1 rapor = pas 1 halaman) */
 	    .page { page-break-after: auto !important; }
 	    .page:not(:last-child) { page-break-after: always !important; }
 	    body { background: white !important; }
 	    .no-print { display: none !important; }
 	    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
-	    /* Fix flexbox centering sampul */
+	    /* Fix centering sampul. Dompdf tidak mendukung flexbox (display:flex
+	       didegradasi jadi block), sehingga justify-content/align-items diabaikan.
+	       Centering harus pakai text-align + margin auto. */
 	    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
-	    .sampul-identitas-siswa { display: inline-block !important; text-align: left !important; }
+	    .sampul-identitas-siswa, .identitas-siswa { display: inline-block !important; text-align: left !important; }
+	    /* cetak_sampul.php: .page sendiri yang jadi flex container */
+	    .identitas-madrasah { text-align: center !important; }
+	    .logo-placeholder { display: block !important; margin: 40px auto !important; line-height: 150px !important; text-align: center !important; }
 	    /* Fix biodata layout */
 	    .table-biodata { width: 100% !important; }
 	    .table-biodata td { padding: 6px 4px !important; vertical-align: top !important; }
@@ -125,9 +133,9 @@ $options = new Options();
 $options->set('isRemoteEnabled', true);
 $options->set('isHtml5ParserEnabled', true);
 $options->set('isFontSubsettingEnabled', true);
-$options->set('fontDir', '/tmp');
-$options->set('fontCache', '/tmp');
-$options->set('tempDir', '/tmp');
+	$options->set('fontDir', sys_get_temp_dir());
+	$options->set('fontCache', sys_get_temp_dir());
+	$options->set('tempDir', sys_get_temp_dir());
 $options->set('defaultFont', 'Arial');
 
 $dompdf = new Dompdf($options);

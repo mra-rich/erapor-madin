@@ -142,6 +142,20 @@
         </div>
     </div>
 
+    <?php if (isset($_GET['status']) && $_GET['status'] === 'timeout'): ?>
+        <div id="toast-timeout" class="fixed top-8 right-8 flex items-center w-full max-w-sm p-4 space-x-3 bg-white border-l-4 border-yellow-500 rounded-xl shadow-2xl z-50" role="alert">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 text-yellow-500 bg-yellow-50 rounded-lg">
+                <i class="ri-timer-line text-xl"></i>
+            </div>
+            <div class="ms-3 text-sm font-bold text-gray-800">
+                Sesi berakhir karena tidak ada aktivitas. Silakan login ulang.
+            </div>
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 transition-colors" onclick="document.getElementById('toast-timeout').remove();">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+    <?php endif; ?>
+
     <?php if (isset($_SESSION['error'])): ?>
         <div id="toast-error" class="fixed top-8 right-8 flex items-center w-full max-w-sm p-4 space-x-3 bg-white border-l-4 border-red-500 rounded-xl shadow-2xl z-50" role="alert">
             <div class="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 text-red-500 bg-red-50 rounded-lg">

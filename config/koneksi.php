@@ -1,11 +1,22 @@
 <?php
 
 $host = getenv('DB_HOST') ?: 'localhost';
-$user = getenv('DB_USER') ?: 'root';
-$password = getenv('DB_PASS') ?: '';
-$database = getenv('DB_NAME') ?: 'e_raport';
+$user = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$database = getenv('DB_NAME');
 $port = getenv('DB_PORT') ?: 3306;
 $ssl = getenv('DB_SSL') === 'true' ? MYSQLI_CLIENT_SSL : 0;
+
+// Validasi: env vars wajib diset — jangan pakai default root:kosong
+if (empty($user) || empty($database)) {
+    error_log("DB config error: DB_USER atau DB_NAME tidak diset di environment");
+    http_response_code(500);
+    die("Konfigurasi database belum lengkap. Hubungi administrator.");
+}
+
+if (empty($password)) {
+    $password = '';
+}
 
 // Matikan error reporting bawaan agar error database tidak bocor ke layar pengguna
 mysqli_report(MYSQLI_REPORT_OFF);

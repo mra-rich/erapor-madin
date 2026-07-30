@@ -63,7 +63,7 @@ class AuthService
         return in_array($peran, $roles, true);
     }
 
-    /**
+	/**
      * Set session keys untuk login.
      * Data minimal: id_pengguna, nama, username, peran.
      */
@@ -78,6 +78,7 @@ class AuthService
         $_SESSION['nama']        = $userData['nama'] ?? '';
         $_SESSION['username']    = $userData['username'] ?? '';
         $_SESSION['peran']       = $userData['peran'] ?? '';
+        $_SESSION['last_activity'] = time();
     }
 
     /**

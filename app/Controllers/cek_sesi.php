@@ -9,6 +9,16 @@ if (!isset($_SESSION['id_pengguna'])) {
     exit;
 }
 
+// Session idle timeout: 30 menit tidak aktif → logout otomatis
+$session_timeout = 1800; // 30 menit dalam detik
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $session_timeout) {
+    $_SESSION = [];
+    session_destroy();
+    header("Location: index.php?status=timeout");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 require_once 'koneksi.php';
 // Muat pengaturan sistem secara dinamis agar jika admin mengubah, otomatis berubah
 if (!isset($_SESSION['tahun_ajaran']) || !isset($_SESSION['semester'])) {
