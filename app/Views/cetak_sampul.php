@@ -35,8 +35,8 @@ if (empty($siswa_ids)) {
 }
 
 // Ambil identitas madrasah
-$query_identitas = mysqli_query($koneksi, "SELECT * FROM identitas_madrasah WHERE id = 1");
-$identitas = mysqli_fetch_assoc($query_identitas);
+$query_identitas = db_query("SELECT * FROM identitas_madrasah WHERE id = 1");
+$identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
 
 ?>
 <!DOCTYPE html>
@@ -162,23 +162,24 @@ $identitas = mysqli_fetch_assoc($query_identitas);
         <p style="margin-top:5px; font-size:12px; font-weight:normal;">Tekan tombol di atas untuk mencetak dokumen.</p>
     </div>
     <?php 
-        $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
-        $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
+        $q_ta = db_query("SELECT tahun_ajaran FROM pengaturan LIMIT 1");
+        $ta_aktif = $q_ta ? mysqli_fetch_assoc($q_ta)['tahun_ajaran'] : '';
 
         foreach ($siswa_ids as $id_siswa): 
-        $query_siswa = mysqli_query($koneksi, "SELECT s.*, 
+        $query_siswa = db_query("SELECT s.*, 
                                                COALESCE(
                                                    CONCAT(k.nama_kelas, COALESCE(k.nama_rombel, ''), ' ', tk.nama_tingkat),
                                                    CONCAT(k2.nama_kelas, COALESCE(k2.nama_rombel, ''), ' ', tk2.nama_tingkat)
                                                ) as nama_kelas 
                                                FROM siswa s 
-                                               LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = '$ta_aktif'
+                                               LEFT JOIN riwayat_kelas r ON s.id_siswa = r.id_siswa AND r.tahun_ajaran = ?
                                                LEFT JOIN kelas k ON r.id_kelas = k.id_kelas 
                                                LEFT JOIN tingkat_kelas tk ON k.id_tingkat = tk.id_tingkat
                                                LEFT JOIN kelas k2 ON s.id_kelas = k2.id_kelas 
                                                LEFT JOIN tingkat_kelas tk2 ON k2.id_tingkat = tk2.id_tingkat
-                                               WHERE s.id_siswa = $id_siswa");
-        $siswa = mysqli_fetch_assoc($query_siswa);
+                                               WHERE s.id_siswa = ?",
+                                               [$ta_aktif, $id_siswa]);
+        $siswa = $query_siswa ? mysqli_fetch_assoc($query_siswa) : null;
         if (!$siswa) continue;
     ?>
     <div class="page">

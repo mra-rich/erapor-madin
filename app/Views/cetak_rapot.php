@@ -8,7 +8,7 @@ restrict_roles(RBAC_VIEW_REPORTS);
 $wali_kelas_id = null;
 if ($_SESSION['peran'] === 'Wali Kelas') {
     $id_pengguna_wali = $_SESSION['id_pengguna'];
-    $q_wali = mysqli_query($koneksi, "SELECT id_kelas FROM kelas WHERE id_wali_kelas = '$id_pengguna_wali' LIMIT 1");
+    $q_wali = db_query("SELECT id_kelas FROM kelas WHERE id_wali_kelas = ? LIMIT 1", [$id_pengguna_wali]);
     if ($q_wali && $row_wali = mysqli_fetch_assoc($q_wali)) {
         $wali_kelas_id = $row_wali['id_kelas'];
     }
