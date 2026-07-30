@@ -8,6 +8,16 @@ dummy_data_gen/
 .env
 *.log
 
+# Debug output files di root
+/out_*.pdf
+/_out_*.pdf
+/_err_*.txt
+/err*.txt
+/check_*.php
+/_render_check.php
+/cookies.txt
+/sampul_after.pdf
+
 # Tooling / agent artifacts (bukan kode aplikasi)
 .playwright-mcp/
 .zcode/
@@ -23,3 +33,6 @@ fix_kenaikan.py
 ~$*.xlsx
 ~$*.xls
 composer-setup.php
+
+# Dompdf generated font cache
+vendor/dompdf/dompdf/lib/fonts/*.json
