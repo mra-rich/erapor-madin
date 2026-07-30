@@ -10,18 +10,22 @@ include 'include/sidebar.php';
 // Ambil semua kelas
 if ($_SESSION['peran'] === 'Wali Kelas') {
     $id_pengguna = $_SESSION['id_pengguna'];
-    $queryKelas = "SELECT k.id_kelas, k.nama_kelas, k.nama_rombel, t.nama_tingkat 
-                   FROM kelas k 
-                   LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat 
-                   WHERE k.id_wali_kelas = '$id_pengguna' 
-                   ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC";
+    $resultKelas = db_query(
+        "SELECT k.id_kelas, k.nama_kelas, k.nama_rombel, t.nama_tingkat 
+         FROM kelas k 
+         LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat 
+         WHERE k.id_wali_kelas = ? 
+         ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC",
+        [$id_pengguna]
+    );
 } else {
-    $queryKelas = "SELECT k.id_kelas, k.nama_kelas, k.nama_rombel, t.nama_tingkat 
-                   FROM kelas k 
-                   LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat 
-                   ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC";
+    $resultKelas = db_query(
+        "SELECT k.id_kelas, k.nama_kelas, k.nama_rombel, t.nama_tingkat 
+         FROM kelas k 
+         LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat 
+         ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC"
+    );
 }
-$resultKelas = mysqli_query($koneksi, $queryKelas);
 $kelasList = [];
 while ($kelas = mysqli_fetch_assoc($resultKelas)) {
     $tingkatan_kategori = $kelas['nama_tingkat'] ?? '';
@@ -142,16 +146,11 @@ if (isset($_GET['status'])) {
         $id_kelas = $kelas['id_kelas'];
         $nama_kelas_lengkap = $kelas['nama_kelas_lengkap'];
 
-        $q_ta = mysqli_query($koneksi, "SELECT tahun_ajaran FROM pengaturan LIMIT 1");
-        $ta_aktif = mysqli_fetch_assoc($q_ta)['tahun_ajaran'];
+        $q_ta = db_query("SELECT tahun_ajaran FROM pengaturan LIMIT 1");
+        $ta_aktif = $q_ta ? mysqli_fetch_assoc($q_ta)['tahun_ajaran'] : '';
 
-        $whereClause = "WHERE r.id_kelas = '$id_kelas' AND r.tahun_ajaran = '$ta_aktif'";
-        if ($selectedSemester) {
-            $sem_int = (int) $selectedSemester;
-            $whereClause .= " AND t.semester = $sem_int";
-        }
-
-        $query = "SELECT s.id_siswa, s.nama, s.nomor_santri, r.id_kelas, t.id_transaksi, t.tahun_ajaran, t.semester,
+        // Bangun query utama dengan prepared statement
+        $sql_main = "SELECT s.id_siswa, s.nama, s.nomor_santri, r.id_kelas, t.id_transaksi, t.tahun_ajaran, t.semester,
                          a.izin, a.sakit, a.tanpa_keterangan, k.kelakuan, k.kerajinan, k.kerapian, k.kedisiplinan,
                          ex.baca_quran, ex.baca_kitab, ex.muhafadhoh, ex.kaligrafi, c.catatan
                   FROM riwayat_kelas r
@@ -161,15 +160,22 @@ if (isset($_GET['status'])) {
                   LEFT JOIN kepribadian k ON t.id_transaksi = k.id_transaksi
                   LEFT JOIN ekstrakurikuler ex ON t.id_transaksi = ex.id_transaksi
                   LEFT JOIN catatan_wali_kelas c ON t.id_transaksi = c.id_transaksi
-                  $whereClause
-                  ORDER BY s.nama ASC";
+                  WHERE r.id_kelas = ? AND r.tahun_ajaran = ?";
+        $params_main = [$id_kelas, $ta_aktif];
+        if ($selectedSemester) {
+            $sql_main .= " AND t.semester = ?";
+            $params_main[] = (int)$selectedSemester;
+        }
+        $sql_main .= " ORDER BY s.nama ASC";
 
-        $result = mysqli_query($koneksi, $query);
+        $result = db_query($sql_main, $params_main);
 
-        if (mysqli_num_rows($result) > 0):
+        if ($result && mysqli_num_rows($result) > 0):
             // Ambil mapel kelas
-            $queryMapel = "SELECT DISTINCT m.id_mapel, m.nama_mapel FROM mata_pelajaran m JOIN pengampu_mapel pm ON m.id_mapel = pm.id_mapel WHERE pm.id_kelas = '$id_kelas' AND pm.status = 'Aktif' ORDER BY m.id_mapel";
-            $resultMapel = mysqli_query($koneksi, $queryMapel);
+            $resultMapel = db_query(
+                "SELECT DISTINCT m.id_mapel, m.nama_mapel FROM mata_pelajaran m JOIN pengampu_mapel pm ON m.id_mapel = pm.id_mapel WHERE pm.id_kelas = ? AND pm.status = 'Aktif' ORDER BY m.id_mapel",
+                [$id_kelas]
+            );
             $mapelList = [];
             while ($mapel = mysqli_fetch_assoc($resultMapel)) {
                 $mapelList[] = $mapel;
@@ -217,8 +223,10 @@ if (isset($_GET['status'])) {
                         $idSiswa = $row['id_siswa'];
                         $idTransaksi = $row['id_transaksi'];
 
-                        $queryNilai = "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)";
-                        $resultNilai = mysqli_query($koneksi, $queryNilai);
+                        $resultNilai = db_query(
+                            "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = ?)",
+                            [$idSiswa]
+                        );
                         $nilaiMapel = [];
                         $totalNilai = 0;
                         $jumlahMapel = 0;
@@ -288,7 +296,10 @@ if (isset($_GET['status'])) {
                     $idTransaksi = $row['id_transaksi'];
 
                     // fetch nilai per mapel (scoped to active semester)
-                    $resultNilai = mysqli_query($koneksi, "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = $idSiswa)");
+                    $resultNilai = db_query(
+                        "SELECT id_mapel, nilai_angka FROM nilai WHERE id_transaksi IN (SELECT id_transaksi FROM transaksi_raport WHERE id_siswa = ?)",
+                        [$idSiswa]
+                    );
                     $nilaiMapel = [];
                     $totalNilai = 0;
                     $jumlahMapel = 0;

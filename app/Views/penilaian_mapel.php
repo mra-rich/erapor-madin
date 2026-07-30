@@ -10,49 +10,46 @@ $id_pengguna = $_SESSION['id_pengguna'] ?? 0;
 $peran = $_SESSION['peran'] ?? '';
 
 // Ambil tahun ajaran & semester aktif
-$q_pengaturan = mysqli_query($koneksi, "SELECT * FROM pengaturan LIMIT 1");
-$data_pengaturan = mysqli_fetch_assoc($q_pengaturan);
+$q_pengaturan = db_query("SELECT * FROM pengaturan LIMIT 1");
+$data_pengaturan = $q_pengaturan ? mysqli_fetch_assoc($q_pengaturan) : [];
 $tahun_aktif = $data_pengaturan['tahun_ajaran'] ?? '2024/2025';
 $semester_aktif = $data_pengaturan['semester'] ?? 1;
 
 // Jika admin, ambil semua. Jika guru, ambil mapel yang diampunya saja.
+$subquery_nilai = "(SELECT COUNT(n.id_nilai) 
+                    FROM nilai n 
+                    JOIN transaksi_raport tr ON n.id_transaksi = tr.id_transaksi 
+                    JOIN riwayat_kelas r ON tr.id_siswa = r.id_siswa 
+                    WHERE r.id_kelas = pm.id_kelas 
+                      AND n.id_mapel = pm.id_mapel 
+                      AND tr.tahun_ajaran = ? 
+                      AND tr.semester = ?) as jumlah_nilai";
+
 if ($peran == 'Admin' || $peran == 'Kepala Madrasah') {
-    $query_mapel = "SELECT pm.*, m.nama_mapel, k.nama_kelas, k.nama_rombel, t.nama_tingkat, p.nama as nama_guru,
-                    (SELECT COUNT(n.id_nilai) 
-                     FROM nilai n 
-                     JOIN transaksi_raport tr ON n.id_transaksi = tr.id_transaksi 
-                     JOIN riwayat_kelas r ON tr.id_siswa = r.id_siswa 
-                     WHERE r.id_kelas = pm.id_kelas 
-                       AND n.id_mapel = pm.id_mapel 
-                       AND tr.tahun_ajaran = '$tahun_aktif' 
-                       AND tr.semester = $semester_aktif) as jumlah_nilai
-                    FROM pengampu_mapel pm 
-                    JOIN mata_pelajaran m ON pm.id_mapel = m.id_mapel 
-                    JOIN kelas k ON pm.id_kelas = k.id_kelas
-                    LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat
-                    JOIN pengguna p ON pm.id_guru = p.id_pengguna
-                    WHERE pm.status = 'Aktif' AND m.status = 'Aktif'
-                    ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC, m.nama_mapel ASC";
+    $sql_mapel = "SELECT pm.*, m.nama_mapel, k.nama_kelas, k.nama_rombel, t.nama_tingkat, p.nama as nama_guru,
+                  $subquery_nilai
+                  FROM pengampu_mapel pm 
+                  JOIN mata_pelajaran m ON pm.id_mapel = m.id_mapel 
+                  JOIN kelas k ON pm.id_kelas = k.id_kelas
+                  LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat
+                  JOIN pengguna p ON pm.id_guru = p.id_pengguna
+                  WHERE pm.status = 'Aktif' AND m.status = 'Aktif'
+                  ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC, m.nama_mapel ASC";
+    $params_mapel = [$tahun_aktif, $semester_aktif];
 } else {
-    $query_mapel = "SELECT pm.*, m.nama_mapel, k.nama_kelas, k.nama_rombel, t.nama_tingkat, p.nama as nama_guru,
-                    (SELECT COUNT(n.id_nilai) 
-                     FROM nilai n 
-                     JOIN transaksi_raport tr ON n.id_transaksi = tr.id_transaksi 
-                     JOIN riwayat_kelas r ON tr.id_siswa = r.id_siswa 
-                     WHERE r.id_kelas = pm.id_kelas 
-                       AND n.id_mapel = pm.id_mapel 
-                       AND tr.tahun_ajaran = '$tahun_aktif' 
-                       AND tr.semester = $semester_aktif) as jumlah_nilai
-                    FROM pengampu_mapel pm 
-                    JOIN mata_pelajaran m ON pm.id_mapel = m.id_mapel 
-                    JOIN kelas k ON pm.id_kelas = k.id_kelas
-                    LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat
-                    JOIN pengguna p ON pm.id_guru = p.id_pengguna
-                    WHERE (pm.id_guru = '$id_pengguna' OR k.id_wali_kelas = '$id_pengguna') AND pm.status = 'Aktif' AND m.status = 'Aktif'
-                    ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC, m.nama_mapel ASC";
+    $sql_mapel = "SELECT pm.*, m.nama_mapel, k.nama_kelas, k.nama_rombel, t.nama_tingkat, p.nama as nama_guru,
+                  $subquery_nilai
+                  FROM pengampu_mapel pm 
+                  JOIN mata_pelajaran m ON pm.id_mapel = m.id_mapel 
+                  JOIN kelas k ON pm.id_kelas = k.id_kelas
+                  LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat
+                  JOIN pengguna p ON pm.id_guru = p.id_pengguna
+                  WHERE (pm.id_guru = ? OR k.id_wali_kelas = ?) AND pm.status = 'Aktif' AND m.status = 'Aktif'
+                  ORDER BY t.nama_tingkat ASC, CAST(k.nama_kelas AS UNSIGNED) ASC, k.nama_rombel ASC, m.nama_mapel ASC";
+    $params_mapel = [$tahun_aktif, $semester_aktif, $id_pengguna, $id_pengguna];
 }
 
-$result_mapel = mysqli_query($koneksi, $query_mapel);
+$result_mapel = db_query($sql_mapel, $params_mapel);
 $mapel_list = [];
 if ($result_mapel) {
     while ($row = mysqli_fetch_assoc($result_mapel)) {

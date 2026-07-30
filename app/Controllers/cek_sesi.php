@@ -33,6 +33,57 @@ if (!isset($_SESSION['tahun_ajaran']) || !isset($_SESSION['semester'])) {
     }
 }
 
+/**
+ * Helper: query prepared statement untuk SELECT.
+ * @param string $sql Query dengan placeholder ?
+ * @param array $params Parameter values
+ * @return mysqli_result|false
+ */
+function db_query($sql, $params = []) {
+    global $koneksi;
+    $stmt = $koneksi->prepare($sql);
+    if (!$stmt) {
+        error_log("DB prepare error: " . $koneksi->error . " | SQL: " . $sql);
+        return false;
+    }
+    if ($params) {
+        $types = '';
+        $values = [];
+        foreach ($params as $p) {
+            $types .= is_int($p) ? 'i' : (is_float($p) ? 'd' : 's');
+            $values[] = $p;
+        }
+        $stmt->bind_param($types, ...$values);
+    }
+    $stmt->execute();
+    return $stmt->get_result();
+}
+
+/**
+ * Helper: query prepared statement untuk INSERT/UPDATE/DELETE.
+ * @param string $sql Query dengan placeholder ?
+ * @param array $params Parameter values
+ * @return bool true jika berhasil
+ */
+function db_execute($sql, $params = []) {
+    global $koneksi;
+    $stmt = $koneksi->prepare($sql);
+    if (!$stmt) {
+        error_log("DB prepare error: " . $koneksi->error . " | SQL: " . $sql);
+        return false;
+    }
+    if ($params) {
+        $types = '';
+        $values = [];
+        foreach ($params as $p) {
+            $types .= is_int($p) ? 'i' : (is_float($p) ? 'd' : 's');
+            $values[] = $p;
+        }
+        $stmt->bind_param($types, ...$values);
+    }
+    return $stmt->execute();
+}
+
 // Konstanta Grup Hak Akses (Centralized RBAC)
 const RBAC_SUPER_ADMIN = ['Admin'];
 const RBAC_MANAGE_MASTER_DATA = ['Admin', 'Kepala Madrasah'];

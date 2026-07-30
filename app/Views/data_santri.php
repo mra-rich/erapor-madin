@@ -12,19 +12,27 @@ $search     = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_kelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
 $id_pengguna  = $_SESSION['id_pengguna'];
 
-// Bangun klausa WHERE
-$where_parts = ["siswa.status = 'Aktif'"];
+// Bangun klausa WHERE dinamis dengan prepared statement
+$where_conditions = ["siswa.status = ?"];
+$where_params = ['Aktif'];
 if ($filter_kelas > 0) {
-    $where_parts[] = "kelas.id_kelas = " . $filter_kelas;
+    $where_conditions[] = "kelas.id_kelas = ?";
+    $where_params[] = $filter_kelas;
 }
 if ($_SESSION['peran'] === 'Wali Kelas') {
-    $where_parts[] = "kelas.id_wali_kelas = '" . mysqli_real_escape_string($koneksi, $id_pengguna) . "'";
+    $where_conditions[] = "kelas.id_wali_kelas = ?";
+    $where_params[] = $id_pengguna;
 }
 if ($search !== '') {
-    $s = mysqli_real_escape_string($koneksi, $search);
-    $where_parts[] = "(siswa.nama LIKE '%$s%' OR siswa.nomor_santri LIKE '%$s%' OR siswa.nisn LIKE '%$s%' OR siswa.nama_wali LIKE '%$s%' OR siswa.alamat LIKE '%$s%')";
+    $where_conditions[] = "(siswa.nama LIKE ? OR siswa.nomor_santri LIKE ? OR siswa.nisn LIKE ? OR siswa.nama_wali LIKE ? OR siswa.alamat LIKE ?)";
+    $search_like = "%{$search}%";
+    $where_params[] = $search_like;
+    $where_params[] = $search_like;
+    $where_params[] = $search_like;
+    $where_params[] = $search_like;
+    $where_params[] = $search_like;
 }
-$where_sql = 'WHERE ' . implode(' AND ', $where_parts);
+$where_sql = 'WHERE ' . implode(' AND ', $where_conditions);
 
 $base_query = "FROM siswa 
                LEFT JOIN kelas ON siswa.id_kelas = kelas.id_kelas 
@@ -32,13 +40,16 @@ $base_query = "FROM siswa
                $where_sql";
 
 // Hitung total
-$count_result = mysqli_query($koneksi, "SELECT COUNT(*) as total $base_query");
-$total_rows   = mysqli_fetch_assoc($count_result)['total'];
+$count_result = db_query("SELECT COUNT(*) as total $base_query", $where_params);
+$total_rows   = $count_result ? mysqli_fetch_assoc($count_result)['total'] : 0;
 $total_pages  = max(1, ceil($total_rows / $per_page));
 if ($page > $total_pages) $page = $total_pages;
 
 // Ambil data
-$result = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset");
+$result = db_query(
+    "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC LIMIT $per_page OFFSET $offset",
+    $where_params
+);
 
 include 'include/header.php';
 include 'include/navbar.php';
@@ -146,7 +157,7 @@ include 'include/sidebar.php';
       <div id="mobile-santri-view" class="flex overflow-x-auto gap-4 snap-x snap-mandatory pb-6 pt-2 px-3 -mx-3 hide-scrollbar">
         <?php
         // Mobile: tampilkan SEMUA santri sebagai kartu swipe (tanpa paginasi)
-        $result2 = mysqli_query($koneksi, "SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC");
+        $result2 = db_query("SELECT siswa.*, CONCAT(kelas.nama_kelas, ' ', IFNULL(kelas.nama_rombel,''), ' ', tingkat_kelas.nama_tingkat) as nama_kelas $base_query ORDER BY siswa.nama ASC", $where_params);
         $avatar_colors = ['bg-emerald-100 text-emerald-700','bg-blue-100 text-blue-700','bg-violet-100 text-violet-700','bg-amber-100 text-amber-700','bg-rose-100 text-rose-700'];
         $no_m = 1;
         while ($row_m = mysqli_fetch_assoc($result2)):
