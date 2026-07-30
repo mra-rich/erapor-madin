@@ -419,29 +419,30 @@ function tanggalIndonesia($tgl, $tempat = '') {
         <?php endif; ?>
 
 		        <!-- Tanda Tangan -->
-    <div style="margin-top:12px; width:100%; text-align:center; font-size:12px;">
-        <div style="width:<?= $semester == 2 ? '33%' : '50%' ?>; float:left; text-align:center;">
-            <p style="margin-bottom:28px;">Mengetahui,<br>Orang Tua / Wali</p>
-            <p style="font-weight:bold; padding-top:8px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-                <?= htmlspecialchars(!empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-')) ?>
-            </p>
-        </div>
-        <?php if ($semester == 2): ?>
-        <div style="width:33%; float:left; text-align:center; margin-top:14px;">
-            <p style="margin-bottom:28px;">Mengetahui,<br>Kepala Madrasah</p>
-            <p style="font-weight:bold; padding-top:8px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-                <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
-            </p>
-        </div>
-        <?php endif; ?>
-        <div style="width:<?= $semester == 2 ? '33%' : '50%' ?>; float:left; text-align:center;">
-            <p style="margin-bottom:28px;"><?= tanggalIndonesia($semester == 2 ? ($identitas['tanggal_rapor_genap'] ?? null) : ($identitas['tanggal_rapor_ganjil'] ?? null), $identitas['tempat_rapor'] ?? '') ?><br>Wali Kelas</p>
-            <p style="font-weight:bold; padding-top:8px; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
-                <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
-            </p>
-        </div>
-        <div style="clear:both;"></div>
-    </div>
+        <table style="width:100%; border-collapse:collapse; margin-top:12px; text-align:center; font-size:12px;">
+            <tr>
+                <td style="width:<?= $semester == 2 ? '33%' : '50%' ?>; text-align:center; vertical-align:top; border:none; padding:0 10px;">
+                    <p style="margin-bottom:28px;">Mengetahui,<br>Orang Tua / Wali</p>
+                    <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                        <?= htmlspecialchars(!empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-')) ?>
+                    </p>
+                </td>
+                <?php if ($semester == 2): ?>
+                <td style="width:33%; text-align:center; vertical-align:top; border:none; padding:0 10px;">
+                    <p style="margin-bottom:28px;">Mengetahui,<br>Kepala Madrasah</p>
+                    <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                        <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
+                    </p>
+                </td>
+                <?php endif; ?>
+                <td style="width:<?= $semester == 2 ? '33%' : '50%' ?>; text-align:center; vertical-align:top; border:none; padding:0 10px;">
+                    <p style="margin-bottom:28px;"><?= tanggalIndonesia($semester == 2 ? ($identitas['tanggal_rapor_genap'] ?? null) : ($identitas['tanggal_rapor_ganjil'] ?? null), $identitas['tempat_rapor'] ?? '') ?><br>Wali Kelas</p>
+                    <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                        <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
 		    </div>
 <?php else: ?>
 		    <div class="page" style="text-align:center; padding-top:5cm;">

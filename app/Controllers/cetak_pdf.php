@@ -64,49 +64,77 @@ $html = preg_replace('/<link[^>]*href=["\']https:\/\/cdn\.jsdelivr\.net[^>]*>/i'
 $html = preg_replace('/@font-face\s*\{[^}]*remixicon[^}]*\}/si', '', $html);
 $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 
-// Inject CSS fixes untuk Dompdf (sampul, identitas, dll)
-	$dompdfCss = '
-	    /* Margin halaman: atas/bawah 1 cm, kiri/kanan 1,5 cm */
-	    @page { margin: 1cm 1.5cm !important; }
-	    /* Hilangkan box-shadow, transform, background abu-abu.
-	       width:auto penting: .page dipatok 21cm (lebar A4 penuh), padahal area
-	       cetak hanya 18cm setelah margin kiri/kanan 1,5cm. Tanpa ini isi halaman
-	       ter-center pada 21cm lalu meleset 1,5cm ke kanan. */
-	    .page { box-shadow: none !important; transform: none !important; background: white !important; width: auto !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; }
-	    /* Pisah halaman hanya antar-siswa; halaman terakhir tidak memaksa break (agar 1 rapor = pas 1 halaman) */
-	    .page { page-break-after: auto !important; }
-	    .page:not(:last-child) { page-break-after: always !important; }
-	    body { background: white !important; }
-	    .no-print { display: none !important; }
-	    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
-	    /* Fix centering sampul. Dompdf tidak mendukung flexbox (display:flex
-	       didegradasi jadi block), sehingga justify-content/align-items diabaikan.
-	       Centering harus pakai text-align + margin auto. */
-	    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
-	    .sampul-identitas-siswa, .identitas-siswa { display: inline-block !important; text-align: left !important; }
-	    /* cetak_sampul.php: .page sendiri yang jadi flex container */
-	    .identitas-madrasah { text-align: center !important; }
-	    .logo-placeholder { display: block !important; margin: 40px auto !important; line-height: 150px !important; text-align: center !important; }
-	    /* Fix biodata layout */
-	    .table-biodata { width: 100% !important; }
-	    .table-biodata td { padding: 6px 4px !important; vertical-align: top !important; }
-	    .isian { font-weight: bold !important; }
-	    .photo-box { float: left !important; margin-bottom: 20px !important; margin-top: 20px !important; }
-	    .signature-box { float: right !important; margin-top: 20px !important; }
-	    .clearfix::after { content: "" !important; clear: both !important; display: table !important; }
-	    .ttd-section { margin-top: 30px !important; }
-	    /* Fix rapor table */
-	    .rapor-table td, .rapor-table th { padding: 4px !important; }
-	    .header-info { padding: 8px !important; }
-	    .info-table td { padding: 2px !important; }
-	    /* Fix font arabic */
-	    .arabic { font-family: "DejaVu Sans", Arial, sans-serif !important; }
-	    /* Fix leger */
-	    th[style*="writing-mode"] { writing-mode: horizontal-tb !important; transform: none !important; height: auto !important; }
-	';
+// Inject CSS fixes untuk Dompdf (sampul, identitas, rapor, dll)
+$dompdfCss = '
+    @page { margin: 1.5cm 1.5cm !important; }
+    body { background: white !important; margin: 0 !important; padding: 0 !important; font-size: 12pt !important; }
+    .page {
+        width: auto !important;
+        min-height: auto !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 1.5cm !important;
+        box-shadow: none !important;
+        transform: none !important;
+        background: white !important;
+        box-sizing: border-box !important;
+        page-break-after: auto !important;
+        position: static !important;
+    }
+    .page:not(:last-child) { page-break-after: always !important; }
+    .no-print { display: none !important; }
+    .preview-wrapper { padding: 0 !important; overflow: visible !important; }
+    
+    /* Fix centering sampul */
+    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
+    .sampul-identitas-siswa, .identitas-siswa { display: inline-block !important; text-align: left !important; }
+    .identitas-madrasah { text-align: center !important; }
+    .logo-placeholder { display: block !important; margin: 40px auto !important; line-height: 150px !important; text-align: center !important; }
+    
+    /* Fix biodata */
+    .table-biodata { width: 100% !important; }
+    .table-biodata td { padding: 6px 4px !important; vertical-align: top !important; font-size: 12pt !important; }
+    .isian { font-weight: bold !important; }
+    .photo-box { float: left !important; margin-bottom: 20px !important; margin-top: 20px !important; }
+    .signature-box { float: right !important; margin-top: 20px !important; }
+    .ttd-section { margin-top: 30px !important; }
+    
+    /* Fix rapor */
+    .rapor-table { width: 100% !important; border-collapse: collapse !important; }
+    .rapor-table td, .rapor-table th { padding: 5px 4px !important; border: 1px solid black !important; text-align: center !important; font-size: 11pt !important; }
+    .rapor-table th { background-color: #f2f2f2 !important; }
+    .rapor-header-info { border: 1px solid black !important; padding: 10px !important; margin-bottom: 10px !important; }
+    .rapor-info-table { width: 100% !important; border-collapse: collapse !important; }
+    .rapor-info-table td { padding: 3px !important; border: none !important; font-size: 11pt !important; }
+    .rapor-info-label { font-weight: bold !important; white-space: nowrap !important; width: 120px !important; }
+    
+    /* Fix footer rapor: ganti grid jadi table biar kompatibel Dompdf */
+    .rapor-footer { width: 100% !important; margin-top: 15px !important; display: table !important; }
+    .rapor-footer-table { width: 100% !important; border-collapse: collapse !important; }
+    .rapor-footer-table td { width: 32% !important; border: none !important; vertical-align: top !important; padding: 0 5px !important; }
+    .rapor-footer-table table { width: 100% !important; border-collapse: collapse !important; }
+    .rapor-footer-table th, .rapor-footer-table td.inner { border: 1px solid black !important; padding: 4px !important; text-align: center !important; font-size: 11pt !important; }
+    
+    /* Fix arabic font */
+    .arabic { font-family: "DejaVu Sans", Arial, sans-serif !important; }
+    
+    /* Fix leger */
+    th[style*="writing-mode"] { writing-mode: horizontal-tb !important; transform: none !important; height: auto !important; }
+    
+    /* Fix print media */
+    @media print {
+        body { background: white; margin: 0; padding: 0; }
+        .page { margin: 0; box-shadow: none; padding: 1.5cm; }
+        .no-print { display: none; }
+    }
+';
 
-// Sisipkan CSS sebelum </style> terakhir
-$html = str_replace('</style>', $dompdfCss . '</style>', $html);
+// Sisipkan CSS — inject setelah <style> atau sebelum </head>
+if (strpos($html, '</style>') !== false) {
+    $html = str_replace('</style>', $dompdfCss . '</style>', $html);
+} else {
+    $html = str_replace('</head>', '<style>' . $dompdfCss . '</style></head>', $html);
+}
 
 // Konversi gambar "uploads/..." menjadi base64 data URI.
 // Ini menghindari dompdf mengambil logo via HTTP (yang sering gagal di Vercel/serverless).
