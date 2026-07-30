@@ -85,11 +85,8 @@ $dompdfCss = '
     .no-print { display: none !important; }
     .preview-wrapper { padding: 0 !important; overflow: visible !important; }
     
-    /* Fix centering sampul */
-    .sampul-container { display: block !important; text-align: center !important; padding-top: 20px !important; height: auto !important; }
-    .sampul-identitas-siswa, .identitas-siswa { display: inline-block !important; text-align: left !important; }
-    .identitas-madrasah { text-align: center !important; }
-    .logo-placeholder { display: block !important; margin: 40px auto !important; line-height: 150px !important; text-align: center !important; }
+    /* Fix centering sampul — pake table display */
+    .sampul-container { text-align: center !important; }
     
     /* Fix biodata */
     .table-biodata { width: 100% !important; }
