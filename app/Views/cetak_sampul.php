@@ -182,65 +182,57 @@ $identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
         $siswa = $query_siswa ? mysqli_fetch_assoc($query_siswa) : null;
         if (!$siswa) continue;
     ?>
-    <div class="page" style="padding: 1.5cm 2cm; height: 26.7cm; box-sizing: border-box; background: white;">
-        <table style="width: 100%; height: 23.5cm; border-collapse: collapse; border: none; margin: 0; padding: 0;">
-            <!-- 1. JUDUL ATAS -->
-            <tr style="border: none;">
-                <td style="text-align: center; vertical-align: top; border: none; padding: 0; height: 15%;">
-                    <h2 style="margin: 0 0 5px 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 1px;">LAPORAN HASIL BELAJAR SANTRI</h2>
-                    <h2 style="margin: 0; font-size: 16pt; text-transform: uppercase; font-weight: normal;"><?= htmlspecialchars($identitas['jenjang'] ?? 'MADRASAH DINIYAH') ?></h2>
-                </td>
-            </tr>
+    <div class="page" style="padding: 2cm; height: 29.7cm; box-sizing: border-box; background: white; position: relative;">
+        <!-- 1. JUDUL ATAS -->
+        <div style="text-align: center; margin-top: 1cm;">
+            <h2 style="margin: 0 0 5px 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 1px;">LAPORAN HASIL BELAJAR SANTRI</h2>
+            <h2 style="margin: 0; font-size: 16pt; text-transform: uppercase; font-weight: normal;"><?= htmlspecialchars($identitas['jenjang'] ?? 'MADRASAH DINIYAH') ?></h2>
+        </div>
+        
+        <!-- 2. LOGO + INFORMASI MADRASAH (TENGAH) -->
+        <div style="text-align: center; margin-top: 3.5cm;">
+            <?php 
+                $logoExists = false; $logoSrc = '';
+                if (!empty($identitas['logo'])) {
+                    $logoSrc = 'uploads/' . htmlspecialchars($identitas['logo']);
+                    $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+                    $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+                    $logoExists = file_exists($f1) || file_exists($f2);
+                }
+            ?>
+            <div style="margin: 0 auto 25px auto; text-align: center; width: 150px; height: 150px;">
+                <?php if ($logoExists): ?>
+                    <img src="<?= $logoSrc ?>" alt="Logo" style="max-height: 150px; max-width: 150px;">
+                <?php else: ?>
+                    <div style="width: 120px; height: 120px; border: 1px dashed #999; margin: 0 auto; line-height: 120px; color: #999;">Logo</div>
+                <?php endif; ?>
+            </div>
             
-            <!-- 2. LOGO + INFORMASI MADRASAH (TENGAH) -->
-            <tr style="border: none;">
-                <td style="text-align: center; vertical-align: middle; border: none; padding: 20px 0; height: 55%;">
-                    <?php 
-                        $logoExists = false; $logoSrc = '';
-                        if (!empty($identitas['logo'])) {
-                            $logoSrc = 'uploads/' . htmlspecialchars($identitas['logo']);
-                            $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
-                            $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
-                            $logoExists = file_exists($f1) || file_exists($f2);
-                        }
-                    ?>
-                    <div style="margin: 0 auto 25px auto; text-align: center; width: 150px; height: 150px;">
-                        <?php if ($logoExists): ?>
-                            <img src="<?= $logoSrc ?>" alt="Logo" style="max-height: 150px; max-width: 150px;">
-                        <?php else: ?>
-                            <div style="width: 120px; height: 120px; border: 1px dashed #999; margin: 0 auto; line-height: 120px; color: #999;">Logo</div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <h1 style="margin: 15px 0 10px 0; font-size: 22pt; font-weight: bold; text-transform: uppercase;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH SALAFIYAH AL FALAHIYAH') ?></h1>
-                    <p style="margin: 5px 0; font-size: 13pt; font-weight: bold; color: #333;">
-                        NSMD : <?= htmlspecialchars($identitas['nsmd'] ?? '321 235 240 013') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NPSN : <?= htmlspecialchars($identitas['npsn'] ?? '-') ?>
-                    </p>
-                    <p style="margin: 5px 0; font-size: 12pt; color: #555;"><?= htmlspecialchars($identitas['alamat'] ?? 'Ngepung Rejosari Deket Lamongan') ?></p>
-                </td>
-            </tr>
-            
-            <!-- 3. BOX IDENTITAS SISWA (BAWAH) -->
-            <tr style="border: none;">
-                <td style="text-align: center; vertical-align: bottom; border: none; padding: 0; height: 30%;">
-                    <div style="border: 2px solid #000; padding: 25px 30px; display: inline-block; text-align: left; width: 420px; margin: 0 auto;">
-                        <h3 style="text-align: center; margin: 0 0 15px 0; font-size: 12pt; color: #666; font-weight: normal; letter-spacing: 2px;">NAMA SANTRI</h3>
-                        <table style="width: 100%; border-collapse: collapse; border: none;">
-                            <tr>
-                                <td style="text-align: center; font-size: 20pt; font-weight: bold; text-transform: uppercase; padding-bottom: 15px; font-family: 'Times New Roman', Times, serif; border: none;">
-                                    <?= htmlspecialchars($siswa['nama']) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center; border-top: 2px dotted #000; padding-top: 10px; font-size: 13pt; font-weight: bold; border: none;">
-                                    NIS / NISN: <?= htmlspecialchars($siswa['nomor_santri']) ?> / <?= htmlspecialchars($siswa['nisn'] ?? '-') ?>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </table>
+            <h1 style="margin: 15px 0 10px 0; font-size: 22pt; font-weight: bold; text-transform: uppercase;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH SALAFIYAH AL FALAHIYAH') ?></h1>
+            <p style="margin: 5px 0; font-size: 13pt; font-weight: bold; color: #333;">
+                NSMD : <?= htmlspecialchars($identitas['nsmd'] ?? '321 235 240 013') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NPSN : <?= htmlspecialchars($identitas['npsn'] ?? '-') ?>
+            </p>
+            <p style="margin: 5px 0; font-size: 12pt; color: #555;"><?= htmlspecialchars($identitas['alamat'] ?? 'Ngepung Rejosari Deket Lamongan') ?></p>
+        </div>
+        
+        <!-- 3. BOX IDENTITAS SISWA (BAWAH) -->
+        <div style="margin-top: 4.5cm; text-align: center;">
+            <div style="border: 2px solid #000; padding: 25px 30px; display: inline-block; text-align: left; width: 420px; margin: 0 auto;">
+                <h3 style="text-align: center; margin: 0 0 15px 0; font-size: 12pt; color: #666; font-weight: normal; letter-spacing: 2px;">NAMA SANTRI</h3>
+                <table style="width: 100%; border-collapse: collapse; border: none;">
+                    <tr>
+                        <td style="text-align: center; font-size: 20pt; font-weight: bold; text-transform: uppercase; padding-bottom: 15px; font-family: 'Times New Roman', Times, serif; border: none;">
+                            <?= htmlspecialchars($siswa['nama']) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; border-top: 2px dotted #000; padding-top: 10px; font-size: 13pt; font-weight: bold; border: none;">
+                            NIS / NISN: <?= htmlspecialchars($siswa['nomor_santri']) ?> / <?= htmlspecialchars($siswa['nisn'] ?? '-') ?>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <?php endforeach; ?>
     <script>window.print();</script>

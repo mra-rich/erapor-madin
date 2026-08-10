@@ -66,14 +66,14 @@ $html = preg_replace('/@font-face\s*\{[^}]*cdn\.jsdelivr[^}]*\}/si', '', $html);
 
 // Inject CSS fixes untuk Dompdf (sampul, identitas, rapor, dll)
 $dompdfCss = '
-    @page { margin: 1.5cm 1.5cm !important; }
+    @page { margin: 1cm 1.5cm !important; }
     body { background: white !important; margin: 0 !important; padding: 0 !important; font-size: 12pt !important; }
     .page {
         width: auto !important;
         min-height: auto !important;
         height: auto !important;
         margin: 0 !important;
-        padding: 1.5cm !important;
+        padding: 0 !important;
         box-shadow: none !important;
         transform: none !important;
         background: white !important;
@@ -121,7 +121,7 @@ $dompdfCss = '
     /* Fix print media */
     @media print {
         body { background: white; margin: 0; padding: 0; }
-        .page { margin: 0; box-shadow: none; padding: 1.5cm; }
+        .page { margin: 0; box-shadow: none; padding: 0; }
         .no-print { display: none; }
     }
 ';
