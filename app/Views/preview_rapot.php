@@ -343,9 +343,6 @@ function tanggalIndonesia($tgl, $tempat = '') {
 		                <th>Huruf</th>
 		            </tr>
 		            
-		            <tr class="section-header">
-		                <td colspan="7" style="text-align:left; background-color: #d1d5db; padding: 3px;">MATA PELAJARAN</td>
-		            </tr>
 		            <?php 
 		            $no = 1;
 		            foreach ($semua_nilai as $n) { 

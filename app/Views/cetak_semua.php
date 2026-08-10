@@ -587,16 +587,13 @@ $query_siswa = db_query("SELECT s.*,
 	                    <th rowspan="2">KKM</th>
 	                    <th colspan="3">Hasil Tes</th>
 	                </tr>
-	                <tr>
-	                    <th>Angka</th>
-	                    <th>Predikat</th>
-	                    <th>Huruf</th>
-	                </tr>
-	                
-	                <tr class="section-header">
-	                    <td colspan="7" style="text-align:left; background-color: #d1d5db; padding: 5px;">MATA PELAJARAN</td>
-	                </tr>
-	<?php 
+		                <tr>
+		                    <th>Angka</th>
+		                    <th>Predikat</th>
+		                    <th>Huruf</th>
+		                </tr>
+		                
+		<?php 
 	                $no = 1;
 	                foreach ($semua_nilai as $n) { 
 	                    $angka = $n['nilai_angka'] !== null ? (int)$n['nilai_angka'] : null;
