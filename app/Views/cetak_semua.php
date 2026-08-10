@@ -659,8 +659,10 @@ $query_siswa = db_query("SELECT s.*,
             </div>
 
 <table style="width:100%; border-collapse:collapse; margin-top:15px;">
-                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2;">Catatan Wali Kelas</td></tr>
-                    <tr><td colspan="4" style="border:1px solid black; padding:8px; font-style:italic;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td></tr>
+                    <tr>
+                        <td style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2; width:35%; vertical-align:middle;">Catatan Wali Kelas</td>
+                        <td colspan="3" style="border:1px solid black; padding:8px; font-style:italic; height:38px; vertical-align:middle;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td>
+                    </tr>
                 </table>
 
                 <!-- Tanda Tangan -->
