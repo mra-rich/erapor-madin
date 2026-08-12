@@ -239,14 +239,21 @@ function tanggalIndonesia($tgl, $tempat = '') {
             height: 151px; /* 4cm */
             border: 1px solid #000;
             display: block;
-            line-height: normal;
-            padding-top: 55px;
-            box-sizing: border-box;
             margin-top: 40px;
             font-size: 12px;
             color: #666;
             text-align: center;
             float: left;
+        }
+        .biodata-photo-box table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        .biodata-photo-box td {
+            text-align: center;
+            vertical-align: middle;
+            border: none;
         }
         .biodata-signature-box {
             float: right;
@@ -604,7 +611,13 @@ $query_siswa = db_query("SELECT s.*,
             </table>
 
             <div class="clearfix">
-                <div class="biodata-photo-box">Pas Foto<br>3 x 4</div>
+                <div class="biodata-photo-box">
+                    <table style="width:100%; height:100%; border-collapse:collapse; border:none;">
+                        <tr>
+                            <td style="text-align:center; vertical-align:middle; border:none; height:100%;">Pas Foto<br>3 x 4</td>
+                        </tr>
+                    </table>
+                </div>
                 <div class="biodata-signature-box">
                     <div class="date">
                         Lamongan, .......................... <?= date('Y') ?><br>

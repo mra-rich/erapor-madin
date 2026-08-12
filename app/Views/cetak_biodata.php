@@ -118,14 +118,21 @@ if (empty($siswa_ids)) {
             height: 151px; /* 4cm */
             border: 1px solid #000;
             display: block;
-            line-height: normal;
-            padding-top: 55px;
-            box-sizing: border-box;
             margin-top: 20px;
             font-size: 12px;
             color: #666;
             text-align: center;
             float: left;
+        }
+        .photo-box table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+        .photo-box td {
+            text-align: center;
+            vertical-align: middle;
+            border: none;
         }
         .signature-box {
             float: right;
@@ -320,7 +327,11 @@ if (empty($siswa_ids)) {
 
         <div class="ttd-section">
             <div class="photo-box">
-                Pas Foto<br>3 x 4
+                <table style="width:100%; height:100%; border-collapse:collapse; border:none;">
+                    <tr>
+                        <td style="text-align:center; vertical-align:middle; border:none; height:100%;">Pas Foto<br>3 x 4</td>
+                    </tr>
+                </table>
             </div>
             
             <div class="signature-box">

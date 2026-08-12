@@ -94,12 +94,12 @@ $dompdfCss = '
     .table-biodata { width: 100% !important; }
     .table-biodata td { padding: 4px 3px !important; vertical-align: top !important; font-size: 11pt !important; }
     .isian { font-weight: bold !important; }
-    .photo-box { float: left !important; margin-bottom: 15px !important; margin-top: 15px !important; line-height: normal !important; padding-top: 55px !important; box-sizing: border-box !important; }
+    .photo-box { float: left !important; margin-bottom: 15px !important; margin-top: 15px !important; }
     .signature-box { float: right !important; margin-top: 15px !important; }
     .signature-box .date { margin-bottom: 50px !important; }
     .ttd-section { margin-top: 15px !important; }
     /* cetak_semua: varian kelas biodata */
-    .biodata-photo-box { float: left !important; line-height: normal !important; padding-top: 55px !important; box-sizing: border-box !important; }
+    .biodata-photo-box { float: left !important; }
     .biodata-container h2 { margin-bottom: 18px !important; }
     
     /* Fix rapor */
