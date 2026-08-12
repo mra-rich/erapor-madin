@@ -185,8 +185,7 @@ $identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
     <div class="page" style="padding: 2cm; height: 29.7cm; box-sizing: border-box; background: white; position: relative;">
         <!-- 1. JUDUL ATAS -->
         <div style="text-align: center; margin-top: 1cm;">
-            <h2 style="margin: 0 0 5px 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 1px;">LAPORAN HASIL BELAJAR SANTRI</h2>
-            <h2 style="margin: 0; font-size: 16pt; text-transform: uppercase; font-weight: normal;"><?= htmlspecialchars($identitas['jenjang'] ?? 'MADRASAH DINIYAH') ?></h2>
+            <h2 style="margin: 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 1px;">LAPORAN HASIL BELAJAR SANTRI</h2>
         </div>
         
         <!-- 2. LOGO + INFORMASI MADRASAH (TENGAH) -->
