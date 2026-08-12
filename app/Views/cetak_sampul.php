@@ -207,7 +207,7 @@ $identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
                 <?php endif; ?>
             </div>
             
-            <h1 style="margin: 15px 0 10px 0; font-size: 22pt; font-weight: bold; text-transform: uppercase;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH SALAFIYAH AL FALAHIYAH') ?></h1>
+            <h1 style="margin: 15px 0 10px 0; font-size: 22pt; font-weight: bold; text-transform: uppercase;"><?= preg_replace('/\bAl\s+(?=\S)/i', 'Al&nbsp;', htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH SALAFIYAH AL FALAHIYAH')) ?></h1>
             <p style="margin: 5px 0; font-size: 13pt; font-weight: bold; color: #333;">
                 NSMD : <?= htmlspecialchars($identitas['nsmd'] ?? '321 235 240 013') ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NPSN : <?= htmlspecialchars($identitas['npsn'] ?? '-') ?>
             </p>
