@@ -218,6 +218,7 @@ function tanggalIndonesia($tgl, $tempat = '') {
             text-align: center;
             font-size: 20px;
             font-weight: bold;
+            margin-top: 42px;
             margin-bottom: 30px;
             text-transform: uppercase;
         }

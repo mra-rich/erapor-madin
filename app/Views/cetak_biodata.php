@@ -91,6 +91,7 @@ if (empty($siswa_ids)) {
             text-align: center;
             font-size: 20px;
             font-weight: bold;
+            margin-top: 42px;
             margin-bottom: 18px;
             text-transform: uppercase;
         }
