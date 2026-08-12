@@ -91,7 +91,7 @@ if (empty($siswa_ids)) {
             text-align: center;
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 18px;
             text-transform: uppercase;
         }
         table {
@@ -99,7 +99,7 @@ if (empty($siswa_ids)) {
             border-collapse: collapse;
         }
         td {
-            padding: 8px 5px;
+            padding: 5px 4px;
             vertical-align: top;
             font-size: 16px;
         }
@@ -118,8 +118,10 @@ if (empty($siswa_ids)) {
             height: 151px; /* 4cm */
             border: 1px solid #000;
             display: block;
-            line-height: 151px;
-            margin-top: 40px;
+            line-height: normal;
+            padding-top: 55px;
+            box-sizing: border-box;
+            margin-top: 20px;
             font-size: 12px;
             color: #666;
             text-align: center;
@@ -127,13 +129,13 @@ if (empty($siswa_ids)) {
         }
         .signature-box {
             float: right;
-            margin-top: 40px;
+            margin-top: 20px;
             width: 250px;
             text-align: left;
             font-size: 16px;
         }
         .signature-box .date {
-            margin-bottom: 70px;
+            margin-bottom: 50px;
         }
         .clearfix::after {
             content: "";

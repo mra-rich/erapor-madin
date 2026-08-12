@@ -81,7 +81,9 @@ $dompdfCss = '
         page-break-after: auto !important;
         position: static !important;
     }
-    .page:not(:last-child) { page-break-after: always !important; }
+    /* Hindari :not() — tidak didukung Dompdf. Pakai sibling combinator:
+       hanya .page ke-2 dst. yang paksa halaman baru, tanpa halaman kosong di akhir. */
+    .page ~ .page { page-break-before: always !important; }
     .no-print { display: none !important; }
     .preview-wrapper { padding: 0 !important; overflow: visible !important; }
     
@@ -90,17 +92,22 @@ $dompdfCss = '
     
     /* Fix biodata */
     .table-biodata { width: 100% !important; }
-    .table-biodata td { padding: 6px 4px !important; vertical-align: top !important; font-size: 12pt !important; }
+    .table-biodata td { padding: 4px 3px !important; vertical-align: top !important; font-size: 11pt !important; }
     .isian { font-weight: bold !important; }
-    .photo-box { float: left !important; margin-bottom: 20px !important; margin-top: 20px !important; }
-    .signature-box { float: right !important; margin-top: 20px !important; }
-    .ttd-section { margin-top: 30px !important; }
+    .photo-box { float: left !important; margin-bottom: 15px !important; margin-top: 15px !important; line-height: normal !important; padding-top: 55px !important; box-sizing: border-box !important; }
+    .signature-box { float: right !important; margin-top: 15px !important; }
+    .signature-box .date { margin-bottom: 50px !important; }
+    .ttd-section { margin-top: 15px !important; }
+    /* cetak_semua: varian kelas biodata */
+    .biodata-photo-box { float: left !important; line-height: normal !important; padding-top: 55px !important; box-sizing: border-box !important; }
+    .biodata-container h2 { margin-bottom: 18px !important; }
     
     /* Fix rapor */
+    .rapor-container h1 { margin: 5px 0 12px 0 !important; }
     .rapor-table { width: 100% !important; border-collapse: collapse !important; }
-    .rapor-table td, .rapor-table th { padding: 5px 4px !important; border: 1px solid black !important; text-align: center !important; font-size: 11pt !important; }
+    .rapor-table td, .rapor-table th { padding: 4px 3px !important; border: 1px solid black !important; text-align: center !important; font-size: 11pt !important; }
     .rapor-table th { background-color: #f2f2f2 !important; }
-    .rapor-header-info { border: 1px solid black !important; padding: 10px !important; margin-bottom: 10px !important; }
+    .rapor-header-info { border: 1px solid black !important; padding: 6px !important; margin-bottom: 6px !important; }
     .rapor-info-table { width: 100% !important; border-collapse: collapse !important; }
     .rapor-info-table td { padding: 3px !important; border: none !important; font-size: 11pt !important; }
     .rapor-info-label { font-weight: bold !important; white-space: nowrap !important; width: 120px !important; }
