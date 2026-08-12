@@ -184,12 +184,12 @@ $identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
     ?>
     <div class="page" style="padding: 2cm; height: 29.7cm; box-sizing: border-box; background: white; position: relative;">
         <!-- 1. JUDUL ATAS -->
-        <div style="text-align: center; margin-top: 1cm;">
+        <div style="text-align: center; margin-top: 1.5cm;">
             <h2 style="margin: 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 1px;">LAPORAN HASIL BELAJAR SANTRI</h2>
         </div>
         
         <!-- 2. LOGO + INFORMASI MADRASAH (TENGAH) -->
-        <div style="text-align: center; margin-top: 3.5cm;">
+        <div style="text-align: center; margin-top: 4cm;">
             <?php 
                 $logoExists = false; $logoSrc = '';
                 if (!empty($identitas['logo'])) {
@@ -215,7 +215,7 @@ $identitas = $query_identitas ? mysqli_fetch_assoc($query_identitas) : [];
         </div>
         
         <!-- 3. BOX IDENTITAS SISWA (BAWAH) -->
-        <div style="margin-top: 4.5cm; text-align: center;">
+        <div style="margin-top: 7cm; text-align: center;">
             <div style="border: 2px solid #000; padding: 25px 30px; display: inline-block; text-align: left; width: 420px; margin: 0 auto;">
                 <h3 style="text-align: center; margin: 0 0 15px 0; font-size: 12pt; color: #666; font-weight: normal; letter-spacing: 2px;">NAMA SANTRI</h3>
                 <table style="width: 100%; border-collapse: collapse; border: none;">
