@@ -105,7 +105,7 @@ include 'include/sidebar.php';
                 <th colspan="4" class="text-center bg-blue-50/50 border-r border-b border-slate-200">Kepribadian</th>
                 <th colspan="4" class="text-center bg-emerald-50/50 border-r border-b border-slate-200">Ekstrakurikuler</th>
                 <th colspan="3" class="text-center bg-amber-50/50 border-r border-b border-slate-200">Absensi</th>
-                <th rowspan="2" class="text-center">Catatan</th>
+                <th rowspan="2" class="text-center" style="min-width: 240px;">Catatan</th>
               </tr>
               <tr>
                 <!-- Kepribadian -->
@@ -228,7 +228,7 @@ include 'include/sidebar.php';
                 </td>
                 <!-- Catatan -->
                 <td class="p-1">
-                  <textarea name="catatan[<?= $id_s ?>]" rows="1" class="ui-textarea min-h-8 py-1 text-xs" placeholder="Catatan..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
+                  <textarea name="catatan[<?= $id_s ?>]" rows="2" class="ui-textarea min-h-20 py-1.5 text-xs" style="min-width: 220px; min-height: 80px;" placeholder="Catatan wali kelas..."><?= htmlspecialchars($row['catatan'] ?? '') ?></textarea>
                 </td>
               </tr>
               <?php endforeach; ?>
