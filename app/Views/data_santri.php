@@ -759,7 +759,7 @@ include 'include/sidebar.php';
 
     <div class="p-6 flex-1 overflow-y-auto flex flex-col items-center" id="import-step-1">
         
-        <a href="template_santri.xlsx" target="_blank" hx-disable class="w-full inline-flex items-center justify-center px-4 py-3 mb-6 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium rounded-xl transition-colors duration-200 shadow-sm border border-emerald-200" download>
+        <a href="download_template_santri" target="_blank" hx-disable class="w-full inline-flex items-center justify-center px-4 py-3 mb-6 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium rounded-xl transition-colors duration-200 shadow-sm border border-emerald-200" download>
             <i class="ri-file-excel-2-fill text-xl mr-2"></i> Unduh Template Excel
         </a>
 

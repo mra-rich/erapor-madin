@@ -114,6 +114,7 @@ $legacyWhitelist = [
     'preview_import_guru.php', 'preview_import_kelas.php', 'preview_import_mapel.php',
     'preview_import_siswa.php', 'preview_leger.php', 'preview_rapot.php',
     'download_template_guru.php', 'download_template_kelas.php', 'download_template_mapel.php',
+    'download_template_santri.php',
 
     // Views — import UI/JS
     'import_guru_js.php', 'import_guru_ui.php', 'import_kelas_js.php',
