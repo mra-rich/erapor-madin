@@ -221,18 +221,18 @@ function tanggalIndonesia($tgl, $tempat = '') {
             margin-bottom: 30px;
             text-transform: uppercase;
         }
-        .biodata-table {
+        .table-biodata {
             width: 100%;
             border-collapse: collapse;
         }
-        .biodata-table td {
+        .table-biodata td {
             padding: 8px 5px;
             vertical-align: top;
             font-size: 16px;
         }
-        .biodata-label { width: 30px; }
-        .biodata-label-text { width: 250px; }
-        .biodata-colon { width: 20px; text-align: center; }
+        .biodata-container .label { width: 30px; }
+        .biodata-container .label-text { width: 250px; }
+        .biodata-container .colon { width: 20px; text-align: center; }
         
         .biodata-photo-box {
             width: 113px; /* 3cm */
@@ -467,46 +467,139 @@ $query_siswa = db_query("SELECT s.*,
     <!-- ============================================== -->
     <div class="page" style="page-break-after: always;">
         <div class="biodata-container">
-            <h2>KETERANGAN TENTANG DIRI SANTRI</h2>
-            <table class="biodata-table">
+            <h2>KETERANGAN DIRI SANTRI</h2>
+            <table class="table-biodata">
                 <tr>
-                    <td class="biodata-label">1.</td>
-                    <td class="biodata-label-text">Nama Santri (Lengkap)</td>
-                    <td class="biodata-colon">:</td>
-                    <td><strong><?= htmlspecialchars($siswa['nama']) ?></strong></td>
+                    <td class="label">1.</td>
+                    <td class="label-text">Nama Santri (Lengkap)</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['nama']) ?></td>
                 </tr>
                 <tr>
-                    <td class="biodata-label">2.</td>
-                    <td class="biodata-label-text">Nomor Induk / NISN</td>
-                    <td class="biodata-colon">:</td>
-                    <td><?= htmlspecialchars($siswa['nomor_santri']) ?> / <?= htmlspecialchars($siswa['nisn'] ?? '-') ?></td>
+                    <td class="label">2.</td>
+                    <td class="label-text">Nomor Induk / NISN</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['nomor_santri']) ?> / <?= htmlspecialchars($siswa['nisn'] ?? '-') ?></td>
                 </tr>
                 <tr>
-                    <td class="biodata-label">3.</td>
-                    <td class="biodata-label-text">Tempat, Tanggal Lahir</td>
-                    <td class="biodata-colon">:</td>
-                    <td>
-                        <?= htmlspecialchars($siswa['tempat_lahir'] ?? '-') ?>, 
-                        <?= !empty($siswa['tanggal_lahir']) ? date('d-m-Y', strtotime($siswa['tanggal_lahir'])) : '-' ?>
-                    </td>
+                    <td class="label">3.</td>
+                    <td class="label-text">Tempat, Tanggal Lahir</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['tempat_lahir'] ?? '-') ?>, <?= !empty($siswa['tanggal_lahir']) ? date('d-m-Y', strtotime($siswa['tanggal_lahir'])) : '-' ?></td>
                 </tr>
                 <tr>
-                    <td class="biodata-label">4.</td>
-                    <td class="biodata-label-text">Jenis Kelamin</td>
-                    <td class="biodata-colon">:</td>
-                    <td><?= ($siswa['jenis_kelamin'] ?? 'L') == 'L' ? 'Laki-Laki' : 'Perempuan' ?></td>
+                    <td class="label">4.</td>
+                    <td class="label-text">Jenis Kelamin</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= ($siswa['jenis_kelamin'] ?? 'L') == 'L' ? 'Laki-Laki' : 'Perempuan' ?></td>
                 </tr>
                 <tr>
-                    <td class="biodata-label">5.</td>
-                    <td class="biodata-label-text">Alamat Peserta Didik</td>
-                    <td class="biodata-colon">:</td>
-                    <td><?= nl2br(htmlspecialchars($siswa['alamat'] ?? '-')) ?></td>
+                    <td class="label">5.</td>
+                    <td class="label-text">Agama</td>
+                    <td class="colon">:</td>
+                    <td class="isian">Islam</td>
                 </tr>
                 <tr>
-                    <td class="biodata-label">6.</td>
-                    <td class="biodata-label-text">Nama Orang Tua / Wali</td>
-                    <td class="biodata-colon">:</td>
-                    <td><?= htmlspecialchars($siswa['nama_wali'] ?? '-') ?></td>
+                    <td class="label">6.</td>
+                    <td class="label-text">Anak Ke</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['anak_ke'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">7.</td>
+                    <td class="label-text">Status dalam Keluarga</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['status_dalam_keluarga'] ?? 'Anak Kandung') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">8.</td>
+                    <td class="label-text">Alamat Santri</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= nl2br(htmlspecialchars($siswa['alamat'] ?? '-')) ?></td>
+                </tr>
+                <tr>
+                    <td class="label">9.</td>
+                    <td class="label-text">Diterima di Madrasah ini</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">a. Di Kelas</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['diterima_di_kelas'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">b. Pada Tanggal</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['diterima_pada_tanggal'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">10.</td>
+                    <td class="label-text">Nama Orang Tua</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">a. Ayah</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['nama_ayah'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">b. Ibu</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['nama_ibu'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">11.</td>
+                    <td class="label-text">Pekerjaan Orang Tua</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">a. Ayah</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['pekerjaan_ayah'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="label-text">b. Ibu</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['pekerjaan_ibu'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">12.</td>
+                    <td class="label-text">Alamat Orang Tua</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['alamat_orang_tua'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">13.</td>
+                    <td class="label-text">No. Telepon / HP</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['no_handphone'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">14.</td>
+                    <td class="label-text">Nama Wali Santri</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['nama_wali'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">15.</td>
+                    <td class="label-text">Alamat Wali Santri</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['alamat_orang_tua'] ?? '-') ?></td>
+                </tr>
+                <tr>
+                    <td class="label">16.</td>
+                    <td class="label-text">Pekerjaan Wali Santri</td>
+                    <td class="colon">:</td>
+                    <td class="isian"><?= htmlspecialchars($siswa['pekerjaan_wali'] ?? '-') ?></td>
                 </tr>
             </table>
 

@@ -200,7 +200,7 @@ if (empty($siswa_ids)) {
                 <td>3.</td>
                 <td>Tempat, Tanggal Lahir</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['tempat_lahir'] ?? '-') ?>, <?= htmlspecialchars($siswa['tanggal_lahir'] ?? '-') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['tempat_lahir'] ?? '-') ?>, <?= !empty($siswa['tanggal_lahir']) ? date('d-m-Y', strtotime($siswa['tanggal_lahir'])) : '-' ?></td>
             </tr>
             <tr>
                 <td>4.</td>
@@ -224,7 +224,7 @@ if (empty($siswa_ids)) {
                 <td>7.</td>
                 <td>Status dalam Keluarga</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['status_keluarga'] ?? 'Anak Kandung') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['status_dalam_keluarga'] ?? 'Anak Kandung') ?></td>
             </tr>
             <tr>
                 <td>8.</td>
@@ -242,13 +242,13 @@ if (empty($siswa_ids)) {
                 <td></td>
                 <td>a. Di Kelas</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['diterima_kelas'] ?? '-') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['diterima_di_kelas'] ?? '-') ?></td>
             </tr>
             <tr>
                 <td></td>
                 <td>b. Pada Tanggal</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['diterima_tanggal'] ?? '-') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['diterima_pada_tanggal'] ?? '-') ?></td>
             </tr>
             <tr>
                 <td>10.</td>
@@ -308,7 +308,7 @@ if (empty($siswa_ids)) {
                 <td>15.</td>
                 <td>Alamat Wali Santri</td>
                 <td>:</td>
-                <td class="isian"><?= htmlspecialchars($siswa['alamat_wali'] ?? '-') ?></td>
+                <td class="isian"><?= htmlspecialchars($siswa['alamat_orang_tua'] ?? '-') ?></td>
             </tr>
             <tr>
                 <td>16.</td>
