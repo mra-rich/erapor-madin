@@ -272,44 +272,47 @@ function tanggalIndonesia($tgl, $tempat = '') {
         .rapor-container {
             font-size: 13px;
         }
+        /* Style rapor — disamakan persis dengan view cetak rapor standalone
+           (preview_rapot.php) agar hasil cetak semua identik */
         .rapor-container h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            margin-top: 6px;
             font-size: 20px;
             text-decoration: underline;
             font-weight: bold;
         }
-        .rapor-header-info {
+        .rapor-container .header-info {
             border: 1px solid black;
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 6px 8px;
+            margin-bottom: 8px;
         }
-        .rapor-info-table {
+        .rapor-container .info-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .rapor-info-table td {
-            padding: 3px;
+        .rapor-container .info-table td {
+            padding: 2px;
             vertical-align: middle;
             text-align: left;
             border: none;
         }
-        .rapor-info-label {
+        .rapor-container .info-label {
             font-weight: bold;
             white-space: nowrap;
             width: 120px;
         }
-        .rapor-table {
+        .rapor-container table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .rapor-table th, .rapor-table td {
+        .rapor-container th, .rapor-container td {
             border: 1px solid black;
-            padding: 5px;
+            padding: 3px;
             text-align: center;
         }
-        .rapor-table th { background-color: #f2f2f2; }
+        .rapor-container th { background-color: #f2f2f2; }
         .rapor-section-header { font-weight: bold; background-color: #f2f2f2; }
         
         .arabic {
@@ -637,49 +640,49 @@ $query_siswa = db_query("SELECT s.*,
 <?php if ($id_kelas_cetak): ?>
 	    <div class="page" style="page-break-after: always;">
 	        <div class="rapor-container">
-<!-- Kop Surat Rapor -->
-	            <div style="margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
-		                <?php 
-		                    $logoExists = false;
-		                    if (!empty($identitas['logo'])) {
-		                        $f1 = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
-		                        $f2 = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
-		                        $logoExists = file_exists($f1) || file_exists($f2);
-		                    }
-		                ?>
-		                <?php if ($logoExists): ?>
-		                <div style="float:left; width:80px;">
-		                    <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:80px; max-height:80px;">
-		                </div>
-		                <?php endif; ?>
-	                <div style="text-align: left;">
-	                    <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
-	                    <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
-	                    <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
-	                </div>
-	                <div style="clear:both;"></div>
-	            </div>
+<!-- Kop Surat dengan Logo -->
+            <div style="margin-bottom: 15px; border-bottom: 3px solid black; padding-bottom: 10px;">
+                <?php if (!empty($identitas['logo'])):
+                    $logoFile = __DIR__ . '/../../public/uploads/' . $identitas['logo'];
+                    if (!file_exists($logoFile)) $logoFile = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $identitas['logo'];
+                    $logoExists = file_exists($logoFile);
+                ?>
+                <?php if ($logoExists): ?>
+                <div style="float:left; width:80px; margin-right:18px;">
+                    <img src="uploads/<?= htmlspecialchars($identitas['logo']) ?>" alt="Logo" style="max-width:80px; max-height:80px;">
+                </div>
+                <?php endif; endif; ?>
+                <div style="text-align: left;">
+                    <?php if (!empty($identitas['nama_yayasan'])): ?>
+                    <p style="margin: 0; font-size: 16px;"><?= htmlspecialchars($identitas['nama_yayasan']) ?></p>
+                    <?php endif; ?>
+                    <h2 style="margin: 0; font-size: 22px; font-weight: bold;"><?= htmlspecialchars($identitas['nama_madrasah'] ?? 'MADRASAH DINIYAH') ?></h2>
+                    <p style="margin: 3px 0;">NSMD: <?= htmlspecialchars($identitas['nsmd'] ?? '') ?> | NPSN: <?= htmlspecialchars($identitas['npsn'] ?? '') ?></p>
+                    <p style="margin: 3px 0; font-size: 12px;"><?= htmlspecialchars($identitas['alamat'] ?? '') ?></p>
+                </div>
+                <div style="clear:both;"></div>
+            </div>
 
-            <h1>LAPORAN HASIL BELAJAR</h1>
+            <h1>LAPORAN HASIL BELAJAR SEMESTER <?= ($semester == 2) ? 'GENAP' : 'GANJIL' ?></h1>
 
-            <div class="rapor-header-info">
-                <table class="rapor-info-table">
+            <div class="header-info">
+                <table class="info-table">
                     <tr>
-                        <td class="rapor-info-label">Nama Santri</td>
+                        <td class="info-label">Nama Santri</td>
                         <td>: <?= htmlspecialchars($siswa['nama']) ?></td>
-                        <td class="rapor-info-label">Kelas</td>
+                        <td class="info-label">Kelas</td>
                         <td>: <?= htmlspecialchars($siswa['nama_kelas']) ?></td>
                     </tr>
                     <tr>
-                        <td class="rapor-info-label">Nomor Induk</td>
+                        <td class="info-label">Nomor Induk</td>
                         <td>: <?= htmlspecialchars($siswa['nomor_santri']) ?></td>
-                        <td class="rapor-info-label">Tahun Pelajaran</td>
+                        <td class="info-label">Tahun Ajaran</td>
                         <td>: <?= htmlspecialchars($siswa['tahun_ajaran']) ?></td>
                     </tr>
                 </table>
             </div>
 
-<table class="rapor-table">
+<table>
 	                <tr>
 	                    <th rowspan="2">No</th>
 	                    <th rowspan="2">Mata Pelajaran</th>
@@ -722,73 +725,72 @@ $query_siswa = db_query("SELECT s.*,
 	                </tr>
 	            </table>
 
-            <?php if ($semester == 2): ?>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;">
-                <tr>
-                    <td style="border:1px solid #000; padding:10px;">
-                        <strong>Keputusan:</strong><br>
-                        Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
-                        <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
-                    </td>
-                </tr>
-            </table>
-            <?php endif; ?>
-
-            <div style="margin-top:15px; width:100%;">
+                <div style="margin-top:8px; width:100%;">
                 <table style="width:32%; float:left; border-collapse:collapse; margin-right:2%;">
-                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Kepribadian</td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Kelakuan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kelakuan']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Kerajinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerajinan']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Kerapian</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kerapian']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Kedisiplinan</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td></tr>
+                    <tr><td colspan="2" style="border:1px solid black; padding:3px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Kepribadian</td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Kelakuan</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($kepribadian['kelakuan']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Kerajinan</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($kepribadian['kerajinan']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Kerapian</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($kepribadian['kerapian']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Kedisiplinan</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($kepribadian['kedisiplinan']) ?></td></tr>
                 </table>
                 <table style="width:32%; float:left; border-collapse:collapse; margin-right:2%;">
-                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Absensi</td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Sakit</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['sakit']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Izin</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['izin']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Tanpa Ket.</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td></tr>
+                    <tr><td colspan="2" style="border:1px solid black; padding:3px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Absensi</td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Sakit</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($absensi['sakit']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Izin</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($absensi['izin']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Tanpa Keterangan</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($absensi['tanpa_keterangan']) ?></td></tr>
                 </table>
                 <table style="width:32%; float:left; border-collapse:collapse;">
-                    <tr><td colspan="2" style="border:1px solid black; padding:4px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Ekstrakurikuler</td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_quran']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Baca Kitab</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['baca_kitab']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Muhafadhoh</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td></tr>
-                    <tr><td style="border:1px solid black; padding:4px;">Kaligrafi</td><td style="border:1px solid black; padding:4px; text-align:center;"><?= htmlspecialchars($ekskul['kaligrafi']) ?></td></tr>
+                    <tr><td colspan="2" style="border:1px solid black; padding:3px; font-weight:bold; background-color:#f2f2f2; text-align:center;">Ekstrakurikuler</td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Baca Al-Qur'an</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($ekskul['baca_quran']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Baca Kitab</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($ekskul['baca_kitab']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Muhafadhoh</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($ekskul['muhafadhoh']) ?></td></tr>
+                    <tr><td style="border:1px solid black; padding:3px;">Kaligrafi</td><td style="border:1px solid black; padding:3px; text-align:center;"><?= htmlspecialchars($ekskul['kaligrafi']) ?></td></tr>
                 </table>
                 <div style="clear:both;"></div>
             </div>
 
-<table style="width:100%; border-collapse:collapse; margin-top:15px;">
+<table style="width:100%; border-collapse:collapse; margin-top:8px;">
                     <tr>
-                        <td style="border:1px solid black; padding:8px; font-weight:bold; background-color:#f2f2f2; width:35%; vertical-align:middle;">Catatan Wali Kelas</td>
-                        <td colspan="3" style="border:1px solid black; padding:8px; font-style:italic; height:38px; vertical-align:middle;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td>
+                        <td style="border:1px solid black; padding:5px 8px; font-weight:bold; background-color:#f2f2f2; width:35%; vertical-align:middle;">Catatan Wali Kelas</td>
+                        <td colspan="3" style="border:1px solid black; padding:5px 8px; font-style:italic; height:38px; vertical-align:middle;"><?= htmlspecialchars($catatan['catatan'] ?? '') ?></td>
                     </tr>
                 </table>
 
-                <!-- Tanda Tangan -->
+                        <?php if ($semester == 2): ?>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px;">
+            <tr>
+                <td style="border:1px solid #000; padding:6px 8px;">
+                    <strong>Keputusan:</strong><br>
+                    Berdasarkan hasil pencapaian di atas, santri ditetapkan:<br>
+                    <strong><?php echo (isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Naik') ? 'NAIK KELAS' : ((isset($siswa['status_kenaikan_riwayat']) && $siswa['status_kenaikan_riwayat'] == 'Tidak') ? 'TINGGAL KELAS' : 'BELUM DITENTUKAN'); ?></strong>
+                </td>
+            </tr>
+        </table>
+        <?php endif; ?>
+<!-- Tanda Tangan -->
                 <?php
                 $nama_ortu = !empty($siswa['nama_wali']) ? $siswa['nama_wali'] : ($siswa['nama_ayah'] ?? '-');
                 $tanggal_rapor = tanggalIndonesia($semester == 2 ? ($identitas['tanggal_rapor_genap'] ?? null) : ($identitas['tanggal_rapor_ganjil'] ?? null), $identitas['tempat_rapor'] ?? '');
                 ?>
-                <table style="width:100%; border-collapse:collapse; margin-top:10px; text-align:center; font-size:12px;">
+                <table style="width:100%; border-collapse:collapse; margin-top:12px; text-align:center; font-size:12px;">
                     <tr>
                         <td style="width:<?= $semester == 2 ? '33%' : '50%' ?>; text-align:center; vertical-align:top; border:none; padding:0 10px;">
-                            <p style="margin-bottom:40px;">Mengetahui,<br>Orang Tua / Wali</p>
-                            <p style="font-weight:bold; padding-top:15px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                            <p style="margin-bottom:28px;">Mengetahui,<br>Orang Tua / Wali</p>
+                            <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                                 <?= htmlspecialchars($nama_ortu) ?>
                             </p>
                         </td>
                         <?php if ($semester == 2): ?>
                         <td style="width:33%; text-align:center; vertical-align:top; border:none; padding:0 10px;">
-                            <p style="margin-bottom:40px;">Mengetahui,<br>Kepala Madrasah</p>
-                            <p style="font-weight:bold; padding-top:15px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                            <p style="margin-bottom:28px;">Mengetahui,<br>Kepala Madrasah</p>
+                            <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                                 <?= htmlspecialchars($identitas['nama_kepala'] ?? '-') ?>
                             </p>
                         </td>
                         <?php endif; ?>
                         <td style="width:<?= $semester == 2 ? '33%' : '50%' ?>; text-align:center; vertical-align:top; border:none; padding:0 10px;">
-                            <p style="margin-bottom:40px;"><?= $tanggal_rapor ?><br>Wali Kelas</p>
-                            <p style="font-weight:bold; padding-top:15px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
+                            <p style="margin-bottom:28px;"><?= $tanggal_rapor ?><br>Wali Kelas</p>
+                            <p style="font-weight:bold; padding-top:8px; margin:0 auto; display:inline-block; border-bottom:1px solid black; padding-bottom:2px;">
                                 <?= htmlspecialchars($siswa['nama_wali_kelas'] ?? '-') ?>
                             </p>
                         </td>
