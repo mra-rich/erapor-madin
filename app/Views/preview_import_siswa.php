@@ -13,6 +13,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    // Role Wali Kelas: wajib pilih kelas tujuan miliknya; kolom kelas di file diabaikan
+    $forced_kelas = null;
+    if (($_SESSION['peran'] ?? '') === 'Wali Kelas') {
+        $id_kelas_tujuan = isset($_POST['id_kelas_tujuan']) ? (int)$_POST['id_kelas_tujuan'] : 0;
+        $q_own = mysqli_query($koneksi, "SELECT id_kelas FROM kelas WHERE id_kelas = $id_kelas_tujuan AND id_wali_kelas = " . (int)$_SESSION['id_pengguna'] . " AND status = 'Aktif'");
+        if (!$q_own || mysqli_num_rows($q_own) === 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Kelas tujuan tidak valid atau bukan kelas Anda.']);
+            exit;
+        }
+        $forced_kelas = $id_kelas_tujuan;
+    }
+
     if (isset($_FILES['file_excel']) && $_FILES['file_excel']['error'] == 0) {
         $file_name = $_FILES['file_excel']['name'];
         $file_tmp = $_FILES['file_excel']['tmp_name'];
@@ -75,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         'sekolah_asal' => trim($row[10] ?? ''),
                         'diterima_di_kelas' => trim($row[11] ?? ''),
                         'diterima_pada_tanggal' => trim($row[12] ?? ''),
-                        'id_kelas' => trim($row[13] ?? ''),
+                        'id_kelas' => $forced_kelas !== null ? $forced_kelas : trim($row[13] ?? ''),
                         'tahun_ajaran' => trim($row[14] ?? ''),
                         'nama_ayah' => trim($row[15] ?? ''),
                         'nama_ibu' => trim($row[16] ?? ''),

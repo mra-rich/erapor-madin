@@ -28,6 +28,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
+    // Role Wali Kelas: paksa id_kelas ke kelas miliknya, abaikan nilai dari payload
+    $wali_kelas_id = null;
+    if (($_SESSION['peran'] ?? '') === 'Wali Kelas') {
+        $id_kelas_tujuan = !empty($data['id_kelas_tujuan']) ? (int)$data['id_kelas_tujuan'] : 0;
+        $q_own = db_query(
+            "SELECT id_kelas FROM kelas WHERE id_kelas = ? AND id_wali_kelas = ? AND status = 'Aktif'",
+            [$id_kelas_tujuan, $_SESSION['id_pengguna']]
+        );
+        if (!$q_own || mysqli_num_rows($q_own) === 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Kelas tujuan tidak valid atau bukan kelas Anda.']);
+            exit;
+        }
+        $wali_kelas_id = $id_kelas_tujuan;
+    }
+
     $success_count = 0;
     $error_count = 0;
 
@@ -44,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sekolah_asal = $row['sekolah_asal'] ?? '';
         $diterima_di_kelas = $row['diterima_di_kelas'] ?? '';
         $diterima_pada_tanggal = !empty($row['diterima_pada_tanggal']) ? $row['diterima_pada_tanggal'] : null;
-        $id_kelas_import = !empty($row['id_kelas']) ? (int)$row['id_kelas'] : null;
+        $id_kelas_import = $wali_kelas_id !== null ? $wali_kelas_id : (!empty($row['id_kelas']) ? (int)$row['id_kelas'] : null);
         $tahun_ajaran = $row['tahun_ajaran'] ?? '';
         $nama_ayah = $row['nama_ayah'] ?? '';
         $nama_ibu = $row['nama_ibu'] ?? '';

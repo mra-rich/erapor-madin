@@ -12,6 +12,20 @@ $search     = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_kelas = isset($_GET['kelas']) ? (int)$_GET['kelas'] : 0;
 $id_pengguna  = $_SESSION['id_pengguna'];
 
+// Kelas milik wali kelas (untuk dropdown Tambah/Import role Wali Kelas)
+$kelas_wali_options = [];
+$wali_tanpa_kelas = false;
+if (($_SESSION['peran'] ?? '') === 'Wali Kelas') {
+    $result_wk = db_query(
+        "SELECT k.id_kelas, CONCAT(k.nama_kelas, ' ', IFNULL(k.nama_rombel,''), ' ', t.nama_tingkat) AS nama_kelas FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat WHERE k.id_wali_kelas = ? AND k.status = 'Aktif' ORDER BY k.id_kelas ASC",
+        [$id_pengguna]
+    );
+    while ($wk = mysqli_fetch_assoc($result_wk)) {
+        $kelas_wali_options[] = $wk;
+    }
+    $wali_tanpa_kelas = count($kelas_wali_options) === 0;
+}
+
 // Bangun klausa WHERE dinamis dengan prepared statement
 $where_conditions = ["siswa.status = ?"];
 $where_params = ['Aktif'];
@@ -67,8 +81,8 @@ include 'include/sidebar.php';
       </div>
       <!-- Tombol Aksi Kanan Atas -->
       <div class="flex flex-wrap items-center gap-2">
-        <?php if ($_SESSION['peran'] !== 'Wali Kelas' && $_SESSION['peran'] !== 'Kepala Madrasah'): ?>
-        <button type="button" onclick="openOffcanvas('offcanvas-tambah-siswa')" class="btn btn-primary btn-sm">
+        <?php if (in_array($_SESSION['peran'] ?? '', ['Admin', 'Wali Kelas'], true)): ?>
+        <button type="button" onclick="openOffcanvas('offcanvas-tambah-siswa')" class="btn btn-primary btn-sm <?= $wali_tanpa_kelas ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $wali_tanpa_kelas ? 'disabled title="Anda belum diatur sebagai wali kelas. Hubungi admin."' : '' ?>>
           <i class="ri-user-add-line mr-1.5 text-base"></i> Tambah
         </button>
         <?php endif; ?>
@@ -81,8 +95,8 @@ include 'include/sidebar.php';
         <a href="<?= $export_url ?>" target="_blank" download="Data_Santri.xls" class="btn btn-secondary btn-sm text-indigo-700 border-indigo-200 bg-indigo-50 hover:bg-indigo-100">
           <i class="ri-file-download-line mr-1.5 text-base"></i> Export
         </a>
-        <?php if ($_SESSION['peran'] === 'Admin'): ?>
-          <button type="button" onclick="openOffcanvas('offcanvas-import-siswa')" class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100">
+        <?php if (in_array($_SESSION['peran'] ?? '', ['Admin', 'Wali Kelas'], true)): ?>
+          <button type="button" onclick="openOffcanvas('offcanvas-import-siswa')" class="btn btn-secondary btn-sm text-emerald-700 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 <?= $wali_tanpa_kelas ? 'opacity-50 cursor-not-allowed' : '' ?>" <?= $wali_tanpa_kelas ? 'disabled title="Anda belum diatur sebagai wali kelas. Hubungi admin."' : '' ?>>
             <i class="ri-file-excel-2-line mr-1.5 text-base"></i> Import
           </button>
         <?php endif; ?>
@@ -470,10 +484,17 @@ include 'include/sidebar.php';
                             <select name="id_kelas" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                                 <option value="" disabled selected>-- Pilih Kelas --</option>
                                 <?php
-                                $kelas_query = "SELECT k.id_kelas, CONCAT(k.nama_kelas, ' ', IFNULL(k.nama_rombel,''), ' ', t.nama_tingkat) as nama_kelas FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat ORDER BY k.id_kelas ASC";
-                                $kelas_result = mysqli_query($koneksi, $kelas_query);
-                                while ($k = mysqli_fetch_assoc($kelas_result)) {
-                                    echo "<option value='{$k['id_kelas']}'>" . htmlspecialchars($k['nama_kelas']) . "</option>";
+                                if (($_SESSION['peran'] ?? '') === 'Wali Kelas') {
+                                    // Wali Kelas: hanya kelas miliknya
+                                    foreach ($kelas_wali_options as $wk) {
+                                        echo "<option value='{$wk['id_kelas']}'>" . htmlspecialchars($wk['nama_kelas']) . "</option>";
+                                    }
+                                } else {
+                                    $kelas_query = "SELECT k.id_kelas, CONCAT(k.nama_kelas, ' ', IFNULL(k.nama_rombel,''), ' ', t.nama_tingkat) as nama_kelas FROM kelas k LEFT JOIN tingkat_kelas t ON k.id_tingkat = t.id_tingkat ORDER BY k.id_kelas ASC";
+                                    $kelas_result = mysqli_query($koneksi, $kelas_query);
+                                    while ($k = mysqli_fetch_assoc($kelas_result)) {
+                                        echo "<option value='{$k['id_kelas']}'>" . htmlspecialchars($k['nama_kelas']) . "</option>";
+                                    }
                                 }
                                 ?>
                             </select>
@@ -744,6 +765,18 @@ include 'include/sidebar.php';
 
         <form enctype="multipart/form-data" id="formImportSantri" class="w-full space-y-6">
             <input type="hidden" name="csrf_token" value="<?= generate_csrf_token(); ?>">
+
+            <?php if (($_SESSION['peran'] ?? '') === 'Wali Kelas'): ?>
+            <div class="w-full">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Kelas Tujuan <span class="text-red-500">*</span></label>
+                <select name="id_kelas_tujuan" id="id_kelas_tujuan" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5" required>
+                    <option value="" disabled selected>-- Pilih Kelas --</option>
+                    <?php foreach ($kelas_wali_options as $wk): ?>
+                        <option value="<?= (int)$wk['id_kelas'] ?>"><?= htmlspecialchars($wk['nama_kelas']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
             
             <div class="w-full">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih File Excel (.xlsx)</label>
@@ -1025,6 +1058,13 @@ function openDetailSantri(id) {
           return;
       }
 
+      // Wali Kelas: wajib pilih Kelas Tujuan
+      const kelasTujuan = document.getElementById('id_kelas_tujuan');
+      if (kelasTujuan && !kelasTujuan.value) {
+          alert('Silakan pilih Kelas Tujuan terlebih dahulu.');
+          return;
+      }
+
       const btn = document.getElementById('btn-preview-import');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memvalidasi...';
       btn.disabled = true;
@@ -1110,6 +1150,7 @@ function openDetailSantri(id) {
           },
           body: JSON.stringify({
               csrf_token: csrfToken,
+              id_kelas_tujuan: document.getElementById('id_kelas_tujuan') ? document.getElementById('id_kelas_tujuan').value : '',
               import_data: validDataCache
           })
       })

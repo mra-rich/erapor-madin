@@ -50,6 +50,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
+    // Role Wali Kelas: hanya boleh menyimpan ke kelas miliknya
+    if (($_SESSION['peran'] ?? '') === 'Wali Kelas') {
+        $stmt_own = mysqli_prepare($koneksi, "SELECT id_kelas FROM kelas WHERE id_kelas = ? AND id_wali_kelas = ? AND status = 'Aktif'");
+        mysqli_stmt_bind_param($stmt_own, "ii", $id_kelas, $_SESSION['id_pengguna']);
+        mysqli_stmt_execute($stmt_own);
+        $res_own = mysqli_stmt_get_result($stmt_own);
+        if (mysqli_num_rows($res_own) === 0) {
+            header("Location: data_santri.php?status=error&message=Kelas tidak valid atau bukan kelas Anda.");
+            exit;
+        }
+    }
+
     // Cek apakah NISN sudah ada (kalau diisi)
     if (!empty($nisn)) {
         $cek_query = "SELECT * FROM siswa WHERE nisn = ?";
